@@ -5,7 +5,7 @@ export default function Features() {
     {
       icon: Calendar,
       title: 'Rental Calendar That Makes Sense',
-      description: 'Designed specifically for rental — not for general scheduling, not for spreadsheets.'
+      description: 'Designed specifically for rental — designed for growth and flexibility.'
     },
     {
       icon: Package,
