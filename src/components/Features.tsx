@@ -45,12 +45,9 @@ export default function Features() {
 
         <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-8 sm:p-10 mb-12 border-2 border-amber-200 shadow-lg">
           <div className="text-center">
-            <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-3">
-              Rental shop specific features you've never even dreamed of.
+            <h3 className="text-2xl sm:text-3xl font-bold text-slate-900">
+              Rental shop specific features they've never dreamed of but you always wished you had!
             </h3>
-            <p className="text-xl text-slate-700">
-              KABBA has features you've never seen before because only a rental shop owner could even imagine them.
-            </p>
           </div>
         </div>
 
