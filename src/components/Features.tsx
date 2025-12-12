@@ -1,4 +1,4 @@
-import { Calendar, Package, Users, FileText, Truck } from 'lucide-react';
+import { Calendar, Package, Users, FileText, Truck, Smartphone } from 'lucide-react';
 
 export default function Features() {
   const features = [
@@ -26,6 +26,11 @@ export default function Features() {
       icon: Truck,
       title: 'Dispatch & Delivery Tools',
       description: 'Easy routing and driver workflows built for real rental life.'
+    },
+    {
+      icon: Smartphone,
+      title: 'Manage from the Palm of Your Hand',
+      description: 'Full mobile access to your rental business. Check availability, manage bookings, and run your shop from anywhere.'
     }
   ];
 
