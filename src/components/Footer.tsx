@@ -5,9 +5,9 @@ export default function Footer() {
         <div className="grid md:grid-cols-4 gap-8 mb-8">
           <div>
             <img
-              src="/kabba_logo_-_png_-_circle_-_cut.png"
+              src="/kabba_logo_-_circle_-_cut.png"
               alt="KABBA.ai"
-              className="h-20 w-20 mb-4"
+              className="h-20 w-auto mb-4"
             />
             <p className="text-slate-400">
               Rental software built by real rental operators.
