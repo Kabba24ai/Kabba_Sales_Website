@@ -10,9 +10,9 @@ export default function Navbar() {
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
             <img
-              src="/kabba_logo_-_png.png"
+              src="/kabba_logo_-_png_-_circle_-_cut.png"
               alt="KABBA.ai"
-              className="h-12 w-auto"
+              className="h-12 w-12"
             />
           </div>
 
