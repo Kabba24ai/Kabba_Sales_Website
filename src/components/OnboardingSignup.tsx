@@ -88,7 +88,7 @@ export default function OnboardingSignup({ onComplete, onBack, initialData }: On
     cardNumber: '',
     cardExpiry: '',
     cardCvc: '',
-    cardName: initialData?.cardName || '',
+    cardName: initialData?.cardName || initialData?.fullName || '',
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -103,7 +103,15 @@ export default function OnboardingSignup({ onComplete, onBack, initialData }: On
   };
 
   const handleChange = (field: keyof SignupFormData, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData(prev => {
+      const updated = { ...prev, [field]: value };
+
+      if (field === 'fullName') {
+        updated.cardName = value;
+      }
+
+      return updated;
+    });
   };
 
   const formatCardNumber = (value: string) => {
