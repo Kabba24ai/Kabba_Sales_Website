@@ -29,6 +29,12 @@ const steps: ChecklistStep[] = [
   { id: 6, label: 'Finalizing consultation options…', duration: 1700 },
 ];
 
+const refreshSteps: ChecklistStep[] = [
+  { id: 1, label: 'Checking additional openings…', duration: 1800 },
+  { id: 2, label: 'Reserving setup capacity…', duration: 2000 },
+  { id: 3, label: 'Finalizing new options…', duration: 1700 },
+];
+
 export default function AnalyzingAvailability({ formData, onComplete, onCancel }: AnalyzingAvailabilityProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
@@ -36,22 +42,44 @@ export default function AnalyzingAvailability({ formData, onComplete, onCancel }
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
   const [generationCount, setGenerationCount] = useState(0);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [refreshStep, setRefreshStep] = useState(0);
+  const [refreshCompletedSteps, setRefreshCompletedSteps] = useState<number[]>([]);
 
   const generateTimeSlots = (offset: number = 0): TimeSlot[] => {
     const slots: TimeSlot[] = [];
     const now = new Date();
-    const startDay = 3 + offset;
+    const baseDay = 3;
 
-    const times = [
-      { hour: 11, minute: 0 },
-      { hour: 13, minute: 30 },
-      { hour: 12, minute: 15 },
+    const timeVariations = [
+      [
+        { hour: 11, minute: 0 },
+        { hour: 13, minute: 30 },
+        { hour: 12, minute: 15 },
+      ],
+      [
+        { hour: 10, minute: 30 },
+        { hour: 14, minute: 0 },
+        { hour: 15, minute: 30 },
+      ],
+      [
+        { hour: 9, minute: 0 },
+        { hour: 11, minute: 30 },
+        { hour: 16, minute: 0 },
+      ],
+      [
+        { hour: 10, minute: 0 },
+        { hour: 13, minute: 0 },
+        { hour: 14, minute: 30 },
+      ],
     ];
+
+    const times = timeVariations[offset % timeVariations.length];
+    const dayOffsets = offset === 0 ? [0, 1, 2] : [0, 1, 3];
 
     for (let i = 0; i < 3; i++) {
       const slotDate = new Date(now);
-      const dayOffset = startDay + Math.floor(i / 2);
-      slotDate.setDate(now.getDate() + dayOffset);
+      slotDate.setDate(now.getDate() + baseDay + dayOffsets[i]);
       slotDate.setHours(times[i].hour, times[i].minute, 0, 0);
 
       const dayName = slotDate.toLocaleDateString('en-US', { weekday: 'short' });
@@ -86,11 +114,32 @@ export default function AnalyzingAvailability({ formData, onComplete, onCancel }
   }, [currentStep]);
 
   const handleShowMoreOptions = () => {
-    const newOffset = (generationCount + 1) * 3;
-    setTimeSlots(generateTimeSlots(newOffset));
-    setGenerationCount((prev) => prev + 1);
+    setIsRefreshing(true);
+    setRefreshStep(0);
+    setRefreshCompletedSteps([]);
     setSelectedSlot(null);
   };
+
+  useEffect(() => {
+    if (!isRefreshing || refreshStep >= refreshSteps.length) {
+      if (isRefreshing && refreshStep >= refreshSteps.length) {
+        setTimeout(() => {
+          const newOffset = generationCount + 1;
+          setTimeSlots(generateTimeSlots(newOffset));
+          setGenerationCount((prev) => prev + 1);
+          setIsRefreshing(false);
+        }, 300);
+      }
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setRefreshCompletedSteps((prev) => [...prev, refreshStep]);
+      setRefreshStep((prev) => prev + 1);
+    }, refreshSteps[refreshStep].duration);
+
+    return () => clearTimeout(timer);
+  }, [isRefreshing, refreshStep, generationCount]);
 
   const handleConfirm = () => {
     if (selectedSlot) {
@@ -222,57 +271,114 @@ export default function AnalyzingAvailability({ formData, onComplete, onCancel }
                 </p>
               </div>
 
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-gray-200">Available Times</h3>
-                  <span className="text-xs text-gray-500">Times shown in your local time zone</span>
+{isRefreshing ? (
+                <div className="space-y-6">
+                  <div>
+                    <h3 className="text-xl font-bold mb-4">Finding more availability…</h3>
+                    <div className="space-y-3">
+                      {refreshSteps.map((step, index) => {
+                        const isCompleted = refreshCompletedSteps.includes(index);
+                        const isActive = refreshStep === index;
+
+                        return (
+                          <div key={step.id} className="flex items-center gap-3">
+                            <div className="flex-shrink-0">
+                              {isCompleted ? (
+                                <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center">
+                                  <Check className="w-3 h-3 text-white" />
+                                </div>
+                              ) : isActive ? (
+                                <div className="w-5 h-5 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                                  <Loader2 className="w-3 h-3 text-emerald-500 animate-spin" />
+                                </div>
+                              ) : (
+                                <div className="w-5 h-5 rounded-full bg-gray-800 border border-gray-700" />
+                              )}
+                            </div>
+                            <span
+                              className={`text-sm ${
+                                isCompleted
+                                  ? 'text-gray-400'
+                                  : isActive
+                                  ? 'text-gray-200 font-medium'
+                                  : 'text-gray-600'
+                              }`}
+                            >
+                              {step.label}
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
                 </div>
+              ) : (
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-semibold text-gray-200">Available Times</h3>
+                    <span className="text-xs text-gray-500">Times shown in your local time zone</span>
+                  </div>
 
-                <p className="text-gray-400 mb-4 text-sm">Do any of these times work for you?</p>
+                  {generationCount > 0 && (
+                    <p className="text-gray-300 mb-3 text-sm font-medium">
+                      Here are three more available times:
+                    </p>
+                  )}
 
-                <div className="space-y-3 mb-6">
-                  {timeSlots.map((slot) => (
+                  <p className="text-gray-400 mb-4 text-sm">Do any of these times work for you?</p>
+
+                  <div className="space-y-3 mb-6">
+                    {timeSlots.map((slot) => (
+                      <button
+                        key={slot.id}
+                        onClick={() => setSelectedSlot(slot.id)}
+                        className={`w-full flex items-center gap-3 p-4 rounded-lg border transition-all ${
+                          selectedSlot === slot.id
+                            ? 'border-emerald-500 bg-emerald-500/10'
+                            : 'border-gray-700 bg-gray-950 hover:border-gray-600'
+                        }`}
+                      >
+                        <Calendar className={`w-5 h-5 ${selectedSlot === slot.id ? 'text-emerald-500' : 'text-gray-500'}`} />
+                        <span className={`font-medium ${selectedSlot === slot.id ? 'text-emerald-400' : 'text-gray-300'}`}>
+                          {slot.formatted}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+
+                  {generationCount >= 2 && (
+                    <div className="mb-4 p-4 bg-gray-800/50 border border-gray-700/50 rounded-lg">
+                      <p className="text-sm text-gray-400 leading-relaxed">
+                        Still not seeing a good time? Choose 'cancel setup' and we'll ensure no charge is made.
+                      </p>
+                    </div>
+                  )}
+
+                  <div className="space-y-3">
                     <button
-                      key={slot.id}
-                      onClick={() => setSelectedSlot(slot.id)}
-                      className={`w-full flex items-center gap-3 p-4 rounded-lg border transition-all ${
-                        selectedSlot === slot.id
-                          ? 'border-emerald-500 bg-emerald-500/10'
-                          : 'border-gray-700 bg-gray-950 hover:border-gray-600'
-                      }`}
+                      onClick={handleConfirm}
+                      disabled={!selectedSlot}
+                      className="w-full bg-emerald-600 hover:bg-emerald-500 disabled:bg-gray-800 disabled:text-gray-600 disabled:cursor-not-allowed text-white font-semibold py-4 px-6 rounded-lg transition-all transform hover:scale-[1.02] active:scale-[0.98] disabled:transform-none"
                     >
-                      <Calendar className={`w-5 h-5 ${selectedSlot === slot.id ? 'text-emerald-500' : 'text-gray-500'}`} />
-                      <span className={`font-medium ${selectedSlot === slot.id ? 'text-emerald-400' : 'text-gray-300'}`}>
-                        {slot.formatted}
-                      </span>
+                      Yes — one of these times works for me
                     </button>
-                  ))}
+
+                    <button
+                      onClick={handleShowMoreOptions}
+                      className="w-full bg-gray-800 hover:bg-gray-750 text-gray-300 font-medium py-3 px-6 rounded-lg transition-colors"
+                    >
+                      These times don't work — show more options
+                    </button>
+
+                    <button
+                      onClick={onCancel}
+                      className="w-full text-gray-500 hover:text-gray-400 font-medium py-2 transition-colors text-sm"
+                    >
+                      This won't work for me — cancel setup
+                    </button>
+                  </div>
                 </div>
-
-                <div className="space-y-3">
-                  <button
-                    onClick={handleConfirm}
-                    disabled={!selectedSlot}
-                    className="w-full bg-emerald-600 hover:bg-emerald-500 disabled:bg-gray-800 disabled:text-gray-600 disabled:cursor-not-allowed text-white font-semibold py-4 px-6 rounded-lg transition-all transform hover:scale-[1.02] active:scale-[0.98] disabled:transform-none"
-                  >
-                    Yes — one of these times works for me
-                  </button>
-
-                  <button
-                    onClick={handleShowMoreOptions}
-                    className="w-full bg-gray-800 hover:bg-gray-750 text-gray-300 font-medium py-3 px-6 rounded-lg transition-colors"
-                  >
-                    These times don't work — show more options
-                  </button>
-
-                  <button
-                    onClick={onCancel}
-                    className="w-full text-gray-500 hover:text-gray-400 font-medium py-2 transition-colors text-sm"
-                  >
-                    This won't work for me — cancel setup
-                  </button>
-                </div>
-              </div>
+              )}
             </div>
           )}
 
