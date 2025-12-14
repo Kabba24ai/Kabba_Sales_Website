@@ -6,6 +6,7 @@ interface AnalyzingAvailabilityProps {
   formData: SignupFormData;
   onComplete: (consultationTime: string) => void;
   onCancel: () => void;
+  initialConsultationTime?: string;
 }
 
 interface ChecklistStep {
@@ -35,10 +36,10 @@ const refreshSteps: ChecklistStep[] = [
   { id: 3, label: 'Finalizing new options…', duration: 1700 },
 ];
 
-export default function AnalyzingAvailability({ formData, onComplete, onCancel }: AnalyzingAvailabilityProps) {
+export default function AnalyzingAvailability({ formData, onComplete, onCancel, initialConsultationTime }: AnalyzingAvailabilityProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
-  const [showScheduling, setShowScheduling] = useState(false);
+  const [showScheduling, setShowScheduling] = useState(!!initialConsultationTime);
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
   const [generationCount, setGenerationCount] = useState(0);
@@ -96,12 +97,39 @@ export default function AnalyzingAvailability({ formData, onComplete, onCancel }
     return slots;
   };
 
+  // Initialize with previous consultation time if available
   useEffect(() => {
-    if (currentStep >= steps.length) {
-      setTimeout(() => {
-        setShowScheduling(true);
-        setTimeSlots(generateTimeSlots());
-      }, 500);
+    if (initialConsultationTime) {
+      const initialDate = new Date(initialConsultationTime);
+      const slots = generateTimeSlots();
+
+      // Create a slot for the previously selected time
+      const dayName = initialDate.toLocaleDateString('en-US', { weekday: 'short' });
+      const dateStr = initialDate.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' });
+      const timeStr = initialDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+
+      const previousSlot: TimeSlot = {
+        id: `previous-${initialDate.getTime()}`,
+        date: initialDate,
+        formatted: `${dayName} ${dateStr} at ${timeStr}`,
+      };
+
+      // Put the previous slot first, then the generated slots
+      setTimeSlots([previousSlot, ...slots]);
+      setSelectedSlot(previousSlot.id);
+      setCompletedSteps(steps.map((_, index) => index));
+      setCurrentStep(steps.length);
+    }
+  }, [initialConsultationTime]);
+
+  useEffect(() => {
+    if (initialConsultationTime || currentStep >= steps.length) {
+      if (!initialConsultationTime && currentStep >= steps.length) {
+        setTimeout(() => {
+          setShowScheduling(true);
+          setTimeSlots(generateTimeSlots());
+        }, 500);
+      }
       return;
     }
 
@@ -111,7 +139,7 @@ export default function AnalyzingAvailability({ formData, onComplete, onCancel }
     }, steps[currentStep].duration);
 
     return () => clearTimeout(timer);
-  }, [currentStep]);
+  }, [currentStep, initialConsultationTime]);
 
   const handleShowMoreOptions = () => {
     setIsRefreshing(true);
@@ -261,7 +289,21 @@ export default function AnalyzingAvailability({ formData, onComplete, onCancel }
           {showScheduling && (
             <div className="bg-gray-900 border border-gray-800 rounded-xl p-8 space-y-6 animate-fade-in">
               <div>
-                <h2 className="text-2xl font-bold mb-4">Choose a setup & strategy session</h2>
+                {initialConsultationTime ? (
+                  <>
+                    <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-lg p-4 mb-6">
+                      <p className="text-emerald-400 font-semibold mb-2">
+                        We've saved your previously selected consultation time
+                      </p>
+                      <p className="text-emerald-300 text-sm">
+                        You can confirm the same time below, or choose a different one if needed.
+                      </p>
+                    </div>
+                    <h2 className="text-2xl font-bold mb-4">Confirm your consultation time</h2>
+                  </>
+                ) : (
+                  <h2 className="text-2xl font-bold mb-4">Choose a setup & strategy session</h2>
+                )}
                 <p className="text-gray-300 mb-4">
                   To complete your setup and activate your trial, please select a consultation time below.
                 </p>
@@ -342,27 +384,37 @@ export default function AnalyzingAvailability({ formData, onComplete, onCancel }
                   <p className="text-gray-400 mb-4 text-sm">Do any of these times work for you?</p>
 
                   <div className="space-y-3 mb-6">
-                    {timeSlots.map((slot) => (
-                      <button
-                        key={slot.id}
-                        onClick={() => setSelectedSlot(slot.id)}
-                        className={`w-full flex items-center justify-between gap-3 p-4 rounded-lg border transition-all ${
-                          selectedSlot === slot.id
-                            ? 'border-emerald-500 bg-emerald-500/10'
-                            : 'border-gray-700 bg-gray-950 hover:border-gray-600'
-                        }`}
-                      >
-                        <div className="flex items-center gap-3">
-                          <Calendar className={`w-5 h-5 ${selectedSlot === slot.id ? 'text-emerald-500' : 'text-gray-500'}`} />
-                          <span className={`font-medium ${selectedSlot === slot.id ? 'text-emerald-400' : 'text-gray-300'}`}>
-                            {slot.formatted}
+                    {timeSlots.map((slot, index) => {
+                      const isPreviousSelection = initialConsultationTime && index === 0;
+                      return (
+                        <button
+                          key={slot.id}
+                          onClick={() => setSelectedSlot(slot.id)}
+                          className={`w-full flex items-center justify-between gap-3 p-4 rounded-lg border transition-all ${
+                            selectedSlot === slot.id
+                              ? 'border-emerald-500 bg-emerald-500/10'
+                              : 'border-gray-700 bg-gray-950 hover:border-gray-600'
+                          }`}
+                        >
+                          <div className="flex items-center gap-3">
+                            <Calendar className={`w-5 h-5 ${selectedSlot === slot.id ? 'text-emerald-500' : 'text-gray-500'}`} />
+                            <div className="flex flex-col items-start">
+                              <span className={`font-medium ${selectedSlot === slot.id ? 'text-emerald-400' : 'text-gray-300'}`}>
+                                {slot.formatted}
+                              </span>
+                              {isPreviousSelection && (
+                                <span className="text-xs text-emerald-400 font-semibold mt-1">
+                                  Your original selection
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                          <span className={`text-sm italic ${selectedSlot === slot.id ? 'text-emerald-400' : 'text-gray-500'}`}>
+                            Click to reserve
                           </span>
-                        </div>
-                        <span className={`text-sm italic ${selectedSlot === slot.id ? 'text-emerald-400' : 'text-gray-500'}`}>
-                          Click to reserve
-                        </span>
-                      </button>
-                    ))}
+                        </button>
+                      );
+                    })}
                   </div>
 
                   {generationCount >= 2 && (

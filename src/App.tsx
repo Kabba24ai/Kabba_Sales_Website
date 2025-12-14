@@ -87,7 +87,7 @@ function App() {
   }
 
   if (currentPage === 'onboarding-analyzing' && signupData) {
-    return <AnalyzingAvailability formData={signupData} onComplete={handleAnalyzingComplete} onCancel={handleSetupCancel} />;
+    return <AnalyzingAvailability formData={signupData} onComplete={handleAnalyzingComplete} onCancel={handleSetupCancel} initialConsultationTime={consultationTime || undefined} />;
   }
 
   if (currentPage === 'processing-payment' && signupData) {
