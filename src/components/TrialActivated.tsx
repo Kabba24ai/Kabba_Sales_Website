@@ -1,4 +1,4 @@
-import { CheckCircle2, Calendar, LayoutDashboard, FileText, DollarSign, MessageCircle } from 'lucide-react';
+import { CheckCircle2, Calendar, LayoutDashboard, FileText, DollarSign, MessageCircle, Phone } from 'lucide-react';
 import { SignupFormData } from './OnboardingSignup';
 
 interface TrialActivatedProps {
@@ -170,13 +170,20 @@ export default function TrialActivated({ formData, consultationTime, onGoToDashb
           <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
             <div className="flex items-start gap-3">
               <MessageCircle className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
-              <div>
+              <div className="flex-1">
                 <p className="text-gray-300 text-sm mb-2">
                   Need anything before your session? We're here.
                 </p>
-                <p className="text-gray-400 text-sm">
+                <p className="text-gray-400 text-sm mb-4">
                   Reply to our message or reach out directly.
                 </p>
+                <a
+                  href="tel:+16293094154"
+                  className="inline-flex items-center gap-2 text-emerald-400 hover:text-emerald-300 font-semibold text-sm transition-colors"
+                >
+                  <Phone className="w-4 h-4" />
+                  Call Us: (629) 309-4154
+                </a>
               </div>
             </div>
           </div>
