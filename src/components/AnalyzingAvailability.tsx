@@ -379,7 +379,7 @@ export default function AnalyzingAvailability({ formData, onComplete, onCancel }
                       disabled={!selectedSlot}
                       className="w-full bg-emerald-600 hover:bg-emerald-500 disabled:bg-gray-800 disabled:text-gray-600 disabled:cursor-not-allowed text-white font-semibold py-4 px-6 rounded-lg transition-all transform hover:scale-[1.02] active:scale-[0.98] disabled:transform-none"
                     >
-                      Yes — one of these times works for me
+                      Yes - This date and time works for me
                     </button>
 
                     <button
