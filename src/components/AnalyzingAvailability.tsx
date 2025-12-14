@@ -346,15 +346,20 @@ export default function AnalyzingAvailability({ formData, onComplete, onCancel }
                       <button
                         key={slot.id}
                         onClick={() => setSelectedSlot(slot.id)}
-                        className={`w-full flex items-center gap-3 p-4 rounded-lg border transition-all ${
+                        className={`w-full flex items-center justify-between gap-3 p-4 rounded-lg border transition-all ${
                           selectedSlot === slot.id
                             ? 'border-emerald-500 bg-emerald-500/10'
                             : 'border-gray-700 bg-gray-950 hover:border-gray-600'
                         }`}
                       >
-                        <Calendar className={`w-5 h-5 ${selectedSlot === slot.id ? 'text-emerald-500' : 'text-gray-500'}`} />
-                        <span className={`font-medium ${selectedSlot === slot.id ? 'text-emerald-400' : 'text-gray-300'}`}>
-                          {slot.formatted}
+                        <div className="flex items-center gap-3">
+                          <Calendar className={`w-5 h-5 ${selectedSlot === slot.id ? 'text-emerald-500' : 'text-gray-500'}`} />
+                          <span className={`font-medium ${selectedSlot === slot.id ? 'text-emerald-400' : 'text-gray-300'}`}>
+                            {slot.formatted}
+                          </span>
+                        </div>
+                        <span className={`text-sm italic ${selectedSlot === slot.id ? 'text-emerald-400' : 'text-gray-500'}`}>
+                          Click to reserve
                         </span>
                       </button>
                     ))}
