@@ -13,10 +13,12 @@ import Footer from './components/Footer';
 import PricingPage from './components/PricingPage';
 import OnboardingSignup, { SignupFormData } from './components/OnboardingSignup';
 import AnalyzingAvailability from './components/AnalyzingAvailability';
+import ProcessingPayment from './components/ProcessingPayment';
+import PaymentError from './components/PaymentError';
 import TrialActivated from './components/TrialActivated';
 import SetupCanceled from './components/SetupCanceled';
 
-type PageType = 'home' | 'pricing' | 'onboarding-signup' | 'onboarding-analyzing' | 'onboarding-activated' | 'setup-canceled';
+type PageType = 'home' | 'pricing' | 'onboarding-signup' | 'onboarding-analyzing' | 'processing-payment' | 'payment-error' | 'onboarding-activated' | 'setup-canceled';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<PageType>('home');
@@ -46,7 +48,22 @@ function App() {
 
   const handleAnalyzingComplete = (time: string) => {
     setConsultationTime(time);
+    setCurrentPage('processing-payment');
+    window.scrollTo(0, 0);
+  };
+
+  const handlePaymentSuccess = () => {
     setCurrentPage('onboarding-activated');
+    window.scrollTo(0, 0);
+  };
+
+  const handlePaymentError = () => {
+    setCurrentPage('payment-error');
+    window.scrollTo(0, 0);
+  };
+
+  const handleRetryPayment = () => {
+    setCurrentPage('onboarding-signup');
     window.scrollTo(0, 0);
   };
 
@@ -66,6 +83,14 @@ function App() {
 
   if (currentPage === 'onboarding-analyzing' && signupData) {
     return <AnalyzingAvailability formData={signupData} onComplete={handleAnalyzingComplete} onCancel={handleSetupCancel} />;
+  }
+
+  if (currentPage === 'processing-payment') {
+    return <ProcessingPayment onSuccess={handlePaymentSuccess} onError={handlePaymentError} />;
+  }
+
+  if (currentPage === 'payment-error') {
+    return <PaymentError onRetry={handleRetryPayment} onCancel={handleSetupCancel} />;
   }
 
   if (currentPage === 'setup-canceled') {
