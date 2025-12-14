@@ -93,13 +93,15 @@ export default function PricingPage({ onBack, onStartTrial }: PricingPageProps) 
               </p>
             </div>
 
-            <button
-              onClick={onStartTrial}
-              className="w-full bg-amber-500 hover:bg-amber-600 text-white px-8 py-4 rounded-lg font-bold text-lg transition shadow-xl hover:shadow-2xl flex items-center justify-center group"
-            >
-              Start My $4.95 Trial
-              <ArrowRight className="ml-2 group-hover:translate-x-1 transition" size={20} />
-            </button>
+            <div className="flex justify-center">
+              <button
+                onClick={onStartTrial}
+                className="bg-amber-500 hover:bg-amber-600 text-white px-8 py-4 rounded-lg font-bold text-lg transition shadow-xl hover:shadow-2xl inline-flex items-center group"
+              >
+                Start My $4.95 Trial
+                <ArrowRight className="ml-2 group-hover:translate-x-1 transition" size={20} />
+              </button>
+            </div>
           </div>
         </div>
       </section>

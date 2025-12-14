@@ -55,10 +55,12 @@ export default function Pricing({ onStartTrial, onViewDetailedPricing }: Pricing
             </p>
           </div>
 
-          <button onClick={onStartTrial} className="w-full bg-amber-500 hover:bg-amber-600 text-white px-8 py-4 rounded-lg font-semibold text-lg transition shadow-lg hover:shadow-xl flex items-center justify-center group mb-4">
-            Start Your $4.95 Trial
-            <ArrowRight className="ml-2 group-hover:translate-x-1 transition" size={20} />
-          </button>
+          <div className="flex justify-center mb-4">
+            <button onClick={onStartTrial} className="bg-amber-500 hover:bg-amber-600 text-white px-8 py-4 rounded-lg font-semibold text-lg transition shadow-lg hover:shadow-xl inline-flex items-center group">
+              Start Your $4.95 Trial
+              <ArrowRight className="ml-2 group-hover:translate-x-1 transition" size={20} />
+            </button>
+          </div>
 
           <button
             onClick={onViewDetailedPricing}
