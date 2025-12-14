@@ -155,7 +155,7 @@ export default function PricingPage({ onBack, onStartTrial }: PricingPageProps) 
               Your software shouldn't hurt your cash flow during slow seasons.
             </p>
             <p className="text-slate-300 text-lg">
-              That's less than the cost of a single missed rental — and far less than a slow-season software bill.
+              KABBA is built to handle the busy season — with pricing designed to get you through the winter.
             </p>
           </div>
         </div>
