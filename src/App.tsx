@@ -14,8 +14,9 @@ import PricingPage from './components/PricingPage';
 import OnboardingSignup, { SignupFormData } from './components/OnboardingSignup';
 import AnalyzingAvailability from './components/AnalyzingAvailability';
 import TrialActivated from './components/TrialActivated';
+import SetupCanceled from './components/SetupCanceled';
 
-type PageType = 'home' | 'pricing' | 'onboarding-signup' | 'onboarding-analyzing' | 'onboarding-activated';
+type PageType = 'home' | 'pricing' | 'onboarding-signup' | 'onboarding-analyzing' | 'onboarding-activated' | 'setup-canceled';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<PageType>('home');
@@ -49,12 +50,26 @@ function App() {
     window.scrollTo(0, 0);
   };
 
+  const handleSetupCancel = () => {
+    setCurrentPage('setup-canceled');
+    window.scrollTo(0, 0);
+  };
+
+  const handleRestartSetup = () => {
+    setCurrentPage('onboarding-analyzing');
+    window.scrollTo(0, 0);
+  };
+
   if (currentPage === 'onboarding-signup') {
     return <OnboardingSignup onComplete={handleSignupComplete} onBack={navigateToHome} />;
   }
 
   if (currentPage === 'onboarding-analyzing' && signupData) {
-    return <AnalyzingAvailability formData={signupData} onComplete={handleAnalyzingComplete} />;
+    return <AnalyzingAvailability formData={signupData} onComplete={handleAnalyzingComplete} onCancel={handleSetupCancel} />;
+  }
+
+  if (currentPage === 'setup-canceled') {
+    return <SetupCanceled onRestartSetup={handleRestartSetup} onBackToPricing={navigateToPricing} />;
   }
 
   if (currentPage === 'onboarding-activated' && signupData && consultationTime) {

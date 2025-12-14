@@ -5,6 +5,7 @@ import { SignupFormData } from './OnboardingSignup';
 interface AnalyzingAvailabilityProps {
   formData: SignupFormData;
   onComplete: (consultationTime: string) => void;
+  onCancel: () => void;
 }
 
 interface ChecklistStep {
@@ -28,13 +29,12 @@ const steps: ChecklistStep[] = [
   { id: 6, label: 'Finalizing consultation options…', duration: 1700 },
 ];
 
-export default function AnalyzingAvailability({ formData, onComplete }: AnalyzingAvailabilityProps) {
+export default function AnalyzingAvailability({ formData, onComplete, onCancel }: AnalyzingAvailabilityProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const [showScheduling, setShowScheduling] = useState(false);
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
-  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
   const [generationCount, setGenerationCount] = useState(0);
 
   const generateTimeSlots = (offset: number = 0): TimeSlot[] => {
@@ -101,24 +101,6 @@ export default function AnalyzingAvailability({ formData, onComplete }: Analyzin
     }
   };
 
-  const handleCancel = () => {
-    setShowCancelConfirm(true);
-  };
-
-  if (showCancelConfirm) {
-    return (
-      <div className="min-h-screen bg-gray-950 text-gray-100 flex items-center justify-center px-4">
-        <div className="max-w-md w-full text-center">
-          <div className="bg-gray-900 border border-gray-800 rounded-xl p-8">
-            <h2 className="text-2xl font-bold mb-4">Setup Canceled</h2>
-            <p className="text-gray-400 mb-6">
-              No charge was made. You can return anytime to complete your setup.
-            </p>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100">
@@ -284,7 +266,7 @@ export default function AnalyzingAvailability({ formData, onComplete }: Analyzin
                   </button>
 
                   <button
-                    onClick={handleCancel}
+                    onClick={onCancel}
                     className="w-full text-gray-500 hover:text-gray-400 font-medium py-2 transition-colors text-sm"
                   >
                     This won't work for me — cancel setup
