@@ -1,6 +1,10 @@
 import { ArrowRight, Eye } from 'lucide-react';
 
-export default function FinalCTA() {
+interface FinalCTAProps {
+  onStartTrial: () => void;
+}
+
+export default function FinalCTA({ onStartTrial }: FinalCTAProps) {
   return (
     <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 text-white">
       <div className="max-w-4xl mx-auto text-center">
@@ -15,7 +19,7 @@ export default function FinalCTA() {
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-          <button className="bg-amber-500 hover:bg-amber-600 text-white px-10 py-5 rounded-lg font-bold text-xl transition shadow-2xl hover:shadow-3xl flex items-center justify-center group">
+          <button onClick={onStartTrial} className="bg-amber-500 hover:bg-amber-600 text-white px-10 py-5 rounded-lg font-bold text-xl transition shadow-2xl hover:shadow-3xl flex items-center justify-center group">
             Start Your $4.95 Trial
             <ArrowRight className="ml-2 group-hover:translate-x-1 transition" size={24} />
           </button>

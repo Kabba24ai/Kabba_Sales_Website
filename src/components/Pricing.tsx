@@ -1,6 +1,10 @@
 import { Check, ArrowRight } from 'lucide-react';
 
-export default function Pricing() {
+interface PricingProps {
+  onStartTrial: () => void;
+}
+
+export default function Pricing({ onStartTrial }: PricingProps) {
   const features = [
     '$4.95 Starter Trial',
     'Then $9.95/month',
@@ -50,7 +54,7 @@ export default function Pricing() {
             </p>
           </div>
 
-          <button className="w-full bg-amber-500 hover:bg-amber-600 text-white px-8 py-4 rounded-lg font-semibold text-lg transition shadow-lg hover:shadow-xl flex items-center justify-center group">
+          <button onClick={onStartTrial} className="w-full bg-amber-500 hover:bg-amber-600 text-white px-8 py-4 rounded-lg font-semibold text-lg transition shadow-lg hover:shadow-xl flex items-center justify-center group">
             Start Your $4.95 Trial
             <ArrowRight className="ml-2 group-hover:translate-x-1 transition" size={20} />
           </button>

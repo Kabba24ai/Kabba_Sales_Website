@@ -1,6 +1,10 @@
 import { ArrowRight, Eye } from 'lucide-react';
 
-export default function Hero() {
+interface HeroProps {
+  onStartTrial: () => void;
+}
+
+export default function Hero({ onStartTrial }: HeroProps) {
   return (
     <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-slate-50 via-white to-blue-50">
       <div className="max-w-7xl mx-auto">
@@ -21,7 +25,7 @@ export default function Hero() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-            <button className="bg-amber-500 hover:bg-amber-600 text-white px-8 py-4 rounded-lg font-semibold text-lg transition shadow-lg hover:shadow-xl flex items-center justify-center group">
+            <button onClick={onStartTrial} className="bg-amber-500 hover:bg-amber-600 text-white px-8 py-4 rounded-lg font-semibold text-lg transition shadow-lg hover:shadow-xl flex items-center justify-center group">
               Start Your $4.95 Trial
               <ArrowRight className="ml-2 group-hover:translate-x-1 transition" size={20} />
             </button>
