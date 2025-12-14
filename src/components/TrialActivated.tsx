@@ -177,13 +177,15 @@ export default function TrialActivated({ formData, consultationTime, onGoToDashb
                 <p className="text-gray-400 text-sm mb-4">
                   Reply to our message or reach out directly.
                 </p>
-                <a
-                  href="tel:+16293094154"
-                  className="inline-flex items-center gap-2 text-emerald-400 hover:text-emerald-300 font-semibold text-sm transition-colors"
-                >
-                  <Phone className="w-4 h-4" />
-                  Call Us: (629) 309-4154
-                </a>
+                <div className="flex justify-center">
+                  <a
+                    href="tel:+16293094154"
+                    className="inline-flex items-center gap-2 text-emerald-400 hover:text-emerald-300 font-bold text-lg transition-colors"
+                  >
+                    <Phone className="w-5 h-5" />
+                    Call Us: (629) 309-4154
+                  </a>
+                </div>
               </div>
             </div>
           </div>
