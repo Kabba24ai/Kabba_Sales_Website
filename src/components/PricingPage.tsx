@@ -204,9 +204,12 @@ export default function PricingPage({ onBack, onStartTrial }: PricingPageProps) 
                 </li>
               </ul>
 
-              <div className="bg-red-900/20 border border-red-500/30 rounded-lg p-4">
+              <div className="bg-red-900/20 border border-red-500/30 rounded-lg p-4 space-y-2">
                 <p className="text-red-300 font-bold text-center">
-                  That's $500 per month — before you earn a dollar.
+                  That's $6,000 of cash flow — before you earn a single dollar.
+                </p>
+                <p className="text-red-300 text-center">
+                  And you pay it whether rentals are strong or slow.
                 </p>
               </div>
             </div>
