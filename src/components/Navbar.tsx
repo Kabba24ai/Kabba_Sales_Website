@@ -3,9 +3,10 @@ import { useState } from 'react';
 
 interface NavbarProps {
   onStartTrial: () => void;
+  onViewPricing: () => void;
 }
 
-export default function Navbar({ onStartTrial }: NavbarProps) {
+export default function Navbar({ onStartTrial, onViewPricing }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -22,7 +23,7 @@ export default function Navbar({ onStartTrial }: NavbarProps) {
 
           <div className="hidden md:flex items-center space-x-8">
             <a href="#product" className="text-slate-600 hover:text-slate-900 transition">Product</a>
-            <a href="#pricing" className="text-slate-600 hover:text-slate-900 transition">Pricing</a>
+            <button onClick={onViewPricing} className="text-slate-600 hover:text-slate-900 transition">Pricing</button>
             <a href="#consultation" className="text-slate-600 hover:text-slate-900 transition">Consultation</a>
             <button onClick={onStartTrial} className="bg-amber-500 hover:bg-amber-600 text-white px-6 py-2 rounded-lg font-semibold transition">
               Start $4.95 Trial
@@ -39,7 +40,7 @@ export default function Navbar({ onStartTrial }: NavbarProps) {
         {isOpen && (
           <div className="md:hidden pb-4">
             <a href="#product" className="block py-2 text-slate-600 hover:text-slate-900">Product</a>
-            <a href="#pricing" className="block py-2 text-slate-600 hover:text-slate-900">Pricing</a>
+            <button onClick={onViewPricing} className="block py-2 text-slate-600 hover:text-slate-900 text-left w-full">Pricing</button>
             <a href="#consultation" className="block py-2 text-slate-600 hover:text-slate-900">Consultation</a>
             <button onClick={onStartTrial} className="w-full mt-2 bg-amber-500 hover:bg-amber-600 text-white px-6 py-2 rounded-lg font-semibold">
               Start $4.95 Trial

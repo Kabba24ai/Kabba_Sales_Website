@@ -10,13 +10,28 @@ import Consultation from './components/Consultation';
 import SocialProof from './components/SocialProof';
 import FinalCTA from './components/FinalCTA';
 import Footer from './components/Footer';
-import SignupTrial from './components/SignupTrial';
+import PricingPage from './components/PricingPage';
+import OnboardingSignup, { SignupFormData } from './components/OnboardingSignup';
+import AnalyzingAvailability from './components/AnalyzingAvailability';
+import ProcessingPayment from './components/ProcessingPayment';
+import PaymentError from './components/PaymentError';
+import TrialActivated from './components/TrialActivated';
+import SetupCanceled from './components/SetupCanceled';
+
+type PageType = 'home' | 'pricing' | 'onboarding-signup' | 'onboarding-analyzing' | 'processing-payment' | 'payment-error' | 'onboarding-activated' | 'setup-canceled';
 
 function App() {
-  const [currentPage, setCurrentPage] = useState<'home' | 'signup'>('home');
+  const [currentPage, setCurrentPage] = useState<PageType>('home');
+  const [signupData, setSignupData] = useState<SignupFormData | null>(null);
+  const [consultationTime, setConsultationTime] = useState<string>('');
 
   const navigateToSignup = () => {
-    setCurrentPage('signup');
+    setCurrentPage('onboarding-signup');
+    window.scrollTo(0, 0);
+  };
+
+  const navigateToPricing = () => {
+    setCurrentPage('pricing');
     window.scrollTo(0, 0);
   };
 
@@ -25,19 +40,96 @@ function App() {
     window.scrollTo(0, 0);
   };
 
-  if (currentPage === 'signup') {
-    return <SignupTrial onBack={navigateToHome} />;
+  const handleSignupComplete = (formData: SignupFormData) => {
+    setSignupData(formData);
+    setCurrentPage('onboarding-analyzing');
+    window.scrollTo(0, 0);
+  };
+
+  const handleAnalyzingComplete = (time: string) => {
+    setConsultationTime(time);
+    setCurrentPage('processing-payment');
+    window.scrollTo(0, 0);
+  };
+
+  const handlePaymentSuccess = () => {
+    setCurrentPage('onboarding-activated');
+    window.scrollTo(0, 0);
+  };
+
+  const handlePaymentError = () => {
+    setCurrentPage('payment-error');
+    window.scrollTo(0, 0);
+  };
+
+  const handleRetryPayment = () => {
+    setCurrentPage('onboarding-signup');
+    window.scrollTo(0, 0);
+  };
+
+  const handleCancelFromError = () => {
+    setCurrentPage('setup-canceled');
+    window.scrollTo(0, 0);
+  };
+
+  const handleSetupCancel = () => {
+    setCurrentPage('setup-canceled');
+    window.scrollTo(0, 0);
+  };
+
+  const handleRestartSetup = () => {
+    setCurrentPage('onboarding-analyzing');
+    window.scrollTo(0, 0);
+  };
+
+  if (currentPage === 'onboarding-signup') {
+    return <OnboardingSignup onComplete={handleSignupComplete} onBack={navigateToHome} initialData={signupData || undefined} />;
+  }
+
+  if (currentPage === 'onboarding-analyzing' && signupData) {
+    return <AnalyzingAvailability formData={signupData} onComplete={handleAnalyzingComplete} onCancel={handleSetupCancel} initialConsultationTime={consultationTime || undefined} />;
+  }
+
+  if (currentPage === 'processing-payment' && signupData) {
+    return <ProcessingPayment formData={signupData} onSuccess={handlePaymentSuccess} onError={handlePaymentError} />;
+  }
+
+  if (currentPage === 'payment-error') {
+    return <PaymentError onRetry={handleRetryPayment} onCancel={handleCancelFromError} />;
+  }
+
+  if (currentPage === 'setup-canceled') {
+    return <SetupCanceled onRestartSetup={handleRestartSetup} onBackToPricing={navigateToPricing} />;
+  }
+
+  if (currentPage === 'onboarding-activated' && signupData && consultationTime) {
+    return (
+      <TrialActivated
+        formData={signupData}
+        consultationTime={consultationTime}
+        onGoToDashboard={() => {
+          window.scrollTo(0, 0);
+        }}
+        onViewDetails={() => {
+          window.scrollTo(0, 0);
+        }}
+      />
+    );
+  }
+
+  if (currentPage === 'pricing') {
+    return <PricingPage onBack={navigateToHome} onStartTrial={navigateToSignup} />;
   }
 
   return (
     <div className="min-h-screen bg-white">
-      <Navbar onStartTrial={navigateToSignup} />
+      <Navbar onStartTrial={navigateToSignup} onViewPricing={navigateToPricing} />
       <Hero onStartTrial={navigateToSignup} />
       <AntiDemo />
       <RealShop />
       <ValueProposition />
       <Features />
-      <Pricing onStartTrial={navigateToSignup} />
+      <Pricing onStartTrial={navigateToSignup} onViewDetailedPricing={navigateToPricing} />
       <Consultation />
       <SocialProof />
       <FinalCTA onStartTrial={navigateToSignup} />
