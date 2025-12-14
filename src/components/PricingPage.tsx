@@ -266,18 +266,18 @@ export default function PricingPage({ onBack, onStartTrial }: PricingPageProps) 
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full bg-slate-800/50 rounded-xl overflow-hidden">
+            <table className="w-full bg-white rounded-xl overflow-hidden shadow-xl">
               <thead>
-                <tr className="border-b border-slate-700">
-                  <th className="text-left p-6 text-slate-400 font-semibold">Feature</th>
-                  <th className="p-6 text-center bg-cyan-900/30 border-x border-cyan-500/30">
-                    <div className="text-cyan-400 font-bold text-lg">KABBA</div>
+                <tr className="border-b border-slate-200">
+                  <th className="text-left p-6 text-slate-700 font-semibold">Feature</th>
+                  <th className="p-6 text-center bg-cyan-50 border-x border-cyan-200">
+                    <div className="text-cyan-700 font-bold text-lg">KABBA</div>
                   </th>
-                  <th className="p-6 text-center text-slate-400 font-semibold">Quipli</th>
-                  <th className="p-6 text-center text-slate-400 font-semibold">Renterra</th>
+                  <th className="p-6 text-center text-slate-700 font-semibold">Quipli</th>
+                  <th className="p-6 text-center text-slate-700 font-semibold">Renterra</th>
                 </tr>
               </thead>
-              <tbody className="text-white">
+              <tbody className="text-slate-800">
                 {[
                   { feature: 'Public pricing', kabba: true, quipli: true, renterra: false },
                   { feature: 'Upfront fees', kabba: false, quipli: true, renterra: true },
@@ -286,27 +286,27 @@ export default function PricingPage({ onBack, onStartTrial }: PricingPageProps) 
                   { feature: 'Demo required', kabba: false, quipli: false, renterra: true },
                   { feature: 'Built by rental operators', kabba: true, quipli: false, renterra: false },
                 ].map((row, idx) => (
-                  <tr key={idx} className="border-b border-slate-700">
-                    <td className="p-6 text-slate-300">{row.feature}</td>
-                    <td className="p-6 text-center bg-cyan-900/20 border-x border-cyan-500/20">
+                  <tr key={idx} className="border-b border-slate-200">
+                    <td className="p-6 text-slate-700">{row.feature}</td>
+                    <td className="p-6 text-center bg-cyan-50/50 border-x border-cyan-100">
                       {row.kabba ? (
-                        <Check className="text-cyan-400 mx-auto" size={24} />
+                        <Check className="text-green-600 mx-auto" size={24} />
                       ) : (
-                        <X className="text-slate-600 mx-auto" size={24} />
+                        <X className="text-red-500 mx-auto" size={24} />
                       )}
                     </td>
                     <td className="p-6 text-center">
                       {row.quipli ? (
-                        <Check className="text-green-400 mx-auto" size={24} />
+                        <Check className="text-green-600 mx-auto" size={24} />
                       ) : (
-                        <X className="text-slate-600 mx-auto" size={24} />
+                        <X className="text-red-500 mx-auto" size={24} />
                       )}
                     </td>
                     <td className="p-6 text-center">
                       {row.renterra ? (
-                        <Check className="text-green-400 mx-auto" size={24} />
+                        <Check className="text-green-600 mx-auto" size={24} />
                       ) : (
-                        <X className="text-slate-600 mx-auto" size={24} />
+                        <X className="text-red-500 mx-auto" size={24} />
                       )}
                     </td>
                   </tr>
