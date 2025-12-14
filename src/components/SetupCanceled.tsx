@@ -64,6 +64,13 @@ export default function SetupCanceled({ onRestartSetup, onBackToPricing }: Setup
               <Mail className="w-4 h-4" />
               Contact Us
             </a>
+
+            <a
+              href="tel:6293094154"
+              className="w-full flex items-center justify-center text-red-500 hover:text-red-400 font-bold py-2 transition-colors text-lg"
+            >
+              Call or Text Us: (629) 309-4154
+            </a>
           </div>
 
           <div className="bg-gray-900/50 border border-gray-800/50 rounded-lg p-6 mb-8">
