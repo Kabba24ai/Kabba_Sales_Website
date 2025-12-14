@@ -49,12 +49,10 @@ export default function Consultation() {
             </p>
           </div>
 
-          <div className="flex justify-center">
-            <button className="bg-amber-500 hover:bg-amber-600 text-white px-8 py-4 rounded-lg font-semibold text-lg transition shadow-lg hover:shadow-xl inline-flex items-center group">
-              Start Trial & Claim Consultation
-              <ArrowRight className="ml-2 group-hover:translate-x-1 transition" size={20} />
-            </button>
-          </div>
+          <button className="w-full bg-amber-500 hover:bg-amber-600 text-white px-8 py-4 rounded-lg font-semibold text-lg transition shadow-lg hover:shadow-xl flex items-center justify-center group">
+            Start Trial & Claim Consultation
+            <ArrowRight className="ml-2 group-hover:translate-x-1 transition" size={20} />
+          </button>
         </div>
       </div>
     </section>

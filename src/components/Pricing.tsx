@@ -1,11 +1,10 @@
-import { Check, ArrowRight, ExternalLink } from 'lucide-react';
+import { Check, ArrowRight } from 'lucide-react';
 
 interface PricingProps {
   onStartTrial: () => void;
-  onViewDetailedPricing: () => void;
 }
 
-export default function Pricing({ onStartTrial, onViewDetailedPricing }: PricingProps) {
+export default function Pricing({ onStartTrial }: PricingProps) {
   const features = [
     '$4.95 Starter Trial',
     'Then $9.95/month',
@@ -55,19 +54,9 @@ export default function Pricing({ onStartTrial, onViewDetailedPricing }: Pricing
             </p>
           </div>
 
-          <div className="flex justify-center mb-4">
-            <button onClick={onStartTrial} className="bg-amber-500 hover:bg-amber-600 text-white px-8 py-4 rounded-lg font-semibold text-lg transition shadow-lg hover:shadow-xl inline-flex items-center group">
-              Start Your $4.95 Trial
-              <ArrowRight className="ml-2 group-hover:translate-x-1 transition" size={20} />
-            </button>
-          </div>
-
-          <button
-            onClick={onViewDetailedPricing}
-            className="w-full text-blue-600 hover:text-blue-700 font-semibold text-base transition flex items-center justify-center group"
-          >
-            See how KABBA compares to competitors
-            <ExternalLink className="ml-2 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition" size={16} />
+          <button onClick={onStartTrial} className="w-full bg-amber-500 hover:bg-amber-600 text-white px-8 py-4 rounded-lg font-semibold text-lg transition shadow-lg hover:shadow-xl flex items-center justify-center group">
+            Start Your $4.95 Trial
+            <ArrowRight className="ml-2 group-hover:translate-x-1 transition" size={20} />
           </button>
         </div>
       </div>
