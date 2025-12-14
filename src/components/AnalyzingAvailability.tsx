@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Check, Loader2, Calendar, Shield } from 'lucide-react';
+import { Check, Loader2, Calendar, Shield, ChevronDown } from 'lucide-react';
 import { SignupFormData } from './OnboardingSignup';
 
 interface AnalyzingAvailabilityProps {
@@ -202,6 +202,20 @@ export default function AnalyzingAvailability({ formData, onComplete, onCancel }
                 );
               })}
             </div>
+
+            {showScheduling && (
+              <div className="mt-8 mb-6">
+                <div className="bg-emerald-500/10 border-2 border-emerald-500/30 rounded-xl p-6 text-center animate-pulse">
+                  <p className="text-emerald-400 font-bold text-lg mb-2">
+                    Your Consultation Options Are Now Available
+                  </p>
+                  <p className="text-emerald-300 font-semibold mb-3">
+                    Scroll Below To Choose
+                  </p>
+                  <ChevronDown className="w-6 h-6 text-emerald-400 mx-auto animate-bounce" />
+                </div>
+              </div>
+            )}
 
             <div className="pt-6 border-t border-gray-800 space-y-4">
               <p className="text-gray-300 leading-relaxed">
