@@ -144,7 +144,7 @@ export default function PricingPage({ onBack, onStartTrial }: PricingPageProps) 
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="text-cyan-400 flex-shrink-0 mt-1" size={20} />
-                  <span>When you don't rent → you pay only the $9.95 monthly fee</span>
+                  <span>When you don't rent → you pay only $9.95 monthly</span>
                 </li>
               </ul>
             </div>
