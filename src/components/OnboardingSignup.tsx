@@ -4,6 +4,7 @@ import { Shield, Check } from 'lucide-react';
 interface OnboardingSignupProps {
   onComplete: (formData: SignupFormData) => void;
   onBack?: () => void;
+  initialData?: Partial<SignupFormData>;
 }
 
 export interface SignupFormData {
@@ -74,20 +75,20 @@ const US_STATES = [
   { code: 'WY', name: 'Wyoming' },
 ];
 
-export default function OnboardingSignup({ onComplete, onBack }: OnboardingSignupProps) {
+export default function OnboardingSignup({ onComplete, onBack, initialData }: OnboardingSignupProps) {
   const [formData, setFormData] = useState<SignupFormData>({
-    fullName: '',
-    email: '',
-    password: '',
-    businessName: '',
-    billingStreet: '',
-    billingCity: '',
-    billingState: '',
-    billingZip: '',
+    fullName: initialData?.fullName || '',
+    email: initialData?.email || '',
+    password: initialData?.password || '',
+    businessName: initialData?.businessName || '',
+    billingStreet: initialData?.billingStreet || '',
+    billingCity: initialData?.billingCity || '',
+    billingState: initialData?.billingState || '',
+    billingZip: initialData?.billingZip || '',
     cardNumber: '',
     cardExpiry: '',
     cardCvc: '',
-    cardName: '',
+    cardName: initialData?.cardName || '',
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);

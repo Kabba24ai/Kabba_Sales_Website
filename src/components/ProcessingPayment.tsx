@@ -1,16 +1,22 @@
 import { Loader2, CreditCard } from 'lucide-react';
 import { useEffect } from 'react';
+import { SignupFormData } from './OnboardingSignup';
 
 interface ProcessingPaymentProps {
+  formData: SignupFormData;
   onSuccess: () => void;
   onError: () => void;
 }
 
-export default function ProcessingPayment({ onSuccess, onError }: ProcessingPaymentProps) {
+export default function ProcessingPayment({ formData, onSuccess, onError }: ProcessingPaymentProps) {
   useEffect(() => {
     const timer = setTimeout(() => {
-      const success = Math.random() > 0.3;
-      if (success) {
+      const cleanCardNumber = formData.cardNumber.replace(/\s/g, '');
+      const isTestCard = cleanCardNumber === '4242424242424242' &&
+                        formData.cardExpiry === '10/29' &&
+                        formData.cardCvc === '123';
+
+      if (isTestCard) {
         onSuccess();
       } else {
         onError();
@@ -18,7 +24,7 @@ export default function ProcessingPayment({ onSuccess, onError }: ProcessingPaym
     }, 3000);
 
     return () => clearTimeout(timer);
-  }, [onSuccess, onError]);
+  }, [formData, onSuccess, onError]);
 
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100 flex items-center justify-center px-4">

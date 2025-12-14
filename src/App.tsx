@@ -67,6 +67,11 @@ function App() {
     window.scrollTo(0, 0);
   };
 
+  const handleCancelFromError = () => {
+    setCurrentPage('setup-canceled');
+    window.scrollTo(0, 0);
+  };
+
   const handleSetupCancel = () => {
     setCurrentPage('setup-canceled');
     window.scrollTo(0, 0);
@@ -78,19 +83,19 @@ function App() {
   };
 
   if (currentPage === 'onboarding-signup') {
-    return <OnboardingSignup onComplete={handleSignupComplete} onBack={navigateToHome} />;
+    return <OnboardingSignup onComplete={handleSignupComplete} onBack={navigateToHome} initialData={signupData || undefined} />;
   }
 
   if (currentPage === 'onboarding-analyzing' && signupData) {
     return <AnalyzingAvailability formData={signupData} onComplete={handleAnalyzingComplete} onCancel={handleSetupCancel} />;
   }
 
-  if (currentPage === 'processing-payment') {
-    return <ProcessingPayment onSuccess={handlePaymentSuccess} onError={handlePaymentError} />;
+  if (currentPage === 'processing-payment' && signupData) {
+    return <ProcessingPayment formData={signupData} onSuccess={handlePaymentSuccess} onError={handlePaymentError} />;
   }
 
   if (currentPage === 'payment-error') {
-    return <PaymentError onRetry={handleRetryPayment} onCancel={handleSetupCancel} />;
+    return <PaymentError onRetry={handleRetryPayment} onCancel={handleCancelFromError} />;
   }
 
   if (currentPage === 'setup-canceled') {
