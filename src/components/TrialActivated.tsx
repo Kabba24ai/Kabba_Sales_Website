@@ -179,11 +179,11 @@ export default function TrialActivated({ formData, consultationTime, onGoToDashb
                 </p>
                 <div className="flex justify-center">
                   <a
-                    href="tel:+16293094154"
+                    href="tel:+16152896429"
                     className="inline-flex items-center gap-2 text-emerald-400 hover:text-emerald-300 font-bold text-lg transition-colors"
                   >
                     <Phone className="w-5 h-5" />
-                    Call Us: (629) 309-4154
+                    Call Us: (615) 289-6429
                   </a>
                 </div>
               </div>
