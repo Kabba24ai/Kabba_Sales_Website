@@ -58,7 +58,18 @@ function App() {
   }
 
   if (currentPage === 'onboarding-activated' && signupData && consultationTime) {
-    return <TrialActivated formData={signupData} consultationTime={consultationTime} />;
+    return (
+      <TrialActivated
+        formData={signupData}
+        consultationTime={consultationTime}
+        onGoToDashboard={() => {
+          window.scrollTo(0, 0);
+        }}
+        onViewDetails={() => {
+          window.scrollTo(0, 0);
+        }}
+      />
+    );
   }
 
   if (currentPage === 'pricing') {
