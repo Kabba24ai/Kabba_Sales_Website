@@ -46,12 +46,12 @@ export default function Hero({ onStartTrial }: HeroProps) {
         </div>
 
         <div className="mt-16 relative">
-          <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent z-10"></div>
-          <div className="bg-white rounded-xl shadow-2xl overflow-hidden">
+          <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white to-transparent z-10 pointer-events-none"></div>
+          <div className="bg-white rounded-xl shadow-2xl overflow-visible relative">
             <img
               src="/chart_+_woman.png"
               alt="KABBA Sales Trend Analysis Dashboard"
-              className="w-full h-auto"
+              className="w-full h-auto relative"
             />
           </div>
         </div>
