@@ -259,9 +259,39 @@ No testing framework is currently configured. Recommended additions:
 - React Testing Library for component testing
 - Playwright or Cypress for E2E testing
 
+## CI/CD Pipeline
+
+This project includes automated GitHub Actions workflows for continuous integration and deployment:
+
+### CI Pipeline (`ci.yml`)
+
+Triggers on:
+- Push to `main`, `develop`, or any `copilot/**` branches
+- Pull requests to `main` or `develop`
+- Manual workflow dispatch
+
+Jobs:
+- **Lint**: Runs ESLint to check code quality
+- **Type Check**: Runs TypeScript compiler to verify type safety
+- **Build**: Builds the project using Vite and uploads artifacts
+- **Security Audit**: Runs npm audit to check for vulnerabilities
+
+### Deployment Pipeline (`deploy.yml`)
+
+Triggers on:
+- Push to `main` branch
+- Manual workflow dispatch
+
+Jobs:
+- **Build**: Builds the project for production
+- **Deploy**: Deploys the built site to GitHub Pages
+
+The site will be automatically deployed to GitHub Pages when changes are merged to the `main` branch.
+
 ## Deployment
 
 This project is configured for deployment on any static hosting platform:
+- GitHub Pages (automated via CI/CD pipeline)
 - Vercel (recommended for Vite projects)
 - Netlify
 - Cloudflare Pages
