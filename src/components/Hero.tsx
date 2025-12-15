@@ -47,8 +47,12 @@ export default function Hero({ onStartTrial }: HeroProps) {
 
         <div className="mt-16 relative">
           <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent z-10"></div>
-          <div className="bg-slate-200 rounded-xl shadow-2xl h-96 flex items-center justify-center">
-            <p className="text-slate-500 text-lg">Product Screenshot Placeholder</p>
+          <div className="bg-white rounded-xl shadow-2xl overflow-hidden">
+            <img
+              src="/chart_+_woman.png"
+              alt="KABBA Sales Trend Analysis Dashboard"
+              className="w-full h-auto"
+            />
           </div>
         </div>
       </div>
