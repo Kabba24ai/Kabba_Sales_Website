@@ -92,7 +92,7 @@ export default function Features() {
               </div>
               <div
                 className="bg-slate-200 rounded-lg h-40 w-full md:w-64 flex-shrink-0 flex items-center justify-center group overflow-hidden cursor-pointer"
-                onClick={() => feature.standard_image && setSelectedImage(feature.standard_image)}
+                onClick={() => feature.standard_image && setSelectedImage(feature.hover_image || feature.standard_image)}
               >
                 {feature.standard_image ? (
                   <>
@@ -132,7 +132,7 @@ export default function Features() {
           <img
             src={selectedImage}
             alt="Enlarged view"
-            className="max-w-full max-h-full object-contain"
+            className="max-w-[70vw] max-h-[70vh] object-contain"
             onClick={(e) => e.stopPropagation()}
           />
         </div>
