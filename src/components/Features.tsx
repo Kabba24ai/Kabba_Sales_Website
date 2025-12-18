@@ -12,8 +12,9 @@ export default function Features() {
     {
       icon: Calendar,
       title: "Rental Calendar That Makes Sense",
-      description:
-        "Designed specifically for rental — designed for growth and flexibility.",
+      description:"Designed specifically for rental — designed for growth and flexibility.",
+      standard_image: "./calendar.png",
+      hover_image: "./calendar_hover.png",
     },
     {
       icon: Package,
@@ -36,6 +37,8 @@ export default function Features() {
       title: "Paperwork Without the Paperwork",
       description:
         "Contracts, signatures, invoices, and payment handling all in one place.",
+      standard_image: "./portal.png",
+      hover_image: "./portal-hover.png",
     },
     {
       icon: Truck,
