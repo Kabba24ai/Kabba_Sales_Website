@@ -27,7 +27,7 @@ export default function ValueProposition() {
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-4xl sm:text-5xl font-bold text-slate-900 mb-4">
-            Everything your rental shop needs to run, scale, and grow
+            Everything your rental shop needs to<br />run, scale, and grow
             <span className="block text-slate-600 mt-2">— without the chaos.</span>
           </h2>
         </div>
