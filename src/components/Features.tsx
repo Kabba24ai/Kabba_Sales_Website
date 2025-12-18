@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 
 export default function Features() {
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedFeature, setSelectedFeature] = useState<{ standard: string; hover?: string; title: string } | null>(null);
   const features = [
     {
       icon: Calendar,
@@ -92,7 +92,11 @@ export default function Features() {
               </div>
               <div
                 className="bg-slate-200 rounded-lg h-40 w-full md:w-64 flex-shrink-0 flex items-center justify-center group overflow-hidden cursor-pointer"
-                onClick={() => feature.standard_image && setSelectedImage(feature.hover_image || feature.standard_image)}
+                onClick={() => feature.standard_image && setSelectedFeature({
+                  standard: feature.standard_image,
+                  hover: feature.hover_image,
+                  title: feature.title
+                })}
               >
                 {feature.standard_image ? (
                   <>
@@ -118,23 +122,34 @@ export default function Features() {
         </div>
       </div>
 
-      {selectedImage && (
+      {selectedFeature && (
         <div
           className="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center p-4"
-          onClick={() => setSelectedImage(null)}
+          onClick={() => setSelectedFeature(null)}
         >
           <button
             className="absolute top-4 right-4 text-white hover:text-gray-300 transition"
-            onClick={() => setSelectedImage(null)}
+            onClick={() => setSelectedFeature(null)}
           >
             <X size={32} />
           </button>
-          <img
-            src={selectedImage}
-            alt="Enlarged view"
-            className="max-w-[70vw] max-h-[70vh] object-contain"
+          <div
+            className="group relative max-w-[70vw] max-h-[70vh]"
             onClick={(e) => e.stopPropagation()}
-          />
+          >
+            <img
+              src={selectedFeature.standard}
+              alt={selectedFeature.title}
+              className="max-w-[70vw] max-h-[70vh] object-contain group-hover:hidden"
+            />
+            {selectedFeature.hover && (
+              <img
+                src={selectedFeature.hover}
+                alt={`${selectedFeature.title} hover`}
+                className="max-w-[70vw] max-h-[70vh] object-contain hidden group-hover:block"
+              />
+            )}
+          </div>
         </div>
       )}
     </section>
