@@ -1,0 +1,70 @@
+name: Build & Deploy
+
+on:
+  push:
+    branches:
+      - deploy
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      # -------------------------
+      # BUILD STEP (adjust as needed)
+      # -------------------------
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+        # must output to ./dist
+
+      # -------------------------
+      # SSH SETUP
+      # -------------------------
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      # -------------------------
+      # BACKUP EXISTING FILES
+      # -------------------------
+      - name: Backup current site
+        run: |
+          ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+            set -e
+            cd /home/kabba/www
+            mkdir -p new
+            # mkdir -p old.backup
+
+            # if [ -d "assets" ]; then
+            #   rm -rf old.backup/assets
+            #   mv assets old.backup/
+            # fi
+
+            # if [ -f "index.html" ]; then
+            #   mv index.html old.backup/index.html
+            # fi
+          EOF
+
+      # -------------------------
+      # DEPLOY DIST FILES
+      # -------------------------
+      - name: Upload new build
+        run: |
+          rsync -avz --delete \
+            -e "ssh -p ${{ secrets.SSH_PORT }}" \
+            dist/ \
+            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/kabba/www/new/
