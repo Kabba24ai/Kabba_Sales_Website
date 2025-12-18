@@ -46,17 +46,16 @@ jobs:
           ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             set -e
             cd /home/kabba/www
-            mkdir -p new
-            # mkdir -p old.backup
+            mkdir -p old.backup
 
-            # if [ -d "assets" ]; then
-            #   rm -rf old.backup/assets
-            #   mv assets old.backup/
-            # fi
+            if [ -d "assets" ]; then
+              rm -rf old.backup/assets
+              mv assets old.backup/
+            fi
 
-            # if [ -f "index.html" ]; then
-            #   mv index.html old.backup/index.html
-            # fi
+            if [ -f "index.html" ]; then
+              mv index.html old.backup/index.html
+            fi
           EOF
 
       # -------------------------
@@ -67,4 +66,4 @@ jobs:
           rsync -avz --delete \
             -e "ssh -p ${{ secrets.SSH_PORT }}" \
             dist/ \
-            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/kabba/www/new/
+            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/kabba/www/
