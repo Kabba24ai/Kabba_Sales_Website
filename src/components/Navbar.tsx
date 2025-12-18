@@ -15,7 +15,7 @@ export default function Navbar({ onStartTrial, onViewPricing }: NavbarProps) {
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
             <img
-              src="/kabba_logo_-_circle_-_cut.png"
+              src="./ItunesArtwork@2x 1.png"
               alt="KABBA.ai"
               className="h-12 w-auto"
             />
