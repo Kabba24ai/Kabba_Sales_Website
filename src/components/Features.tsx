@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Calendar,
   Package,
@@ -5,9 +6,11 @@ import {
   FileText,
   Truck,
   Smartphone,
+  X,
 } from "lucide-react";
 
 export default function Features() {
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const features = [
     {
       icon: Calendar,
@@ -87,7 +90,10 @@ export default function Features() {
                 </h3>
                 <p className="text-lg text-slate-600">{feature.description}</p>
               </div>
-              <div className="bg-slate-200 rounded-lg h-40 w-full md:w-64 flex-shrink-0 flex items-center justify-center group overflow-hidden">
+              <div
+                className="bg-slate-200 rounded-lg h-40 w-full md:w-64 flex-shrink-0 flex items-center justify-center group overflow-hidden cursor-pointer"
+                onClick={() => feature.standard_image && setSelectedImage(feature.standard_image)}
+              >
                 {feature.standard_image ? (
                   <>
                     <img
@@ -111,6 +117,26 @@ export default function Features() {
           ))}
         </div>
       </div>
+
+      {selectedImage && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center p-4"
+          onClick={() => setSelectedImage(null)}
+        >
+          <button
+            className="absolute top-4 right-4 text-white hover:text-gray-300 transition"
+            onClick={() => setSelectedImage(null)}
+          >
+            <X size={32} />
+          </button>
+          <img
+            src={selectedImage}
+            alt="Enlarged view"
+            className="max-w-full max-h-full object-contain"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
     </section>
   );
 }
