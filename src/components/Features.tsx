@@ -1,37 +1,54 @@
-import { Calendar, Package, Users, FileText, Truck, Smartphone } from 'lucide-react';
+import {
+  Calendar,
+  Package,
+  Users,
+  FileText,
+  Truck,
+  Smartphone,
+} from "lucide-react";
 
 export default function Features() {
   const features = [
     {
       icon: Calendar,
-      title: 'Rental Calendar That Makes Sense',
-      description: 'Designed specifically for rental — designed for growth and flexibility.'
+      title: "Rental Calendar That Makes Sense",
+      description:
+        "Designed specifically for rental — designed for growth and flexibility.",
     },
     {
       icon: Package,
-      title: 'Fleet & Availability Tracking',
-      description: "Know what's out, what's due, and what's ready to rent instantly."
+      title: "Fleet & Availability Tracking",
+      description:
+        "Know what's out, what's due, and what's ready to rent instantly.",
+      standard_image: "./equipment_inventory.png",
+      hover_image: "./equipment_inventory_hover.png",
     },
     {
       icon: Users,
-      title: 'Rental CRM That Actually Works',
-      description: 'Turn one-time renters into loyal repeat customers with automated follow-ups.'
+      title: "Rental CRM That Actually Works",
+      description:
+        "Turn one-time renters into loyal repeat customers with automated follow-ups.",
+      standard_image: "./CRM_funnels-sm-clipped.png",
+      hover_image: "./CRM_funnels-sm-clipped-hover.png",
     },
     {
       icon: FileText,
-      title: 'Paperwork Without the Paperwork',
-      description: 'Contracts, signatures, invoices, and payment handling all in one place.'
+      title: "Paperwork Without the Paperwork",
+      description:
+        "Contracts, signatures, invoices, and payment handling all in one place.",
     },
     {
       icon: Truck,
-      title: 'Dispatch & Delivery Tools',
-      description: 'Easy routing and driver workflows built for real rental life.'
+      title: "Dispatch & Delivery Tools",
+      description:
+        "Easy routing and driver workflows built for real rental life.",
     },
     {
       icon: Smartphone,
-      title: 'Manage from the Palm of Your Hand',
-      description: 'Full mobile access to your rental business. Check availability, manage bookings, and run your shop from anywhere.'
-    }
+      title: "Manage from the Palm of Your Hand",
+      description:
+        "Full mobile access to your rental business. Check availability, manage bookings, and run your shop from anywhere.",
+    },
   ];
 
   return (
@@ -46,7 +63,8 @@ export default function Features() {
         <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-8 sm:p-10 mb-12 border-2 border-amber-200 shadow-lg">
           <div className="text-center">
             <h3 className="text-2xl sm:text-3xl font-bold text-slate-900">
-              Rental shop specific features they've never dreamed of but you always wished you had!
+              Rental shop specific features they've never dreamed of but you
+              always wished you had!
             </h3>
           </div>
         </div>
@@ -61,11 +79,30 @@ export default function Features() {
                 <feature.icon className="text-blue-600" size={32} />
               </div>
               <div className="flex-1">
-                <h3 className="text-2xl font-bold text-slate-900 mb-3">{feature.title}</h3>
+                <h3 className="text-2xl font-bold text-slate-900 mb-3">
+                  {feature.title}
+                </h3>
                 <p className="text-lg text-slate-600">{feature.description}</p>
               </div>
-              <div className="bg-slate-200 rounded-lg h-40 w-full md:w-64 flex-shrink-0 flex items-center justify-center">
-                <span className="text-slate-400 text-sm">Feature Image</span>
+              <div className="bg-slate-200 rounded-lg h-40 w-full md:w-64 flex-shrink-0 flex items-center justify-center group overflow-hidden">
+                {feature.standard_image ? (
+                  <>
+                    <img
+                      src={feature.standard_image}
+                      alt={feature.title}
+                      className="object-scale-down h-full w-full rounded-lg group-hover:hidden group-hover:scale-110 transition-transform duration-300 border border-slate-200"
+                    />
+                    {feature.hover_image && (
+                      <img
+                        src={feature.hover_image}
+                        alt={`${feature.title} hover`}
+                        className="object-scale-down h-full w-full rounded-lg hidden group-hover:block group-hover:scale-110 transition-transform duration-300 border border-slate-200"
+                      />
+                    )}
+                  </>
+                ) : (
+                  <span className="text-slate-400 text-sm">Feature Image</span>
+                )}
               </div>
             </div>
           ))}
