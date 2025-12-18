@@ -62,7 +62,7 @@ jobs:
       # -------------------------
       # DEPLOY DIST FILES
       # -------------------------
-      - name: Upload new build
+      - name: Upload new build files
         run: |
           rsync -avz --delete \
             -e "ssh -p ${{ secrets.SSH_PORT }}" \
