@@ -50,7 +50,7 @@ return (
                   See the Product Instantly
 
                   <div
-                    className="absolute top-0 left-full ml-2 bg-white border-2 border-slate-300 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition z-10 flex flex-col w-48">
+                    className="absolute top-0 left-full bg-white border-2 border-slate-300 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition z-10 flex flex-col w-48">
                     <button onClick={() => setIsLiveDemoModalOpen(true)}
                       className="text-left px-4 py-3 rounded-t-md border-b border-slate-200 transition hover:text-[rgb(2,255,255)]"
                       >
