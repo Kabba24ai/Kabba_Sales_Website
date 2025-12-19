@@ -1,11 +1,25 @@
+import { useState } from 'react';
 import { ArrowRight, Eye } from 'lucide-react';
+import LiveDemoModal from './LiveDemoModal';
 
 interface HeroProps {
 onStartTrial: () => void;
 }
 
 export default function Hero({ onStartTrial }: HeroProps) {
+const [isLiveDemoModalOpen, setIsLiveDemoModalOpen] = useState(false);
+
 return (
+<>
+<LiveDemoModal
+  isOpen={isLiveDemoModalOpen}
+  onClose={() => setIsLiveDemoModalOpen(false)}
+  onContinue={() => {
+    setIsLiveDemoModalOpen(false);
+    window.open('https://demo.kabba.ai', '_blank');
+  }}
+/>
+
 <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-slate-50 via-white to-blue-50">
     <div className="max-w-7xl mx-auto">
         <div className="text-center max-w-4xl mx-auto">
@@ -37,7 +51,7 @@ return (
 
                   <div
                     className="absolute top-0 left-full ml-2 bg-white border-2 border-slate-300 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition z-10 flex flex-col w-48">
-                    <button onClick={()=> window.open('https://demo.kabba.ai', '_blank')}
+                    <button onClick={() => setIsLiveDemoModalOpen(true)}
                       className="text-left px-4 py-3 rounded-t-md border-b border-slate-200 transition hover:text-[rgb(2,255,255)]"
                       >
                       Live Rental Site
@@ -71,5 +85,6 @@ return (
         </div>
     </div>
 </section>
+</>
 );
 }
