@@ -48,8 +48,8 @@ export default function Features() {
       title: "Dispatch & Delivery Tools",
       description:
         "Easy routing and driver workflows built for real rental life.",
-      standard_image: "./mapping.png",
-      hover_image: "./mapping_hover.png",
+      standard_image: "./mapping-v3.png",
+      hover_image: "./mapping_hover-v3.png",
     },
     {
       icon: Smartphone,
