@@ -1,11 +1,24 @@
+import { useEffect } from 'react';
 import { ArrowRight, Check, X, ArrowLeft } from 'lucide-react';
 
 interface PricingPageProps {
   onBack: () => void;
   onStartTrial: () => void;
+  scrollToComparison?: boolean;
 }
 
-export default function PricingPage({ onBack, onStartTrial }: PricingPageProps) {
+export default function PricingPage({ onBack, onStartTrial, scrollToComparison }: PricingPageProps) {
+  useEffect(() => {
+    if (scrollToComparison) {
+      const element = document.getElementById('comparison');
+      if (element) {
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+      }
+    }
+  }, [scrollToComparison]);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       <nav className="bg-slate-900/50 backdrop-blur-sm border-b border-slate-700">
@@ -163,7 +176,7 @@ export default function PricingPage({ onBack, onStartTrial }: PricingPageProps) 
         </div>
       </section>
 
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
+      <section id="comparison" className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4">

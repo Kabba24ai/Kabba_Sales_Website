@@ -24,6 +24,7 @@ function App() {
   const [currentPage, setCurrentPage] = useState<PageType>('home');
   const [signupData, setSignupData] = useState<SignupFormData | null>(null);
   const [consultationTime, setConsultationTime] = useState<string>('');
+  const [scrollToComparison, setScrollToComparison] = useState(false);
 
   const navigateToSignup = () => {
     setCurrentPage('onboarding-signup');
@@ -31,11 +32,18 @@ function App() {
   };
 
   const navigateToPricing = () => {
+    setScrollToComparison(false);
     setCurrentPage('pricing');
     window.scrollTo(0, 0);
   };
 
+  const navigateToPricingComparison = () => {
+    setScrollToComparison(true);
+    setCurrentPage('pricing');
+  };
+
   const navigateToHome = () => {
+    setScrollToComparison(false);
     setCurrentPage('home');
     window.scrollTo(0, 0);
   };
@@ -118,7 +126,7 @@ function App() {
   }
 
   if (currentPage === 'pricing') {
-    return <PricingPage onBack={navigateToHome} onStartTrial={navigateToSignup} />;
+    return <PricingPage onBack={navigateToHome} onStartTrial={navigateToSignup} scrollToComparison={scrollToComparison} />;
   }
 
   return (
@@ -129,7 +137,7 @@ function App() {
       <RealShop />
       <ValueProposition />
       <Features />
-      <Pricing onStartTrial={navigateToSignup} onViewDetailedPricing={navigateToPricing} />
+      <Pricing onStartTrial={navigateToSignup} onViewDetailedPricing={navigateToPricingComparison} />
       <Consultation />
       <SocialProof />
       <FinalCTA onStartTrial={navigateToSignup} />
