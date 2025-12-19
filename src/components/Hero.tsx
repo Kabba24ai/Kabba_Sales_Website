@@ -16,7 +16,7 @@ return (
   onClose={() => setIsLiveDemoModalOpen(false)}
   onContinue={() => {
     setIsLiveDemoModalOpen(false);
-    window.open('https://demo.kabba.ai', '_blank');
+    window.open('https://RentnKing.com', '_blank');
   }}
 />
 
