@@ -17,7 +17,7 @@ export default function Navbar({ onStartTrial, onViewPricing }: NavbarProps) {
             <img
               src="./kabba_logo_-_text_only.png"
               alt="KABBA.ai"
-              className="h-10 w-auto"
+              className="h-8 w-auto"
             />
           </div>
 
