@@ -93,7 +93,7 @@ export default function Features() {
                 <p className="text-lg text-slate-600">{feature.description}</p>
               </div>
               <div
-                className="bg-slate-200 rounded-lg h-40 w-full md:w-64 flex-shrink-0 flex items-center justify-center group overflow-hidden cursor-pointer"
+                className="bg-slate-200 rounded-lg h-40 w-full md:w-64 flex-shrink-0 flex items-center justify-center group cursor-pointer"
                 onClick={() => feature.standard_image && setSelectedFeature({
                   standard: feature.standard_image,
                   hover: feature.hover_image,
@@ -105,13 +105,13 @@ export default function Features() {
                     <img
                       src={feature.standard_image}
                       alt={feature.title}
-                      className="object-scale-down h-full w-full rounded-lg group-hover:hidden group-hover:scale-110 transition-transform duration-300 border border-slate-200"
+                      className="object-contain h-full w-full rounded-lg group-hover:hidden transition-transform duration-300 border border-slate-200"
                     />
                     {feature.hover_image && (
                       <img
                         src={feature.hover_image}
                         alt={`${feature.title} hover`}
-                        className="object-scale-down h-full w-full rounded-lg hidden group-hover:block group-hover:scale-110 transition-transform duration-300 border border-slate-200"
+                        className="object-contain h-full w-full rounded-lg hidden group-hover:block transition-transform duration-300 border border-slate-200"
                       />
                     )}
                   </>
