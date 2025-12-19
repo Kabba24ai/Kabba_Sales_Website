@@ -40,12 +40,12 @@ return (
                     <button onClick={()=> window.open('https://demo.kabba.ai', '_blank')}
                       className="text-left px-4 py-3 hover:bg-slate-50 rounded-t-md border-b border-slate-200 transition hover:translate-x-1"
                       >
-                      Front
+                      Live Rental Site
                     </button>
                     <button onClick={()=> window.open('https://demo-admin.kabba.ai', '_blank')}
                       className="text-left px-4 py-3 hover:bg-slate-50 rounded-b-md transition hover:translate-x-1"
                       >
-                      Admin
+                      Admin Demo
                     </button>
                   </div>
                 </button>
