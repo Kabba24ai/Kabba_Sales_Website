@@ -20,7 +20,7 @@ export default function LiveDemoModal({ isOpen, onClose, onContinue }: LiveDemoM
         </button>
 
         <div className="flex flex-col md:flex-row">
-          <div className="flex-1 p-8 md:p-12 md:pr-16">
+          <div className="flex-1 p-8 md:p-12 md:pr-4">
             <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6 leading-tight text-center">
               You're about to view a live rental website!
             </h2>
