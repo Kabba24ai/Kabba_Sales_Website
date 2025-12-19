@@ -59,11 +59,11 @@ export default function LiveDemoModal({ isOpen, onClose, onContinue }: LiveDemoM
             </div>
           </div>
 
-          <div className="hidden md:block md:w-80 relative">
+          <div className="hidden md:block md:w-80 relative overflow-hidden">
             <img
-              src="https://images.pexels.com/photos/2100063/pexels-photo-2100063.jpeg?auto=compress&cs=tinysrgb&w=600"
+              src="/pop_up_image.png"
               alt=""
-              className="absolute inset-0 w-full h-full object-cover"
+              className="absolute inset-0 w-full h-full object-cover object-center"
             />
           </div>
         </div>
