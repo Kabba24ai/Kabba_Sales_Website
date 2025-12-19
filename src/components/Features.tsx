@@ -56,6 +56,8 @@ export default function Features() {
       title: "Manage from the Palm of Your Hand",
       description:
         "Full mobile access to your rental business. Check availability, manage bookings, and run your shop from anywhere.",
+      standard_image: "./mobile_app.png",
+      hover_image: "./mobile_app_hover.png",
     },
   ];
 
