@@ -38,12 +38,12 @@ return (
                   <div
                     className="absolute top-0 left-full ml-2 bg-white border-2 border-slate-300 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition z-10 flex flex-col w-48">
                     <button onClick={()=> window.open('https://demo.kabba.ai', '_blank')}
-                      className="text-left px-4 py-3 hover:bg-slate-50 rounded-t-md border-b border-slate-200 transition hover:translate-x-1"
+                      className="text-left px-4 py-3 rounded-t-md border-b border-slate-200 transition hover:text-[rgb(2,255,255)]"
                       >
                       Live Rental Site
                     </button>
                     <button onClick={()=> window.open('https://demo-admin.kabba.ai', '_blank')}
-                      className="text-left px-4 py-3 hover:bg-slate-50 rounded-b-md transition hover:translate-x-1"
+                      className="text-left px-4 py-3 rounded-b-md transition hover:text-[rgb(2,255,255)]"
                       >
                       Admin Demo
                     </button>
