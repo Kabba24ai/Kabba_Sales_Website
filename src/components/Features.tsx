@@ -124,6 +124,61 @@ export default function Features() {
             </div>
           ))}
         </div>
+
+        {/* Capstone Block */}
+        <div className="mt-20 bg-gradient-to-br from-blue-50 via-slate-50 to-blue-50 rounded-2xl shadow-xl border border-blue-100 overflow-hidden animate-fade-in">
+          <div className="grid md:grid-cols-2 gap-0">
+            {/* Image Column */}
+            <div className="order-1 md:order-2 bg-slate-100 flex items-center justify-center p-8">
+              <img
+                src="./capstone_image.png"
+                alt="See how your day changes with KABBA"
+                className="rounded-lg w-full h-auto object-cover max-h-96"
+              />
+            </div>
+
+            {/* Content Column */}
+            <div className="order-2 md:order-1 p-8 sm:p-12 flex flex-col justify-center">
+              <h3 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-6">
+                And that's just the beginning.
+              </h3>
+
+              <div className="space-y-4 text-lg text-slate-700 mb-8 leading-relaxed">
+                <p>
+                  KABBA includes dozens of rental-specific tools that don't fit neatly into a feature list.
+                </p>
+                <p>
+                  Some you'll discover on your own as you explore the demo.
+                  Others we'll walk through with you in a personalized consultation — based on how your rental business actually operates.
+                </p>
+                <p className="font-semibold text-slate-900">
+                  No generic demos.<br />
+                  No wasted features.<br />
+                  Just software that fits your day.
+                </p>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-4 mb-4">
+                <a
+                  href="#demo"
+                  className="inline-flex items-center justify-center px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-md hover:shadow-lg hover:scale-105"
+                >
+                  Explore the Demo
+                </a>
+                <a
+                  href="#consultation"
+                  className="inline-flex items-center justify-center px-8 py-4 bg-white text-blue-600 font-semibold rounded-lg border-2 border-blue-600 hover:bg-blue-50 transition-all duration-200 shadow-sm hover:shadow-md"
+                >
+                  See It in a Personalized Consultation
+                </a>
+              </div>
+
+              <p className="text-sm text-slate-500 italic">
+                Choose self-guided demo exploration — or get a guided walkthrough tailored to your shop.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
       {selectedFeature && (
