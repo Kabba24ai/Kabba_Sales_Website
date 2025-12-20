@@ -131,7 +131,7 @@ export default function Features() {
             {/* Image Column */}
             <div className="order-1 md:order-2 bg-slate-100 flex items-center justify-center p-8">
               <img
-                src="./capstone_image.png"
+                src="./cornerstone.png"
                 alt="See how your day changes with KABBA"
                 className="rounded-lg w-full h-auto object-cover max-h-96"
               />
