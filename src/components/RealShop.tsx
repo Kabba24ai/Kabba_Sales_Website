@@ -4,6 +4,7 @@ const shopImages = [
   { src: '/image_1_front_sign.png', alt: 'Front sign and equipment yard' },
   { src: '/image_2_right_side.png', alt: 'Equipment lineup along the road' },
   { src: '/image_4_inside_office.png', alt: 'Inside rental counter office' },
+  { src: '/image_3_loading_unloading.png', alt: 'Loading and unloading equipment' },
   { src: '/image_5_service_building.png', alt: 'New building under construction' },
 ];
 
