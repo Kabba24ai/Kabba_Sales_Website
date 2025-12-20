@@ -5,7 +5,7 @@ export default function Footer() {
         <div className="grid md:grid-cols-4 gap-8 mb-8">
           <div>
             <img
-              src="/kabba_logo_-_circle_-_cut copy copy.png"
+              src="/kabba_logo_-_circle_-_cut.png"
               alt="KABBA.ai"
               className="h-20 w-auto mb-4"
             />
