@@ -4,9 +4,11 @@ export default function Footer() {
       <div className="max-w-6xl mx-auto">
         <div className="grid md:grid-cols-4 gap-8 mb-8">
           <div>
-            <div className="h-20 w-20 mb-4 rounded-full bg-slate-700 flex items-center justify-center border-2 border-slate-600">
-              <span className="text-slate-400 text-xs font-medium">LOGO</span>
-            </div>
+            <img
+              src="/kabba_logo_-_circle_-_cut copy copy.png"
+              alt="KABBA.ai"
+              className="h-20 w-auto mb-4"
+            />
             <p className="text-slate-400">
               Rental software built by real rental operators.
             </p>
