@@ -138,7 +138,7 @@ function App() {
       <ValueProposition />
       <Features />
       <Pricing onStartTrial={navigateToSignup} onViewDetailedPricing={navigateToPricingComparison} />
-      <Consultation />
+      <Consultation onStartTrial={navigateToSignup} />
       <SocialProof />
       <FinalCTA onStartTrial={navigateToSignup} />
       <Footer />
