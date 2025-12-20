@@ -129,11 +129,11 @@ export default function Features() {
         <div className="mt-20 bg-gradient-to-br from-blue-50 via-slate-50 to-blue-50 rounded-2xl shadow-xl border border-blue-100 overflow-hidden animate-fade-in">
           <div className="grid md:grid-cols-2 gap-0">
             {/* Image Column */}
-            <div className="order-1 md:order-2 bg-slate-100 flex items-center justify-center p-8">
+            <div className="order-1 md:order-2">
               <img
                 src="./cornerstone.png"
                 alt="See how your day changes with KABBA"
-                className="rounded-lg w-full h-auto object-cover max-h-96"
+                className="w-full h-full object-cover min-h-[400px]"
               />
             </div>
 
