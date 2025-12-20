@@ -57,7 +57,7 @@ export default function Features() {
       description:
         "Full mobile access to your rental business. Check availability, manage bookings, and run your shop from anywhere.",
       standard_image: "./mobile_app.png",
-      hover_image: "./mobile_app_hover_v2.png",
+      hover_image: "./mobile_app_hover_v3.png",
     },
   ];
 
