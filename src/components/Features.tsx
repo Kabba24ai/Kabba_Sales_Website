@@ -7,10 +7,13 @@ import {
   Truck,
   Smartphone,
   X,
+  Eye,
 } from "lucide-react";
+import LiveDemoModal from './LiveDemoModal';
 
 export default function Features() {
   const [selectedFeature, setSelectedFeature] = useState<{ standard: string; hover?: string; title: string } | null>(null);
+  const [isLiveDemoModalOpen, setIsLiveDemoModalOpen] = useState(false);
   const features = [
     {
       icon: Calendar,
@@ -62,8 +65,18 @@ export default function Features() {
   ];
 
   return (
-    <section id="product" className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
-      <div className="max-w-6xl mx-auto">
+    <>
+      <LiveDemoModal
+        isOpen={isLiveDemoModalOpen}
+        onClose={() => setIsLiveDemoModalOpen(false)}
+        onContinue={() => {
+          setIsLiveDemoModalOpen(false);
+          window.open('https://RentnKing.com', '_blank');
+        }}
+      />
+
+      <section id="product" className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
+        <div className="max-w-6xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-4xl sm:text-5xl font-bold text-slate-900 mb-4">
             See how your day changes with KABBA.
@@ -159,12 +172,26 @@ export default function Features() {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4 mb-4">
-                <a
-                  href="#demo"
-                  className="inline-flex items-center justify-center px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-md hover:shadow-lg hover:scale-105"
+                <button
+                  className="group relative inline-flex items-center justify-center px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-md hover:shadow-lg"
                 >
+                  <Eye className="mr-2" size={20} />
                   Explore the Demo
-                </a>
+
+                  <div
+                    className="absolute top-0 left-full ml-2 bg-white border-2 border-slate-300 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition z-10 flex flex-col w-48">
+                    <button onClick={() => setIsLiveDemoModalOpen(true)}
+                      className="text-left px-4 py-3 rounded-t-md border-b border-slate-200 transition hover:text-[rgb(2,255,255)] text-slate-700"
+                      >
+                      Live Rental Site
+                    </button>
+                    <button onClick={() => window.open('https://demo-admin.kabba.ai', '_blank')}
+                      className="text-left px-4 py-3 rounded-b-md transition hover:text-[rgb(2,255,255)] text-slate-700"
+                      >
+                      Admin Demo
+                    </button>
+                  </div>
+                </button>
                 <a
                   href="#consultation"
                   className="inline-flex items-center justify-center px-8 py-4 bg-white text-blue-600 font-semibold rounded-lg border-2 border-blue-600 hover:bg-blue-50 transition-all duration-200 shadow-sm hover:shadow-md"
@@ -211,6 +238,7 @@ export default function Features() {
           </div>
         </div>
       )}
-    </section>
+      </section>
+    </>
   );
 }
