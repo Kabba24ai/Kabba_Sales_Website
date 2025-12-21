@@ -136,12 +136,12 @@ function App() {
       <Hero onStartTrial={navigateToSignup} />
       <AntiDemo />
       <RealShop />
-      <VideoPlayer />
       <ValueProposition />
       <Features />
       <Pricing onStartTrial={navigateToSignup} onViewDetailedPricing={navigateToPricingComparison} />
       <Consultation onStartTrial={navigateToSignup} />
       <SocialProof />
+      <VideoPlayer />
       <FinalCTA onStartTrial={navigateToSignup} />
       <Footer />
     </div>
