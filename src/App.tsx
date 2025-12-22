@@ -27,7 +27,7 @@ import SetupCanceled from './components/SetupCanceled';
 type PageType = 'home' | 'pricing' | 'our-story' | 'contact' | 'privacy-policy' | 'terms-of-service' | 'refund-cancellation' | 'acceptable-use-policy' | 'onboarding-signup' | 'onboarding-analyzing' | 'processing-payment' | 'payment-error' | 'onboarding-activated' | 'setup-canceled';
 
 function App() {
-  const [currentPage, setCurrentPage] = useState<PageType>('onboarding-activated');
+  const [currentPage, setCurrentPage] = useState<PageType>('onboarding-analyzing');
   const [signupData, setSignupData] = useState<SignupFormData | null>({
     firstName: 'John',
     lastName: 'Doe',
