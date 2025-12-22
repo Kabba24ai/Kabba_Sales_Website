@@ -288,7 +288,7 @@ export default function OurStory({ onStartTrial, onViewPricing, onBack, onViewCo
 
       </main>
 
-      <Footer onViewOurStory={scrollToTop} onViewContact={onViewContact} />
+      <Footer onViewOurStory={scrollToTop} onViewContact={onViewContact} onViewProduct={onViewProduct} onViewPricing={onViewPricing} onViewConsultation={onViewConsultation} />
     </div>
   );
 }

@@ -1,9 +1,12 @@
 interface FooterProps {
   onViewOurStory?: () => void;
   onViewContact?: () => void;
+  onViewProduct?: () => void;
+  onViewPricing?: () => void;
+  onViewConsultation?: () => void;
 }
 
-export default function Footer({ onViewOurStory, onViewContact }: FooterProps) {
+export default function Footer({ onViewOurStory, onViewContact, onViewProduct, onViewPricing, onViewConsultation }: FooterProps) {
   return (
     <footer className="bg-slate-900 text-white py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
@@ -19,11 +22,23 @@ export default function Footer({ onViewOurStory, onViewContact }: FooterProps) {
             </p>
           </div>
           <div>
-            <h4 className="font-semibold mb-4">Product</h4>
+            <h4 className="font-semibold mb-4">Features</h4>
             <ul className="space-y-2 text-slate-400">
-              <li><a href="#product" className="hover:text-white transition">Features</a></li>
-              <li><a href="#pricing" className="hover:text-white transition">Pricing</a></li>
-              <li><a href="#consultation" className="hover:text-white transition">Consultation</a></li>
+              {onViewProduct ? (
+                <li><button onClick={onViewProduct} className="hover:text-white transition text-left">Product</button></li>
+              ) : (
+                <li><a href="#product" className="hover:text-white transition">Product</a></li>
+              )}
+              {onViewPricing ? (
+                <li><button onClick={onViewPricing} className="hover:text-white transition text-left">Pricing</button></li>
+              ) : (
+                <li><a href="#pricing" className="hover:text-white transition">Pricing</a></li>
+              )}
+              {onViewConsultation ? (
+                <li><button onClick={onViewConsultation} className="hover:text-white transition text-left">Consultation</button></li>
+              ) : (
+                <li><a href="#consultation" className="hover:text-white transition">Consultation</a></li>
+              )}
             </ul>
           </div>
           <div>
