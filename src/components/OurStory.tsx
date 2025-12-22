@@ -272,10 +272,10 @@ export default function OurStory({ onStartTrial, onViewPricing, onBack }: OurSto
               Start your $4.95 trial and explore the same system we run in our own rental shops.
             </p>
 
-            <div className="space-y-2 mb-8 text-slate-600">
-              <p>No contracts.</p>
-              <p>No upfront fees.</p>
-              <p>Cancel anytime.</p>
+            <div className="space-y-2 mb-8">
+              <p className="text-lg text-slate-600">No contracts.</p>
+              <p className="text-lg text-slate-600">No upfront fees.</p>
+              <p className="text-lg text-slate-600">Cancel anytime.</p>
             </div>
 
             <button
