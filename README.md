@@ -19,36 +19,55 @@ This is a full-featured sales website with an integrated trial signup and onboar
 
 ```
 project/
+├── .github/
+│   └── workflows/
+│       └── deploy.yaml                   # GitHub Actions deployment workflow
 ├── public/
 │   ├── kabba_logo_-_circle_-_cut.png
 │   ├── kabba_logo_-_png_-_circle_-_cut.png
-│   └── kabba_logo_-_png.png
+│   ├── footer_logo.png
+│   └── [other images...]
 ├── src/
 │   ├── components/
-│   │   ├── AnalyzingAvailability.tsx    # Consultation scheduling interface
+│   │   ├── AcceptableUsePolicyPage.tsx   # Acceptable Use Policy page
+│   │   ├── AnalyzingAvailability.tsx     # Consultation scheduling interface
 │   │   ├── AntiDemo.tsx                  # Problem statement section
 │   │   ├── Consultation.tsx              # Consultation value proposition
+│   │   ├── Contact.tsx                   # Contact form component
+│   │   ├── ContactPage.tsx               # Contact page wrapper
 │   │   ├── Features.tsx                  # Product features showcase
 │   │   ├── FinalCTA.tsx                  # Final call-to-action section
-│   │   ├── Footer.tsx                    # Site footer with contact info
+│   │   ├── Footer.tsx                    # Site footer with legal links
 │   │   ├── Hero.tsx                      # Landing hero section
+│   │   ├── LiveDemoModal.tsx             # Live demo modal component
 │   │   ├── Navbar.tsx                    # Main navigation
 │   │   ├── OnboardingSignup.tsx          # Trial signup form
+│   │   ├── OurStory.tsx                  # About/Story page
 │   │   ├── PaymentError.tsx              # Payment failure handling
 │   │   ├── Pricing.tsx                   # Pricing overview section
 │   │   ├── PricingPage.tsx               # Detailed pricing page
+│   │   ├── PrivacyPolicyPage.tsx         # Privacy policy page
 │   │   ├── ProcessingPayment.tsx         # Payment processing screen
 │   │   ├── RealShop.tsx                  # Live demo showcase
+│   │   ├── RefundCancellationPage.tsx    # Refund & Cancellation policy
 │   │   ├── SetupCanceled.tsx             # Cancellation confirmation
 │   │   ├── SignupTrial.tsx               # Trial signup component
 │   │   ├── SocialProof.tsx               # Testimonials & trust signals
+│   │   ├── TermsOfServicePage.tsx        # Terms of Service page
 │   │   ├── TrialActivated.tsx            # Success confirmation page
-│   │   └── ValueProposition.tsx          # Core value propositions
+│   │   ├── ValueProposition.tsx          # Core value propositions
+│   │   └── VideoModal.tsx                # Video modal component
+│   ├── lib/
+│   │   └── supabase.ts                   # Supabase client configuration
 │   ├── App.tsx                           # Main application with routing logic
 │   ├── index.css                         # Global styles & Tailwind imports
 │   ├── main.tsx                          # Application entry point
 │   └── vite-env.d.ts                     # Vite type definitions
+├── supabase/
+│   └── migrations/
+│       └── 20251222023246_create_contact_submissions.sql
 ├── .env                                  # Environment variables
+├── .gitignore                            # Git ignore rules
 ├── package.json                          # Project dependencies
 ├── tailwind.config.js                    # Tailwind configuration
 ├── tsconfig.json                         # TypeScript configuration
@@ -123,12 +142,18 @@ The application uses client-side routing with the following pages:
 
 1. **home** - Main landing page with all marketing sections
 2. **pricing** - Detailed pricing information page
-3. **onboarding-signup** - Trial signup form
-4. **onboarding-analyzing** - Consultation time selection
-5. **processing-payment** - Payment processing screen
-6. **payment-error** - Payment failure recovery
-7. **onboarding-activated** - Trial activation success
-8. **setup-canceled** - Setup cancellation confirmation
+3. **our-story** - About KABBA and company story
+4. **contact** - Contact form and information
+5. **privacy-policy** - Privacy policy page
+6. **terms-of-service** - Terms of service page
+7. **refund-cancellation** - Refund and cancellation policy
+8. **acceptable-use-policy** - Acceptable use policy
+9. **onboarding-signup** - Trial signup form
+10. **onboarding-analyzing** - Consultation time selection
+11. **processing-payment** - Payment processing screen
+12. **payment-error** - Payment failure recovery
+13. **onboarding-activated** - Trial activation success
+14. **setup-canceled** - Setup cancellation confirmation
 
 ### User Journey
 
@@ -261,7 +286,39 @@ No testing framework is currently configured. Recommended additions:
 
 ## Deployment
 
-This project is configured for deployment on any static hosting platform:
+### Automatic Deployment (GitHub Actions)
+
+This project is configured with automated deployment via GitHub Actions to a VPS server.
+
+**Deployment Trigger**: Push to `develop` branch
+
+**Workflow Process**:
+1. Checks out the repository
+2. Sets up Node.js v20
+3. Installs dependencies with `npm ci`
+4. Builds the project with `npm run build`
+5. Creates backup of existing site files
+6. Deploys new build to `/home/kabba/www` via rsync over SSH
+
+**Required GitHub Secrets**:
+- `SSH_PRIVATE_KEY` - SSH private key for server access
+- `SSH_PORT` - SSH port number
+- `SSH_HOST` - Server hostname/IP
+- `SSH_USER` - SSH username (kabba)
+
+**Deployment Steps for Team**:
+1. Make your changes to the codebase
+2. Test locally with `npm run dev`
+3. Verify build succeeds with `npm run build`
+4. Commit changes (automatic via system)
+5. Push to `develop` branch
+6. GitHub Actions will automatically deploy to live server
+7. Monitor deployment progress in GitHub Actions tab
+8. Verify changes on live site
+
+**Manual Deployment (Alternative)**:
+
+If needed, you can also deploy to any static hosting platform:
 - Vercel (recommended for Vite projects)
 - Netlify
 - Cloudflare Pages
