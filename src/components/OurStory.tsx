@@ -10,9 +10,10 @@ interface OurStoryProps {
   onViewConsultation: () => void;
   onViewPrivacyPolicy?: () => void;
   onViewTermsOfService?: () => void;
+  onViewRefundPolicy?: () => void;
 }
 
-export default function OurStory({ onStartTrial, onViewPricing, onBack, onViewContact, onViewProduct, onViewConsultation, onViewPrivacyPolicy, onViewTermsOfService }: OurStoryProps) {
+export default function OurStory({ onStartTrial, onViewPricing, onBack, onViewContact, onViewProduct, onViewConsultation, onViewPrivacyPolicy, onViewTermsOfService, onViewRefundPolicy }: OurStoryProps) {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -290,7 +291,7 @@ export default function OurStory({ onStartTrial, onViewPricing, onBack, onViewCo
 
       </main>
 
-      <Footer onViewOurStory={scrollToTop} onViewContact={onViewContact} onViewProduct={onViewProduct} onViewPricing={onViewPricing} onViewConsultation={onViewConsultation} onViewPrivacyPolicy={onViewPrivacyPolicy} onViewTermsOfService={onViewTermsOfService} />
+      <Footer onViewOurStory={scrollToTop} onViewContact={onViewContact} onViewProduct={onViewProduct} onViewPricing={onViewPricing} onViewConsultation={onViewConsultation} onViewPrivacyPolicy={onViewPrivacyPolicy} onViewTermsOfService={onViewTermsOfService} onViewRefundPolicy={onViewRefundPolicy} />
     </div>
   );
 }

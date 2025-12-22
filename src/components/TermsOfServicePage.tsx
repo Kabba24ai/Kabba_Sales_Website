@@ -10,6 +10,7 @@ interface TermsOfServicePageProps {
   onViewProduct: () => void;
   onViewConsultation: () => void;
   onViewPrivacyPolicy?: () => void;
+  onViewRefundPolicy?: () => void;
 }
 
 export default function TermsOfServicePage({
@@ -20,7 +21,8 @@ export default function TermsOfServicePage({
   onViewContact,
   onViewProduct,
   onViewConsultation,
-  onViewPrivacyPolicy
+  onViewPrivacyPolicy,
+  onViewRefundPolicy
 }: TermsOfServicePageProps) {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -263,6 +265,7 @@ export default function TermsOfServicePage({
         onViewConsultation={onViewConsultation}
         onViewPrivacyPolicy={onViewPrivacyPolicy}
         onViewTermsOfService={scrollToTop}
+        onViewRefundPolicy={onViewRefundPolicy}
       />
     </div>
   );
