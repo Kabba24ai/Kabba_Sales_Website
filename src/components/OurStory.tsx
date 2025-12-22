@@ -36,22 +36,22 @@ export default function OurStory({ onStartTrial, onViewPricing, onBack }: OurSto
         <article className="max-w-3xl mx-auto px-6 sm:px-8">
 
           <header className="mb-16">
-            <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 mb-4 leading-tight">
+            <h1 className="text-5xl sm:text-6xl font-bold text-slate-900 mb-4 leading-tight">
               About KABBA
             </h1>
-            <p className="text-xl sm:text-2xl text-slate-600 font-medium">
+            <p className="text-xl sm:text-2xl text-slate-600">
               Built by operators. Forged by necessity.
             </p>
           </header>
 
-          <div className="prose prose-lg max-w-none">
+          <div className="max-w-none">
 
             <section className="mb-16">
-              <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-6">
+              <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-6">
                 We didn't start in rental software
               </h2>
 
-              <div className="space-y-6 text-slate-700 leading-relaxed">
+              <div className="space-y-6 text-lg text-slate-600 leading-relaxed">
                 <p>
                   Before KABBA, we built software for businesses that depended on it every day.
                 </p>
@@ -78,11 +78,11 @@ export default function OurStory({ onStartTrial, onViewPricing, onBack }: OurSto
             <div className="border-t border-slate-200 my-16"></div>
 
             <section className="mb-16">
-              <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-6">
+              <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-6">
                 Then we became rental operators
               </h2>
 
-              <div className="space-y-6 text-slate-700 leading-relaxed">
+              <div className="space-y-6 text-lg text-slate-600 leading-relaxed">
                 <p>
                   We didn't enter the rental industry to build software.<br />
                   We entered it to run a rental business.
@@ -114,11 +114,11 @@ export default function OurStory({ onStartTrial, onViewPricing, onBack }: OurSto
             <div className="border-t border-slate-200 my-16"></div>
 
             <section className="mb-16">
-              <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-6">
+              <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-6">
                 So we built what we couldn't find
               </h2>
 
-              <div className="space-y-6 text-slate-700 leading-relaxed">
+              <div className="space-y-6 text-lg text-slate-600 leading-relaxed">
                 <p>
                   At first, KABBA wasn't a product.<br />
                   It was survival.
@@ -148,16 +148,16 @@ export default function OurStory({ onStartTrial, onViewPricing, onBack }: OurSto
             <div className="border-t border-slate-200 my-16"></div>
 
             <section className="mb-16">
-              <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-6">
+              <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-6">
                 This wasn't just our problem
               </h2>
 
-              <div className="space-y-6 text-slate-700 leading-relaxed">
+              <div className="space-y-6 text-lg text-slate-600 leading-relaxed">
                 <p>
                   As other rental shop owners saw what we were running, the same question kept coming up:
                 </p>
 
-                <p className="text-xl italic text-slate-800">
+                <p className="text-xl italic text-slate-700">
                   "Why doesn't everyone have this?"
                 </p>
 
@@ -180,11 +180,11 @@ export default function OurStory({ onStartTrial, onViewPricing, onBack }: OurSto
             <div className="border-t border-slate-200 my-16"></div>
 
             <section className="mb-16">
-              <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-6">
+              <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-6">
                 Why KABBA is different
               </h2>
 
-              <div className="space-y-6 text-slate-700 leading-relaxed">
+              <div className="space-y-6 text-lg text-slate-600 leading-relaxed">
                 <p>
                   KABBA isn't software designed <em>for</em> rental shops.<br />
                   It's software designed <em>inside</em> one.
@@ -215,11 +215,11 @@ export default function OurStory({ onStartTrial, onViewPricing, onBack }: OurSto
             <div className="border-t border-slate-200 my-16"></div>
 
             <section className="mb-16">
-              <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-6">
+              <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-6">
                 Who KABBA is for
               </h2>
 
-              <div className="space-y-6 text-slate-700 leading-relaxed">
+              <div className="space-y-6 text-lg text-slate-600 leading-relaxed">
                 <p>
                   KABBA is built for:
                 </p>
@@ -239,11 +239,11 @@ export default function OurStory({ onStartTrial, onViewPricing, onBack }: OurSto
             <div className="border-t border-slate-200 my-16"></div>
 
             <section className="mb-16">
-              <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-6">
+              <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-6">
                 From our rental shop to yours
               </h2>
 
-              <div className="space-y-6 text-slate-700 leading-relaxed">
+              <div className="space-y-6 text-lg text-slate-600 leading-relaxed">
                 <p>
                   KABBA exists for one reason:
                 </p>
@@ -264,18 +264,18 @@ export default function OurStory({ onStartTrial, onViewPricing, onBack }: OurSto
 
         <section className="mt-24 bg-slate-50 py-16">
           <div className="max-w-3xl mx-auto px-6 sm:px-8 text-center">
-            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-6">
+            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-6 leading-tight">
               You've seen where KABBA came from. Now see how it works.
             </h2>
 
-            <p className="text-lg text-slate-700 mb-8 leading-relaxed">
+            <p className="text-xl text-slate-600 mb-8 leading-relaxed">
               Start your $4.95 trial and explore the same system we run in our own rental shops.
             </p>
 
-            <div className="space-y-3 mb-8">
-              <p className="text-slate-600">No contracts.</p>
-              <p className="text-slate-600">No upfront fees.</p>
-              <p className="text-slate-600">Cancel anytime.</p>
+            <div className="space-y-2 mb-8 text-slate-600">
+              <p>No contracts.</p>
+              <p>No upfront fees.</p>
+              <p>Cancel anytime.</p>
             </div>
 
             <button
