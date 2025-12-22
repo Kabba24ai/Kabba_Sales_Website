@@ -218,7 +218,7 @@ function App() {
       <Consultation onStartTrial={navigateToSignup} />
       <SocialProof />
       <FinalCTA onStartTrial={navigateToSignup} />
-      <Footer onViewOurStory={navigateToOurStory} onViewContact={navigateToContact} onViewProduct={navigateToHomeProduct} onViewPricing={navigateToPricing} onViewConsultation={navigateToHomeConsultation} onViewPrivacyPolicy={navigateToPrivacyPolicy} onViewTermsOfService={navigateToTermsOfService} onViewRefundPolicy={navigateToRefundCancellation} />
+      <Footer onViewOurStory={navigateToOurStory} onViewContact={navigateToContact} onViewProduct={navigateToHomeProduct} onViewPricing={navigateToPricing} onViewConsultation={navigateToHomeConsultation} onViewPrivacyPolicy={navigateToPrivacyPolicy} onViewTermsOfService={navigateToTermsOfService} onViewRefundPolicy={navigateToRefundCancellation} onViewAcceptableUsePolicy={navigateToAcceptableUsePolicy} />
     </div>
   );
 }
