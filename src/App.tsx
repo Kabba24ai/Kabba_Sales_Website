@@ -9,6 +9,7 @@ import Pricing from './components/Pricing';
 import Consultation from './components/Consultation';
 import SocialProof from './components/SocialProof';
 import FinalCTA from './components/FinalCTA';
+import Contact from './components/Contact';
 import Footer from './components/Footer';
 import PricingPage from './components/PricingPage';
 import OurStory from './components/OurStory';
@@ -152,6 +153,7 @@ function App() {
       <Consultation onStartTrial={navigateToSignup} />
       <SocialProof />
       <FinalCTA onStartTrial={navigateToSignup} />
+      <Contact />
       <Footer />
     </div>
   );
