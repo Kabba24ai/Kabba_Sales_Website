@@ -29,6 +29,7 @@ export default function PricingPage({ onBack, onStartTrial, onViewOurStory, onVi
         onViewPricing={onBack}
         onViewOurStory={onViewOurStory}
         onViewContact={onViewContact}
+        onBackToHome={onBack}
       />
 
       <section className="py-20 px-4 sm:px-6 lg:px-8 text-white">

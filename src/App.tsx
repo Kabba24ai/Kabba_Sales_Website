@@ -153,7 +153,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-white">
-      <Navbar onStartTrial={navigateToSignup} onViewPricing={navigateToPricing} onViewOurStory={navigateToOurStory} onViewContact={navigateToContact} />
+      <Navbar onStartTrial={navigateToSignup} onViewPricing={navigateToPricing} onViewOurStory={navigateToOurStory} onViewContact={navigateToContact} onBackToHome={navigateToHome} />
       <Hero onStartTrial={navigateToSignup} />
       <AntiDemo />
       <RealShop />

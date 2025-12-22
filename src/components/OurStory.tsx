@@ -16,6 +16,7 @@ export default function OurStory({ onStartTrial, onViewPricing, onBack, onViewCo
         onViewPricing={onViewPricing}
         onViewOurStory={onBack}
         onViewContact={onViewContact}
+        onBackToHome={onBack}
       />
 
       <main className="pt-24 pb-20">

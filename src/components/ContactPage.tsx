@@ -16,6 +16,8 @@ export default function ContactPage({ onBack, onStartTrial, onViewPricing, onVie
         onStartTrial={onStartTrial}
         onViewPricing={onViewPricing}
         onViewOurStory={onViewOurStory}
+        onViewContact={onBack}
+        onBackToHome={onBack}
       />
       <Contact />
       <Footer />

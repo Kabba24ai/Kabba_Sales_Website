@@ -6,22 +6,23 @@ interface NavbarProps {
   onViewPricing: () => void;
   onViewOurStory?: () => void;
   onViewContact?: () => void;
+  onBackToHome?: () => void;
 }
 
-export default function Navbar({ onStartTrial, onViewPricing, onViewOurStory, onViewContact }: NavbarProps) {
+export default function Navbar({ onStartTrial, onViewPricing, onViewOurStory, onViewContact, onBackToHome }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <nav className="fixed top-0 w-full bg-black/95 backdrop-blur-sm shadow-lg z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <div className="flex items-center">
+          <button onClick={onBackToHome} className="flex items-center">
             <img
               src="/kabba_logo_-_text_only.png"
               alt="KABBA.ai"
               className="h-8 w-auto"
             />
-          </div>
+          </button>
 
           <div className="hidden md:flex items-center space-x-8">
             <a href="#product" className="text-slate-200 hover:text-[#02ffff] transition">Product</a>
