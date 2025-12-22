@@ -245,13 +245,18 @@ export default function AnalyzingAvailability({ formData, onComplete, onCancel, 
               </div>
             )}
 
-            <div className="pt-6 border-t border-gray-800 space-y-4">
-              <p className="text-gray-300 leading-relaxed">
-                We don't rush onboarding.
-              </p>
-              <p className="text-gray-400 leading-relaxed">
-                Before we activate your trial and charge your card, we prepare your environment and confirm availability to make sure your rental business is set up correctly the first time.
-              </p>
+            <div className="pt-6 border-t border-gray-800">
+              <div className="bg-gray-800/50 border border-gray-700/50 rounded-lg p-6 shadow-lg">
+                <h3 className="text-xl font-bold text-gray-100 mb-4">
+                  We take setup seriously.
+                </h3>
+                <p className="text-gray-300 leading-relaxed mb-3 max-w-2xl">
+                  Now that you've signed up, we're immediately preparing your environment. Our team personally reviews your setup and confirms availability so your rental system is configured correctly for your business from day one.
+                </p>
+                <p className="text-sm text-gray-400 leading-relaxed max-w-2xl">
+                  You'll be contacted shortly to finalize details and ensure everything is set up the way you need it.
+                </p>
+              </div>
             </div>
           </div>
 
