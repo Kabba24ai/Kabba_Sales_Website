@@ -13,6 +13,7 @@ import Footer from './components/Footer';
 import PricingPage from './components/PricingPage';
 import OurStory from './components/OurStory';
 import ContactPage from './components/ContactPage';
+import PrivacyPolicyPage from './components/PrivacyPolicyPage';
 import OnboardingSignup, { SignupFormData } from './components/OnboardingSignup';
 import AnalyzingAvailability from './components/AnalyzingAvailability';
 import ProcessingPayment from './components/ProcessingPayment';
@@ -20,7 +21,7 @@ import PaymentError from './components/PaymentError';
 import TrialActivated from './components/TrialActivated';
 import SetupCanceled from './components/SetupCanceled';
 
-type PageType = 'home' | 'pricing' | 'our-story' | 'contact' | 'onboarding-signup' | 'onboarding-analyzing' | 'processing-payment' | 'payment-error' | 'onboarding-activated' | 'setup-canceled';
+type PageType = 'home' | 'pricing' | 'our-story' | 'contact' | 'privacy-policy' | 'onboarding-signup' | 'onboarding-analyzing' | 'processing-payment' | 'payment-error' | 'onboarding-activated' | 'setup-canceled';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<PageType>('home');
@@ -53,6 +54,12 @@ function App() {
   const navigateToContact = () => {
     setScrollToComparison(false);
     setCurrentPage('contact');
+    window.scrollTo(0, 0);
+  };
+
+  const navigateToPrivacyPolicy = () => {
+    setScrollToComparison(false);
+    setCurrentPage('privacy-policy');
     window.scrollTo(0, 0);
   };
 
@@ -166,11 +173,15 @@ function App() {
   }
 
   if (currentPage === 'our-story') {
-    return <OurStory onStartTrial={navigateToSignup} onViewPricing={navigateToPricing} onBack={navigateToHome} onViewContact={navigateToContact} onViewProduct={navigateToHomeProduct} onViewConsultation={navigateToHomeConsultation} />;
+    return <OurStory onStartTrial={navigateToSignup} onViewPricing={navigateToPricing} onBack={navigateToHome} onViewContact={navigateToContact} onViewProduct={navigateToHomeProduct} onViewConsultation={navigateToHomeConsultation} onViewPrivacyPolicy={navigateToPrivacyPolicy} />;
   }
 
   if (currentPage === 'contact') {
-    return <ContactPage onBack={navigateToHome} onStartTrial={navigateToSignup} onViewPricing={navigateToPricing} onViewOurStory={navigateToOurStory} onViewProduct={navigateToHomeProduct} onViewConsultation={navigateToHomeConsultation} />;
+    return <ContactPage onBack={navigateToHome} onStartTrial={navigateToSignup} onViewPricing={navigateToPricing} onViewOurStory={navigateToOurStory} onViewProduct={navigateToHomeProduct} onViewConsultation={navigateToHomeConsultation} onViewPrivacyPolicy={navigateToPrivacyPolicy} />;
+  }
+
+  if (currentPage === 'privacy-policy') {
+    return <PrivacyPolicyPage onBack={navigateToHome} onStartTrial={navigateToSignup} onViewPricing={navigateToPricing} onViewOurStory={navigateToOurStory} onViewContact={navigateToContact} onViewProduct={navigateToHomeProduct} onViewConsultation={navigateToHomeConsultation} />;
   }
 
   return (
@@ -185,7 +196,7 @@ function App() {
       <Consultation onStartTrial={navigateToSignup} />
       <SocialProof />
       <FinalCTA onStartTrial={navigateToSignup} />
-      <Footer onViewOurStory={navigateToOurStory} onViewContact={navigateToContact} onViewProduct={navigateToHomeProduct} onViewPricing={navigateToPricing} onViewConsultation={navigateToHomeConsultation} />
+      <Footer onViewOurStory={navigateToOurStory} onViewContact={navigateToContact} onViewProduct={navigateToHomeProduct} onViewPricing={navigateToPricing} onViewConsultation={navigateToHomeConsultation} onViewPrivacyPolicy={navigateToPrivacyPolicy} />
     </div>
   );
 }

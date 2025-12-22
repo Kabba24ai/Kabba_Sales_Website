@@ -8,9 +8,10 @@ interface OurStoryProps {
   onViewContact: () => void;
   onViewProduct: () => void;
   onViewConsultation: () => void;
+  onViewPrivacyPolicy?: () => void;
 }
 
-export default function OurStory({ onStartTrial, onViewPricing, onBack, onViewContact, onViewProduct, onViewConsultation }: OurStoryProps) {
+export default function OurStory({ onStartTrial, onViewPricing, onBack, onViewContact, onViewProduct, onViewConsultation, onViewPrivacyPolicy }: OurStoryProps) {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -288,7 +289,7 @@ export default function OurStory({ onStartTrial, onViewPricing, onBack, onViewCo
 
       </main>
 
-      <Footer onViewOurStory={scrollToTop} onViewContact={onViewContact} onViewProduct={onViewProduct} onViewPricing={onViewPricing} onViewConsultation={onViewConsultation} />
+      <Footer onViewOurStory={scrollToTop} onViewContact={onViewContact} onViewProduct={onViewProduct} onViewPricing={onViewPricing} onViewConsultation={onViewConsultation} onViewPrivacyPolicy={onViewPrivacyPolicy} />
     </div>
   );
 }
