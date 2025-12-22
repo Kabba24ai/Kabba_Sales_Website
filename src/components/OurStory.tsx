@@ -5,32 +5,18 @@ interface OurStoryProps {
   onStartTrial: () => void;
   onViewPricing: () => void;
   onBack: () => void;
+  onViewContact: () => void;
 }
 
-export default function OurStory({ onStartTrial, onViewPricing, onBack }: OurStoryProps) {
+export default function OurStory({ onStartTrial, onViewPricing, onBack, onViewContact }: OurStoryProps) {
   return (
     <div className="min-h-screen bg-white">
-      <nav className="fixed top-0 w-full bg-black/95 backdrop-blur-sm shadow-lg z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <button onClick={onBack} className="flex items-center">
-              <img
-                src="/kabba_logo_-_text_only.png"
-                alt="KABBA.ai"
-                className="h-8 w-auto"
-              />
-            </button>
-
-            <div className="flex items-center space-x-8">
-              <a href="#product" onClick={(e) => { e.preventDefault(); onBack(); }} className="hidden md:block text-slate-200 hover:text-[#02ffff] transition">Product</a>
-              <button onClick={onViewPricing} className="hidden md:block text-slate-200 hover:text-[#02ffff] transition">Pricing</button>
-              <button onClick={onStartTrial} className="bg-amber-500 hover:bg-amber-600 text-white px-6 py-2 rounded-lg font-semibold transition">
-                Start $4.95 Trial
-              </button>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Navbar
+        onStartTrial={onStartTrial}
+        onViewPricing={onViewPricing}
+        onViewOurStory={onBack}
+        onViewContact={onViewContact}
+      />
 
       <main className="pt-24 pb-20">
         <article className="max-w-3xl mx-auto px-6 sm:px-8">

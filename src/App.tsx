@@ -140,11 +140,11 @@ function App() {
   }
 
   if (currentPage === 'pricing') {
-    return <PricingPage onBack={navigateToHome} onStartTrial={navigateToSignup} scrollToComparison={scrollToComparison} />;
+    return <PricingPage onBack={navigateToHome} onStartTrial={navigateToSignup} onViewOurStory={navigateToOurStory} onViewContact={navigateToContact} scrollToComparison={scrollToComparison} />;
   }
 
   if (currentPage === 'our-story') {
-    return <OurStory onStartTrial={navigateToSignup} onViewPricing={navigateToPricing} onBack={navigateToHome} />;
+    return <OurStory onStartTrial={navigateToSignup} onViewPricing={navigateToPricing} onBack={navigateToHome} onViewContact={navigateToContact} />;
   }
 
   if (currentPage === 'contact') {
