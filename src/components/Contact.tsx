@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Phone, Mail, Send } from 'lucide-react';
-import { supabase } from '../lib/supabase';
 
 interface ContactProps {
   id?: string;
@@ -23,17 +22,17 @@ export default function Contact({ id = 'contact' }: ContactProps) {
     setSubmitStatus('idle');
 
     try {
-      const { error } = await supabase
-        .from('contact_submissions')
-        .insert([{
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone || null,
-          company: formData.company || null,
-          message: formData.message
-        }]);
+      // const { error } = await supabase
+      //   .from('contact_submissions')
+      //   .insert([{
+      //     name: formData.name,
+      //     email: formData.email,
+      //     phone: formData.phone || null,
+      //     company: formData.company || null,
+      //     message: formData.message
+      //   }]);
 
-      if (error) throw error;
+      // if (error) throw error;
 
       setSubmitStatus('success');
       setFormData({ name: '', email: '', phone: '', company: '', message: '' });
