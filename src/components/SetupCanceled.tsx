@@ -27,10 +27,10 @@ export default function SetupCanceled({ onRestartSetup, onBackToPricing }: Setup
 
           <div className="bg-gray-900 border border-gray-800 rounded-xl p-8 mb-8">
             <p className="text-lg text-gray-300 leading-relaxed mb-4">
-              You have not been charged, and your trial has not been activated.
+              Your trial has not been activated but you can restart the setup anytime.
             </p>
             <p className="text-gray-300 leading-relaxed mb-6">
-              If you decide to come back later, you can restart the setup anytime.
+              We're always here to help and only 1 call / text away from answering your questions.
             </p>
 
             <div className="pt-6 border-t border-gray-800">
