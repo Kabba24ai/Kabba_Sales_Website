@@ -511,7 +511,7 @@ export default function OnboardingSignup({ onComplete, onBack, initialData }: On
                     <div className="flex items-start gap-3">
                       <Shield className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
                       <p className="text-sm text-emerald-700 font-medium">
-                        Your card will not be charged until you confirm a consultation time.
+                        Next step we'll confirm a consultation time.
                       </p>
                     </div>
                   </div>

@@ -11,6 +11,7 @@ All notable changes to the KABBA Sales Website will be documented in this file.
 - Updated OnboardingSignup component with new form fields and phone formatting
 - Updated SignupTrial component to match new field structure for consistency
 - Card name now automatically combines first and last name
+- Updated checkout message from "Your card will not be charged until you confirm a consultation time" to "Next step we'll confirm a consultation time"
 
 ## [1.1.0] - 2024-12-22
 
