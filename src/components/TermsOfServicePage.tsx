@@ -11,6 +11,7 @@ interface TermsOfServicePageProps {
   onViewConsultation: () => void;
   onViewPrivacyPolicy?: () => void;
   onViewRefundPolicy?: () => void;
+  onViewAcceptableUsePolicy?: () => void;
 }
 
 export default function TermsOfServicePage({
@@ -22,7 +23,8 @@ export default function TermsOfServicePage({
   onViewProduct,
   onViewConsultation,
   onViewPrivacyPolicy,
-  onViewRefundPolicy
+  onViewRefundPolicy,
+  onViewAcceptableUsePolicy
 }: TermsOfServicePageProps) {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -266,6 +268,7 @@ export default function TermsOfServicePage({
         onViewPrivacyPolicy={onViewPrivacyPolicy}
         onViewTermsOfService={scrollToTop}
         onViewRefundPolicy={onViewRefundPolicy}
+        onViewAcceptableUsePolicy={onViewAcceptableUsePolicy}
       />
     </div>
   );

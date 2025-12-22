@@ -194,7 +194,7 @@ function App() {
   }
 
   if (currentPage === 'our-story') {
-    return <OurStory onStartTrial={navigateToSignup} onViewPricing={navigateToPricing} onBack={navigateToHome} onViewContact={navigateToContact} onViewProduct={navigateToHomeProduct} onViewConsultation={navigateToHomeConsultation} onViewPrivacyPolicy={navigateToPrivacyPolicy} onViewTermsOfService={navigateToTermsOfService} onViewRefundPolicy={navigateToRefundCancellation} />;
+    return <OurStory onStartTrial={navigateToSignup} onViewPricing={navigateToPricing} onBack={navigateToHome} onViewContact={navigateToContact} onViewProduct={navigateToHomeProduct} onViewConsultation={navigateToHomeConsultation} onViewPrivacyPolicy={navigateToPrivacyPolicy} onViewTermsOfService={navigateToTermsOfService} onViewRefundPolicy={navigateToRefundCancellation} onViewAcceptableUsePolicy={navigateToAcceptableUsePolicy} />;
   }
 
   if (currentPage === 'contact') {
@@ -202,15 +202,15 @@ function App() {
   }
 
   if (currentPage === 'privacy-policy') {
-    return <PrivacyPolicyPage onBack={navigateToHome} onStartTrial={navigateToSignup} onViewPricing={navigateToPricing} onViewOurStory={navigateToOurStory} onViewContact={navigateToContact} onViewProduct={navigateToHomeProduct} onViewConsultation={navigateToHomeConsultation} onViewTermsOfService={navigateToTermsOfService} onViewRefundPolicy={navigateToRefundCancellation} />;
+    return <PrivacyPolicyPage onBack={navigateToHome} onStartTrial={navigateToSignup} onViewPricing={navigateToPricing} onViewOurStory={navigateToOurStory} onViewContact={navigateToContact} onViewProduct={navigateToHomeProduct} onViewConsultation={navigateToHomeConsultation} onViewTermsOfService={navigateToTermsOfService} onViewRefundPolicy={navigateToRefundCancellation} onViewAcceptableUsePolicy={navigateToAcceptableUsePolicy} />;
   }
 
   if (currentPage === 'terms-of-service') {
-    return <TermsOfServicePage onBack={navigateToHome} onStartTrial={navigateToSignup} onViewPricing={navigateToPricing} onViewOurStory={navigateToOurStory} onViewContact={navigateToContact} onViewProduct={navigateToHomeProduct} onViewConsultation={navigateToHomeConsultation} onViewPrivacyPolicy={navigateToPrivacyPolicy} onViewRefundPolicy={navigateToRefundCancellation} />;
+    return <TermsOfServicePage onBack={navigateToHome} onStartTrial={navigateToSignup} onViewPricing={navigateToPricing} onViewOurStory={navigateToOurStory} onViewContact={navigateToContact} onViewProduct={navigateToHomeProduct} onViewConsultation={navigateToHomeConsultation} onViewPrivacyPolicy={navigateToPrivacyPolicy} onViewRefundPolicy={navigateToRefundCancellation} onViewAcceptableUsePolicy={navigateToAcceptableUsePolicy} />;
   }
 
   if (currentPage === 'refund-cancellation') {
-    return <RefundCancellationPage onBack={navigateToHome} onStartTrial={navigateToSignup} onViewPricing={navigateToPricing} onViewOurStory={navigateToOurStory} onViewContact={navigateToContact} onViewProduct={navigateToHomeProduct} onViewConsultation={navigateToHomeConsultation} onViewPrivacyPolicy={navigateToPrivacyPolicy} onViewTermsOfService={navigateToTermsOfService} />;
+    return <RefundCancellationPage onBack={navigateToHome} onStartTrial={navigateToSignup} onViewPricing={navigateToPricing} onViewOurStory={navigateToOurStory} onViewContact={navigateToContact} onViewProduct={navigateToHomeProduct} onViewConsultation={navigateToHomeConsultation} onViewPrivacyPolicy={navigateToPrivacyPolicy} onViewTermsOfService={navigateToTermsOfService} onViewAcceptableUsePolicy={navigateToAcceptableUsePolicy} />;
   }
 
   if (currentPage === 'acceptable-use-policy') {

@@ -11,6 +11,7 @@ interface RefundCancellationPageProps {
   onViewConsultation: () => void;
   onViewPrivacyPolicy?: () => void;
   onViewTermsOfService?: () => void;
+  onViewAcceptableUsePolicy?: () => void;
 }
 
 export default function RefundCancellationPage({
@@ -22,7 +23,8 @@ export default function RefundCancellationPage({
   onViewProduct,
   onViewConsultation,
   onViewPrivacyPolicy,
-  onViewTermsOfService
+  onViewTermsOfService,
+  onViewAcceptableUsePolicy
 }: RefundCancellationPageProps) {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -199,6 +201,7 @@ export default function RefundCancellationPage({
         onViewPrivacyPolicy={onViewPrivacyPolicy}
         onViewTermsOfService={onViewTermsOfService}
         onViewRefundPolicy={scrollToTop}
+        onViewAcceptableUsePolicy={onViewAcceptableUsePolicy}
       />
     </div>
   );
