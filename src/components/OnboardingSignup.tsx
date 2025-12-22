@@ -315,20 +315,6 @@ export default function OnboardingSignup({ onComplete, onBack, initialData }: On
 
                 <div>
                   <label className="block text-sm font-semibold mb-2 text-gray-700">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    required
-                    value={formData.email}
-                    onChange={(e) => handleChange('email', e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all text-gray-900"
-                    placeholder="john@rentalshop.com"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold mb-2 text-gray-700">
                     Phone Number
                   </label>
                   <input
@@ -339,6 +325,20 @@ export default function OnboardingSignup({ onComplete, onBack, initialData }: On
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all text-gray-900"
                     placeholder="(555) 123-4567"
                     maxLength={14}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold mb-2 text-gray-700">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    value={formData.email}
+                    onChange={(e) => handleChange('email', e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all text-gray-900"
+                    placeholder="john@rentalshop.com"
                   />
                 </div>
 

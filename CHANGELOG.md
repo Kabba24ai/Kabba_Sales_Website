@@ -12,6 +12,7 @@ All notable changes to the KABBA Sales Website will be documented in this file.
 - Updated SignupTrial component to match new field structure for consistency
 - Card name now automatically combines first and last name
 - Updated consultation message to "Next Step: You'll choose your preferred consultation date & time." and moved it below the trial button
+- Reordered form fields: Email now appears after Phone Number and directly above Password field (using email as login ID)
 
 ## [1.1.0] - 2024-12-22
 

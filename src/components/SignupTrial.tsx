@@ -172,20 +172,6 @@ export default function SignupTrial({ onBack }: SignupTrialProps) {
                 </div>
 
                 <div>
-                  <label htmlFor="email" className="block text-sm font-semibold text-slate-700 mb-2">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    required
-                    className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition"
-                    placeholder="john@example.com"
-                  />
-                </div>
-
-                <div>
                   <label htmlFor="phoneNumber" className="block text-sm font-semibold text-slate-700 mb-2">
                     Phone Number
                   </label>
@@ -196,6 +182,20 @@ export default function SignupTrial({ onBack }: SignupTrialProps) {
                     required
                     className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition"
                     placeholder="(555) 123-4567"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="email" className="block text-sm font-semibold text-slate-700 mb-2">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    required
+                    className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition"
+                    placeholder="john@example.com"
                   />
                 </div>
 
