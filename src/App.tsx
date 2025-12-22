@@ -9,10 +9,10 @@ import Pricing from './components/Pricing';
 import Consultation from './components/Consultation';
 import SocialProof from './components/SocialProof';
 import FinalCTA from './components/FinalCTA';
-import Contact from './components/Contact';
 import Footer from './components/Footer';
 import PricingPage from './components/PricingPage';
 import OurStory from './components/OurStory';
+import ContactPage from './components/ContactPage';
 import OnboardingSignup, { SignupFormData } from './components/OnboardingSignup';
 import AnalyzingAvailability from './components/AnalyzingAvailability';
 import ProcessingPayment from './components/ProcessingPayment';
@@ -20,7 +20,7 @@ import PaymentError from './components/PaymentError';
 import TrialActivated from './components/TrialActivated';
 import SetupCanceled from './components/SetupCanceled';
 
-type PageType = 'home' | 'pricing' | 'our-story' | 'onboarding-signup' | 'onboarding-analyzing' | 'processing-payment' | 'payment-error' | 'onboarding-activated' | 'setup-canceled';
+type PageType = 'home' | 'pricing' | 'our-story' | 'contact' | 'onboarding-signup' | 'onboarding-analyzing' | 'processing-payment' | 'payment-error' | 'onboarding-activated' | 'setup-canceled';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<PageType>('home');
@@ -47,6 +47,12 @@ function App() {
   const navigateToOurStory = () => {
     setScrollToComparison(false);
     setCurrentPage('our-story');
+    window.scrollTo(0, 0);
+  };
+
+  const navigateToContact = () => {
+    setScrollToComparison(false);
+    setCurrentPage('contact');
     window.scrollTo(0, 0);
   };
 
@@ -141,9 +147,13 @@ function App() {
     return <OurStory onStartTrial={navigateToSignup} onViewPricing={navigateToPricing} onBack={navigateToHome} />;
   }
 
+  if (currentPage === 'contact') {
+    return <ContactPage onBack={navigateToHome} />;
+  }
+
   return (
     <div className="min-h-screen bg-white">
-      <Navbar onStartTrial={navigateToSignup} onViewPricing={navigateToPricing} onViewOurStory={navigateToOurStory} />
+      <Navbar onStartTrial={navigateToSignup} onViewPricing={navigateToPricing} onViewOurStory={navigateToOurStory} onViewContact={navigateToContact} />
       <Hero onStartTrial={navigateToSignup} />
       <AntiDemo />
       <RealShop />
@@ -153,7 +163,6 @@ function App() {
       <Consultation onStartTrial={navigateToSignup} />
       <SocialProof />
       <FinalCTA onStartTrial={navigateToSignup} />
-      <Contact />
       <Footer />
     </div>
   );
