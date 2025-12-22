@@ -328,7 +328,7 @@ export default function AnalyzingAvailability({ formData, onComplete, onCancel, 
                 </ul>
 
                 <p className="text-gray-300 leading-relaxed">
-                  We want to make sure the timing works for you before we activate your trial and charge your card.
+                  We want to make sure the timing works for you before we activate your trial.
                 </p>
               </div>
 
