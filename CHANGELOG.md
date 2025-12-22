@@ -4,6 +4,14 @@ All notable changes to the KABBA Sales Website will be documented in this file.
 
 ## [Unreleased]
 
+### Changed
+- Split Full Name field into separate First Name and Last Name fields in signup forms
+- Added Phone Number field with automatic (xxx) xxx-xxxx formatting
+- Updated SignupFormData interface to use firstName, lastName, and phoneNumber fields
+- Updated OnboardingSignup component with new form fields and phone formatting
+- Updated SignupTrial component to match new field structure for consistency
+- Card name now automatically combines first and last name
+
 ## [1.1.0] - 2024-12-22
 
 ### Added
