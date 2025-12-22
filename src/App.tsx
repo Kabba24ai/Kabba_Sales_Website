@@ -148,7 +148,7 @@ function App() {
   }
 
   if (currentPage === 'contact') {
-    return <ContactPage onBack={navigateToHome} />;
+    return <ContactPage onBack={navigateToHome} onStartTrial={navigateToSignup} onViewPricing={navigateToPricing} onViewOurStory={navigateToOurStory} />;
   }
 
   return (
