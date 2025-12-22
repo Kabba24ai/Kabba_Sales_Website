@@ -11,6 +11,7 @@ import SocialProof from './components/SocialProof';
 import FinalCTA from './components/FinalCTA';
 import Footer from './components/Footer';
 import PricingPage from './components/PricingPage';
+import OurStory from './components/OurStory';
 import OnboardingSignup, { SignupFormData } from './components/OnboardingSignup';
 import AnalyzingAvailability from './components/AnalyzingAvailability';
 import ProcessingPayment from './components/ProcessingPayment';
@@ -18,7 +19,7 @@ import PaymentError from './components/PaymentError';
 import TrialActivated from './components/TrialActivated';
 import SetupCanceled from './components/SetupCanceled';
 
-type PageType = 'home' | 'pricing' | 'onboarding-signup' | 'onboarding-analyzing' | 'processing-payment' | 'payment-error' | 'onboarding-activated' | 'setup-canceled';
+type PageType = 'home' | 'pricing' | 'our-story' | 'onboarding-signup' | 'onboarding-analyzing' | 'processing-payment' | 'payment-error' | 'onboarding-activated' | 'setup-canceled';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<PageType>('home');
@@ -40,6 +41,12 @@ function App() {
   const navigateToPricingComparison = () => {
     setScrollToComparison(true);
     setCurrentPage('pricing');
+  };
+
+  const navigateToOurStory = () => {
+    setScrollToComparison(false);
+    setCurrentPage('our-story');
+    window.scrollTo(0, 0);
   };
 
   const navigateToHome = () => {
@@ -129,9 +136,13 @@ function App() {
     return <PricingPage onBack={navigateToHome} onStartTrial={navigateToSignup} scrollToComparison={scrollToComparison} />;
   }
 
+  if (currentPage === 'our-story') {
+    return <OurStory onStartTrial={navigateToSignup} onViewPricing={navigateToPricing} onBack={navigateToHome} />;
+  }
+
   return (
     <div className="min-h-screen bg-white">
-      <Navbar onStartTrial={navigateToSignup} onViewPricing={navigateToPricing} />
+      <Navbar onStartTrial={navigateToSignup} onViewPricing={navigateToPricing} onViewOurStory={navigateToOurStory} />
       <Hero onStartTrial={navigateToSignup} />
       <AntiDemo />
       <RealShop />

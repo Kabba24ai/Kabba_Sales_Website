@@ -4,9 +4,10 @@ import { useState } from 'react';
 interface NavbarProps {
   onStartTrial: () => void;
   onViewPricing: () => void;
+  onViewOurStory?: () => void;
 }
 
-export default function Navbar({ onStartTrial, onViewPricing }: NavbarProps) {
+export default function Navbar({ onStartTrial, onViewPricing, onViewOurStory }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -24,6 +25,9 @@ export default function Navbar({ onStartTrial, onViewPricing }: NavbarProps) {
           <div className="hidden md:flex items-center space-x-8">
             <a href="#product" className="text-slate-200 hover:text-[#02ffff] transition">Product</a>
             <button onClick={onViewPricing} className="text-slate-200 hover:text-[#02ffff] transition">Pricing</button>
+            {onViewOurStory && (
+              <button onClick={onViewOurStory} className="text-slate-200 hover:text-[#02ffff] transition">Our Story</button>
+            )}
             <a href="#consultation" className="text-slate-200 hover:text-[#02ffff] transition">Consultation</a>
             <button onClick={onStartTrial} className="bg-amber-500 hover:bg-amber-600 text-white px-6 py-2 rounded-lg font-semibold transition">
               Start $4.95 Trial
@@ -40,7 +44,10 @@ export default function Navbar({ onStartTrial, onViewPricing }: NavbarProps) {
         {isOpen && (
           <div className="md:hidden pb-4">
             <a href="#product" className="block py-2 text-slate-200 hover:text-[#02ffff]">Product</a>
-            <button onClick={onViewPricing} className="block py-2 text-slate-200 hover:text-[#02ffff] text-left w-full">Pricing</button>
+            <button onClick={() => { onViewPricing(); setIsOpen(false); }} className="block py-2 text-slate-200 hover:text-[#02ffff] text-left w-full">Pricing</button>
+            {onViewOurStory && (
+              <button onClick={() => { onViewOurStory(); setIsOpen(false); }} className="block py-2 text-slate-200 hover:text-[#02ffff] text-left w-full">Our Story</button>
+            )}
             <a href="#consultation" className="block py-2 text-slate-200 hover:text-[#02ffff]">Consultation</a>
             <button onClick={onStartTrial} className="w-full mt-2 bg-amber-500 hover:bg-amber-600 text-white px-6 py-2 rounded-lg font-semibold">
               Start $4.95 Trial
