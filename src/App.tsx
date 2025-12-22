@@ -27,9 +27,16 @@ import SetupCanceled from './components/SetupCanceled';
 type PageType = 'home' | 'pricing' | 'our-story' | 'contact' | 'privacy-policy' | 'terms-of-service' | 'refund-cancellation' | 'acceptable-use-policy' | 'onboarding-signup' | 'onboarding-analyzing' | 'processing-payment' | 'payment-error' | 'onboarding-activated' | 'setup-canceled';
 
 function App() {
-  const [currentPage, setCurrentPage] = useState<PageType>('home');
-  const [signupData, setSignupData] = useState<SignupFormData | null>(null);
-  const [consultationTime, setConsultationTime] = useState<string>('');
+  const [currentPage, setCurrentPage] = useState<PageType>('onboarding-activated');
+  const [signupData, setSignupData] = useState<SignupFormData | null>({
+    firstName: 'John',
+    lastName: 'Doe',
+    email: 'john@example.com',
+    phone: '(555) 123-4567',
+    businessName: 'Demo Rentals',
+    businessType: 'equipment'
+  });
+  const [consultationTime, setConsultationTime] = useState<string>('2024-01-15T10:00:00');
   const [scrollToComparison, setScrollToComparison] = useState(false);
 
   const navigateToSignup = () => {
