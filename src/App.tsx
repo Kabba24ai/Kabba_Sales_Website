@@ -185,7 +185,7 @@ function App() {
       <Consultation onStartTrial={navigateToSignup} />
       <SocialProof />
       <FinalCTA onStartTrial={navigateToSignup} />
-      <Footer />
+      <Footer onViewOurStory={navigateToOurStory} onViewContact={navigateToContact} />
     </div>
   );
 }

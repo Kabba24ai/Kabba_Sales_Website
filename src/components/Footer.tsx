@@ -1,4 +1,9 @@
-export default function Footer() {
+interface FooterProps {
+  onViewOurStory?: () => void;
+  onViewContact?: () => void;
+}
+
+export default function Footer({ onViewOurStory, onViewContact }: FooterProps) {
   return (
     <footer className="bg-slate-900 text-white py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
@@ -24,9 +29,16 @@ export default function Footer() {
           <div>
             <h4 className="font-semibold mb-4">Company</h4>
             <ul className="space-y-2 text-slate-400">
-              <li><a href="#" className="hover:text-white transition">About</a></li>
-              <li><a href="#" className="hover:text-white transition">Our Story</a></li>
-              <li><a href="#" className="hover:text-white transition">Contact</a></li>
+              {onViewOurStory ? (
+                <li><button onClick={onViewOurStory} className="hover:text-white transition text-left">Our Story</button></li>
+              ) : (
+                <li><a href="#" className="hover:text-white transition">Our Story</a></li>
+              )}
+              {onViewContact ? (
+                <li><button onClick={onViewContact} className="hover:text-white transition text-left">Contact</button></li>
+              ) : (
+                <li><a href="#" className="hover:text-white transition">Contact</a></li>
+              )}
             </ul>
           </div>
           <div>

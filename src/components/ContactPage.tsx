@@ -12,6 +12,10 @@ interface ContactPageProps {
 }
 
 export default function ContactPage({ onBack, onStartTrial, onViewPricing, onViewOurStory, onViewProduct, onViewConsultation }: ContactPageProps) {
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <div className="min-h-screen bg-white">
       <Navbar
@@ -24,7 +28,7 @@ export default function ContactPage({ onBack, onStartTrial, onViewPricing, onVie
         onViewConsultation={onViewConsultation}
       />
       <Contact />
-      <Footer />
+      <Footer onViewOurStory={onViewOurStory} onViewContact={scrollToTop} />
     </div>
   );
 }

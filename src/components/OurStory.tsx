@@ -11,6 +11,10 @@ interface OurStoryProps {
 }
 
 export default function OurStory({ onStartTrial, onViewPricing, onBack, onViewContact, onViewProduct, onViewConsultation }: OurStoryProps) {
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <div className="min-h-screen bg-white">
       <Navbar
@@ -284,7 +288,7 @@ export default function OurStory({ onStartTrial, onViewPricing, onBack, onViewCo
 
       </main>
 
-      <Footer />
+      <Footer onViewOurStory={scrollToTop} onViewContact={onViewContact} />
     </div>
   );
 }
