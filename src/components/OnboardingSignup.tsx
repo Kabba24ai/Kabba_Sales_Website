@@ -8,8 +8,10 @@ interface OnboardingSignupProps {
 }
 
 export interface SignupFormData {
-  fullName: string;
+  firstName: string;
+  lastName: string;
   email: string;
+  phoneNumber: string;
   password: string;
   businessName: string;
   billingStreet: string;
@@ -77,8 +79,10 @@ const US_STATES = [
 
 export default function OnboardingSignup({ onComplete, onBack, initialData }: OnboardingSignupProps) {
   const [formData, setFormData] = useState<SignupFormData>({
-    fullName: initialData?.fullName || '',
+    firstName: initialData?.firstName || '',
+    lastName: initialData?.lastName || '',
     email: initialData?.email || '',
+    phoneNumber: initialData?.phoneNumber || '',
     password: initialData?.password || '',
     businessName: initialData?.businessName || '',
     billingStreet: initialData?.billingStreet || '',
@@ -88,7 +92,7 @@ export default function OnboardingSignup({ onComplete, onBack, initialData }: On
     cardNumber: '',
     cardExpiry: '',
     cardCvc: '',
-    cardName: initialData?.cardName || initialData?.fullName || '',
+    cardName: initialData?.cardName || `${initialData?.firstName || ''} ${initialData?.lastName || ''}`.trim() || '',
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -106,8 +110,10 @@ export default function OnboardingSignup({ onComplete, onBack, initialData }: On
     setFormData(prev => {
       const updated = { ...prev, [field]: value };
 
-      if (field === 'fullName') {
-        updated.cardName = value;
+      if (field === 'firstName' || field === 'lastName') {
+        const firstName = field === 'firstName' ? value : prev.firstName;
+        const lastName = field === 'lastName' ? value : prev.lastName;
+        updated.cardName = `${firstName} ${lastName}`.trim();
       }
 
       return updated;
@@ -126,6 +132,17 @@ export default function OnboardingSignup({ onComplete, onBack, initialData }: On
       return cleaned.slice(0, 2) + '/' + cleaned.slice(2, 4);
     }
     return cleaned;
+  };
+
+  const formatPhoneNumber = (value: string) => {
+    const cleaned = value.replace(/\D/g, '');
+    if (cleaned.length <= 3) {
+      return cleaned;
+    } else if (cleaned.length <= 6) {
+      return `(${cleaned.slice(0, 3)}) ${cleaned.slice(3)}`;
+    } else {
+      return `(${cleaned.slice(0, 3)}) ${cleaned.slice(3, 6)}-${cleaned.slice(6, 10)}`;
+    }
   };
 
   return (
@@ -266,17 +283,48 @@ export default function OnboardingSignup({ onComplete, onBack, initialData }: On
 
               <form onSubmit={handleSubmit} className="space-y-6">
 
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-semibold mb-2 text-gray-700">
+                      First Name
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.firstName}
+                      onChange={(e) => handleChange('firstName', e.target.value)}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all text-gray-900"
+                      placeholder="John"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold mb-2 text-gray-700">
+                      Last Name
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.lastName}
+                      onChange={(e) => handleChange('lastName', e.target.value)}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all text-gray-900"
+                      placeholder="Smith"
+                    />
+                  </div>
+                </div>
+
                 <div>
                   <label className="block text-sm font-semibold mb-2 text-gray-700">
-                    Full Name
+                    Phone Number
                   </label>
                   <input
-                    type="text"
+                    type="tel"
                     required
-                    value={formData.fullName}
-                    onChange={(e) => handleChange('fullName', e.target.value)}
+                    value={formData.phoneNumber}
+                    onChange={(e) => handleChange('phoneNumber', formatPhoneNumber(e.target.value))}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all text-gray-900"
-                    placeholder="John Smith"
+                    placeholder="(555) 123-4567"
+                    maxLength={14}
                   />
                 </div>
 
@@ -459,15 +507,6 @@ export default function OnboardingSignup({ onComplete, onBack, initialData }: On
                 </div>
 
                 <div className="pt-6">
-                  <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4 mb-6">
-                    <div className="flex items-start gap-3">
-                      <Shield className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
-                      <p className="text-sm text-emerald-700 font-medium">
-                        Your card will not be charged until you confirm a consultation time.
-                      </p>
-                    </div>
-                  </div>
-
                   <button
                     type="submit"
                     disabled={isSubmitting}
@@ -479,6 +518,15 @@ export default function OnboardingSignup({ onComplete, onBack, initialData }: On
                   <p className="text-center text-sm text-gray-600 mt-4">
                     Secure checkout • Cancel anytime • No contracts
                   </p>
+
+                  <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4 mt-6">
+                    <div className="flex items-start gap-3">
+                      <Shield className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
+                      <p className="text-sm text-emerald-700 font-medium">
+                        Next Step: You'll choose your preferred consultation date & time.
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </form>
             </div>

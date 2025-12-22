@@ -1,24 +1,40 @@
-import { ArrowRight, Check, X, ArrowLeft } from 'lucide-react';
+import { useEffect } from 'react';
+import { ArrowRight, Check, X } from 'lucide-react';
+import Navbar from './Navbar';
 
 interface PricingPageProps {
   onBack: () => void;
   onStartTrial: () => void;
+  onViewOurStory: () => void;
+  onViewContact: () => void;
+  onViewProduct: () => void;
+  onViewConsultation: () => void;
+  scrollToComparison?: boolean;
 }
 
-export default function PricingPage({ onBack, onStartTrial }: PricingPageProps) {
+export default function PricingPage({ onBack, onStartTrial, onViewOurStory, onViewContact, onViewProduct, onViewConsultation, scrollToComparison }: PricingPageProps) {
+  useEffect(() => {
+    if (scrollToComparison) {
+      const element = document.getElementById('comparison');
+      if (element) {
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+      }
+    }
+  }, [scrollToComparison]);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-      <nav className="bg-slate-900/50 backdrop-blur-sm border-b border-slate-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <button
-            onClick={onBack}
-            className="flex items-center text-slate-300 hover:text-white transition"
-          >
-            <ArrowLeft className="w-5 h-5 mr-2" />
-            Back to Home
-          </button>
-        </div>
-      </nav>
+      <Navbar
+        onStartTrial={onStartTrial}
+        onViewPricing={onBack}
+        onViewOurStory={onViewOurStory}
+        onViewContact={onViewContact}
+        onBackToHome={onBack}
+        onViewProduct={onViewProduct}
+        onViewConsultation={onViewConsultation}
+      />
 
       <section className="py-20 px-4 sm:px-6 lg:px-8 text-white">
         <div className="max-w-5xl mx-auto text-center">
@@ -163,7 +179,7 @@ export default function PricingPage({ onBack, onStartTrial }: PricingPageProps) 
         </div>
       </section>
 
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
+      <section id="comparison" className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4">
