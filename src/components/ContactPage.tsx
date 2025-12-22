@@ -7,9 +7,11 @@ interface ContactPageProps {
   onStartTrial: () => void;
   onViewPricing: () => void;
   onViewOurStory: () => void;
+  onViewProduct: () => void;
+  onViewConsultation: () => void;
 }
 
-export default function ContactPage({ onBack, onStartTrial, onViewPricing, onViewOurStory }: ContactPageProps) {
+export default function ContactPage({ onBack, onStartTrial, onViewPricing, onViewOurStory, onViewProduct, onViewConsultation }: ContactPageProps) {
   return (
     <div className="min-h-screen bg-white">
       <Navbar
@@ -18,6 +20,8 @@ export default function ContactPage({ onBack, onStartTrial, onViewPricing, onVie
         onViewOurStory={onViewOurStory}
         onViewContact={onBack}
         onBackToHome={onBack}
+        onViewProduct={onViewProduct}
+        onViewConsultation={onViewConsultation}
       />
       <Contact />
       <Footer />

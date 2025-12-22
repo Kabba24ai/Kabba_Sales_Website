@@ -7,10 +7,12 @@ interface PricingPageProps {
   onStartTrial: () => void;
   onViewOurStory: () => void;
   onViewContact: () => void;
+  onViewProduct: () => void;
+  onViewConsultation: () => void;
   scrollToComparison?: boolean;
 }
 
-export default function PricingPage({ onBack, onStartTrial, onViewOurStory, onViewContact, scrollToComparison }: PricingPageProps) {
+export default function PricingPage({ onBack, onStartTrial, onViewOurStory, onViewContact, onViewProduct, onViewConsultation, scrollToComparison }: PricingPageProps) {
   useEffect(() => {
     if (scrollToComparison) {
       const element = document.getElementById('comparison');
@@ -30,6 +32,8 @@ export default function PricingPage({ onBack, onStartTrial, onViewOurStory, onVi
         onViewOurStory={onViewOurStory}
         onViewContact={onViewContact}
         onBackToHome={onBack}
+        onViewProduct={onViewProduct}
+        onViewConsultation={onViewConsultation}
       />
 
       <section className="py-20 px-4 sm:px-6 lg:px-8 text-white">

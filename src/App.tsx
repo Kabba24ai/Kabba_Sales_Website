@@ -62,6 +62,28 @@ function App() {
     window.scrollTo(0, 0);
   };
 
+  const navigateToHomeProduct = () => {
+    setScrollToComparison(false);
+    setCurrentPage('home');
+    setTimeout(() => {
+      const element = document.getElementById('product');
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
+  };
+
+  const navigateToHomeConsultation = () => {
+    setScrollToComparison(false);
+    setCurrentPage('home');
+    setTimeout(() => {
+      const element = document.getElementById('consultation');
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
+  };
+
   const handleSignupComplete = (formData: SignupFormData) => {
     setSignupData(formData);
     setCurrentPage('onboarding-analyzing');
@@ -140,15 +162,15 @@ function App() {
   }
 
   if (currentPage === 'pricing') {
-    return <PricingPage onBack={navigateToHome} onStartTrial={navigateToSignup} onViewOurStory={navigateToOurStory} onViewContact={navigateToContact} scrollToComparison={scrollToComparison} />;
+    return <PricingPage onBack={navigateToHome} onStartTrial={navigateToSignup} onViewOurStory={navigateToOurStory} onViewContact={navigateToContact} onViewProduct={navigateToHomeProduct} onViewConsultation={navigateToHomeConsultation} scrollToComparison={scrollToComparison} />;
   }
 
   if (currentPage === 'our-story') {
-    return <OurStory onStartTrial={navigateToSignup} onViewPricing={navigateToPricing} onBack={navigateToHome} onViewContact={navigateToContact} />;
+    return <OurStory onStartTrial={navigateToSignup} onViewPricing={navigateToPricing} onBack={navigateToHome} onViewContact={navigateToContact} onViewProduct={navigateToHomeProduct} onViewConsultation={navigateToHomeConsultation} />;
   }
 
   if (currentPage === 'contact') {
-    return <ContactPage onBack={navigateToHome} onStartTrial={navigateToSignup} onViewPricing={navigateToPricing} onViewOurStory={navigateToOurStory} />;
+    return <ContactPage onBack={navigateToHome} onStartTrial={navigateToSignup} onViewPricing={navigateToPricing} onViewOurStory={navigateToOurStory} onViewProduct={navigateToHomeProduct} onViewConsultation={navigateToHomeConsultation} />;
   }
 
   return (

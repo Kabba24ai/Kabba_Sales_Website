@@ -7,9 +7,11 @@ interface NavbarProps {
   onViewOurStory?: () => void;
   onViewContact?: () => void;
   onBackToHome?: () => void;
+  onViewProduct?: () => void;
+  onViewConsultation?: () => void;
 }
 
-export default function Navbar({ onStartTrial, onViewPricing, onViewOurStory, onViewContact, onBackToHome }: NavbarProps) {
+export default function Navbar({ onStartTrial, onViewPricing, onViewOurStory, onViewContact, onBackToHome, onViewProduct, onViewConsultation }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -25,12 +27,20 @@ export default function Navbar({ onStartTrial, onViewPricing, onViewOurStory, on
           </button>
 
           <div className="hidden md:flex items-center space-x-8">
-            <a href="#product" className="text-slate-200 hover:text-[#02ffff] transition">Product</a>
+            {onViewProduct ? (
+              <button onClick={onViewProduct} className="text-slate-200 hover:text-[#02ffff] transition">Product</button>
+            ) : (
+              <a href="#product" className="text-slate-200 hover:text-[#02ffff] transition">Product</a>
+            )}
             <button onClick={onViewPricing} className="text-slate-200 hover:text-[#02ffff] transition">Pricing</button>
             {onViewOurStory && (
               <button onClick={onViewOurStory} className="text-slate-200 hover:text-[#02ffff] transition">Our Story</button>
             )}
-            <a href="#consultation" className="text-slate-200 hover:text-[#02ffff] transition">Consultation</a>
+            {onViewConsultation ? (
+              <button onClick={onViewConsultation} className="text-slate-200 hover:text-[#02ffff] transition">Consultation</button>
+            ) : (
+              <a href="#consultation" className="text-slate-200 hover:text-[#02ffff] transition">Consultation</a>
+            )}
             {onViewContact && (
               <button onClick={onViewContact} className="text-slate-200 hover:text-[#02ffff] transition">Contact</button>
             )}
@@ -48,12 +58,20 @@ export default function Navbar({ onStartTrial, onViewPricing, onViewOurStory, on
 
         {isOpen && (
           <div className="md:hidden pb-4">
-            <a href="#product" className="block py-2 text-slate-200 hover:text-[#02ffff]">Product</a>
+            {onViewProduct ? (
+              <button onClick={() => { onViewProduct(); setIsOpen(false); }} className="block py-2 text-slate-200 hover:text-[#02ffff] text-left w-full">Product</button>
+            ) : (
+              <a href="#product" className="block py-2 text-slate-200 hover:text-[#02ffff]">Product</a>
+            )}
             <button onClick={() => { onViewPricing(); setIsOpen(false); }} className="block py-2 text-slate-200 hover:text-[#02ffff] text-left w-full">Pricing</button>
             {onViewOurStory && (
               <button onClick={() => { onViewOurStory(); setIsOpen(false); }} className="block py-2 text-slate-200 hover:text-[#02ffff] text-left w-full">Our Story</button>
             )}
-            <a href="#consultation" className="block py-2 text-slate-200 hover:text-[#02ffff]">Consultation</a>
+            {onViewConsultation ? (
+              <button onClick={() => { onViewConsultation(); setIsOpen(false); }} className="block py-2 text-slate-200 hover:text-[#02ffff] text-left w-full">Consultation</button>
+            ) : (
+              <a href="#consultation" className="block py-2 text-slate-200 hover:text-[#02ffff]">Consultation</a>
+            )}
             {onViewContact && (
               <button onClick={() => { onViewContact(); setIsOpen(false); }} className="block py-2 text-slate-200 hover:text-[#02ffff] text-left w-full">Contact</button>
             )}

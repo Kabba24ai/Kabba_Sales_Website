@@ -6,9 +6,11 @@ interface OurStoryProps {
   onViewPricing: () => void;
   onBack: () => void;
   onViewContact: () => void;
+  onViewProduct: () => void;
+  onViewConsultation: () => void;
 }
 
-export default function OurStory({ onStartTrial, onViewPricing, onBack, onViewContact }: OurStoryProps) {
+export default function OurStory({ onStartTrial, onViewPricing, onBack, onViewContact, onViewProduct, onViewConsultation }: OurStoryProps) {
   return (
     <div className="min-h-screen bg-white">
       <Navbar
@@ -17,6 +19,8 @@ export default function OurStory({ onStartTrial, onViewPricing, onBack, onViewCo
         onViewOurStory={onBack}
         onViewContact={onViewContact}
         onBackToHome={onBack}
+        onViewProduct={onViewProduct}
+        onViewConsultation={onViewConsultation}
       />
 
       <main className="pt-24 pb-20">
