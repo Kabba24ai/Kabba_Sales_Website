@@ -14,6 +14,7 @@ import PricingPage from './components/PricingPage';
 import OurStory from './components/OurStory';
 import ContactPage from './components/ContactPage';
 import PrivacyPolicyPage from './components/PrivacyPolicyPage';
+import TermsOfServicePage from './components/TermsOfServicePage';
 import OnboardingSignup, { SignupFormData } from './components/OnboardingSignup';
 import AnalyzingAvailability from './components/AnalyzingAvailability';
 import ProcessingPayment from './components/ProcessingPayment';
@@ -21,7 +22,7 @@ import PaymentError from './components/PaymentError';
 import TrialActivated from './components/TrialActivated';
 import SetupCanceled from './components/SetupCanceled';
 
-type PageType = 'home' | 'pricing' | 'our-story' | 'contact' | 'privacy-policy' | 'onboarding-signup' | 'onboarding-analyzing' | 'processing-payment' | 'payment-error' | 'onboarding-activated' | 'setup-canceled';
+type PageType = 'home' | 'pricing' | 'our-story' | 'contact' | 'privacy-policy' | 'terms-of-service' | 'onboarding-signup' | 'onboarding-analyzing' | 'processing-payment' | 'payment-error' | 'onboarding-activated' | 'setup-canceled';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<PageType>('home');
@@ -60,6 +61,12 @@ function App() {
   const navigateToPrivacyPolicy = () => {
     setScrollToComparison(false);
     setCurrentPage('privacy-policy');
+    window.scrollTo(0, 0);
+  };
+
+  const navigateToTermsOfService = () => {
+    setScrollToComparison(false);
+    setCurrentPage('terms-of-service');
     window.scrollTo(0, 0);
   };
 
@@ -173,15 +180,19 @@ function App() {
   }
 
   if (currentPage === 'our-story') {
-    return <OurStory onStartTrial={navigateToSignup} onViewPricing={navigateToPricing} onBack={navigateToHome} onViewContact={navigateToContact} onViewProduct={navigateToHomeProduct} onViewConsultation={navigateToHomeConsultation} onViewPrivacyPolicy={navigateToPrivacyPolicy} />;
+    return <OurStory onStartTrial={navigateToSignup} onViewPricing={navigateToPricing} onBack={navigateToHome} onViewContact={navigateToContact} onViewProduct={navigateToHomeProduct} onViewConsultation={navigateToHomeConsultation} onViewPrivacyPolicy={navigateToPrivacyPolicy} onViewTermsOfService={navigateToTermsOfService} />;
   }
 
   if (currentPage === 'contact') {
-    return <ContactPage onBack={navigateToHome} onStartTrial={navigateToSignup} onViewPricing={navigateToPricing} onViewOurStory={navigateToOurStory} onViewProduct={navigateToHomeProduct} onViewConsultation={navigateToHomeConsultation} onViewPrivacyPolicy={navigateToPrivacyPolicy} />;
+    return <ContactPage onBack={navigateToHome} onStartTrial={navigateToSignup} onViewPricing={navigateToPricing} onViewOurStory={navigateToOurStory} onViewProduct={navigateToHomeProduct} onViewConsultation={navigateToHomeConsultation} onViewPrivacyPolicy={navigateToPrivacyPolicy} onViewTermsOfService={navigateToTermsOfService} />;
   }
 
   if (currentPage === 'privacy-policy') {
-    return <PrivacyPolicyPage onBack={navigateToHome} onStartTrial={navigateToSignup} onViewPricing={navigateToPricing} onViewOurStory={navigateToOurStory} onViewContact={navigateToContact} onViewProduct={navigateToHomeProduct} onViewConsultation={navigateToHomeConsultation} />;
+    return <PrivacyPolicyPage onBack={navigateToHome} onStartTrial={navigateToSignup} onViewPricing={navigateToPricing} onViewOurStory={navigateToOurStory} onViewContact={navigateToContact} onViewProduct={navigateToHomeProduct} onViewConsultation={navigateToHomeConsultation} onViewTermsOfService={navigateToTermsOfService} />;
+  }
+
+  if (currentPage === 'terms-of-service') {
+    return <TermsOfServicePage onBack={navigateToHome} onStartTrial={navigateToSignup} onViewPricing={navigateToPricing} onViewOurStory={navigateToOurStory} onViewContact={navigateToContact} onViewProduct={navigateToHomeProduct} onViewConsultation={navigateToHomeConsultation} onViewPrivacyPolicy={navigateToPrivacyPolicy} />;
   }
 
   return (
@@ -196,7 +207,7 @@ function App() {
       <Consultation onStartTrial={navigateToSignup} />
       <SocialProof />
       <FinalCTA onStartTrial={navigateToSignup} />
-      <Footer onViewOurStory={navigateToOurStory} onViewContact={navigateToContact} onViewProduct={navigateToHomeProduct} onViewPricing={navigateToPricing} onViewConsultation={navigateToHomeConsultation} onViewPrivacyPolicy={navigateToPrivacyPolicy} />
+      <Footer onViewOurStory={navigateToOurStory} onViewContact={navigateToContact} onViewProduct={navigateToHomeProduct} onViewPricing={navigateToPricing} onViewConsultation={navigateToHomeConsultation} onViewPrivacyPolicy={navigateToPrivacyPolicy} onViewTermsOfService={navigateToTermsOfService} />
     </div>
   );
 }

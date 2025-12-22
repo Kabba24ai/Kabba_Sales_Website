@@ -9,6 +9,7 @@ interface PrivacyPolicyPageProps {
   onViewContact: () => void;
   onViewProduct: () => void;
   onViewConsultation: () => void;
+  onViewTermsOfService?: () => void;
 }
 
 export default function PrivacyPolicyPage({
@@ -18,7 +19,8 @@ export default function PrivacyPolicyPage({
   onViewOurStory,
   onViewContact,
   onViewProduct,
-  onViewConsultation
+  onViewConsultation,
+  onViewTermsOfService
 }: PrivacyPolicyPageProps) {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -235,6 +237,7 @@ export default function PrivacyPolicyPage({
         onViewPricing={onViewPricing}
         onViewConsultation={onViewConsultation}
         onViewPrivacyPolicy={scrollToTop}
+        onViewTermsOfService={onViewTermsOfService}
       />
     </div>
   );

@@ -10,9 +10,10 @@ interface ContactPageProps {
   onViewProduct: () => void;
   onViewConsultation: () => void;
   onViewPrivacyPolicy?: () => void;
+  onViewTermsOfService?: () => void;
 }
 
-export default function ContactPage({ onBack, onStartTrial, onViewPricing, onViewOurStory, onViewProduct, onViewConsultation, onViewPrivacyPolicy }: ContactPageProps) {
+export default function ContactPage({ onBack, onStartTrial, onViewPricing, onViewOurStory, onViewProduct, onViewConsultation, onViewPrivacyPolicy, onViewTermsOfService }: ContactPageProps) {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -29,7 +30,7 @@ export default function ContactPage({ onBack, onStartTrial, onViewPricing, onVie
         onViewConsultation={onViewConsultation}
       />
       <Contact />
-      <Footer onViewOurStory={onViewOurStory} onViewContact={scrollToTop} onViewProduct={onViewProduct} onViewPricing={onViewPricing} onViewConsultation={onViewConsultation} onViewPrivacyPolicy={onViewPrivacyPolicy} />
+      <Footer onViewOurStory={onViewOurStory} onViewContact={scrollToTop} onViewProduct={onViewProduct} onViewPricing={onViewPricing} onViewConsultation={onViewConsultation} onViewPrivacyPolicy={onViewPrivacyPolicy} onViewTermsOfService={onViewTermsOfService} />
     </div>
   );
 }

@@ -5,9 +5,10 @@ interface FooterProps {
   onViewPricing?: () => void;
   onViewConsultation?: () => void;
   onViewPrivacyPolicy?: () => void;
+  onViewTermsOfService?: () => void;
 }
 
-export default function Footer({ onViewOurStory, onViewContact, onViewProduct, onViewPricing, onViewConsultation, onViewPrivacyPolicy }: FooterProps) {
+export default function Footer({ onViewOurStory, onViewContact, onViewProduct, onViewPricing, onViewConsultation, onViewPrivacyPolicy, onViewTermsOfService }: FooterProps) {
   return (
     <footer className="bg-slate-900 text-white py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
@@ -64,6 +65,11 @@ export default function Footer({ onViewOurStory, onViewContact, onViewProduct, o
                 <li><button onClick={onViewPrivacyPolicy} className="hover:text-white transition text-left">Privacy Policy</button></li>
               ) : (
                 <li><a href="#privacy" className="hover:text-white transition">Privacy Policy</a></li>
+              )}
+              {onViewTermsOfService ? (
+                <li><button onClick={onViewTermsOfService} className="hover:text-white transition text-left">Terms of Service</button></li>
+              ) : (
+                <li><a href="#terms" className="hover:text-white transition">Terms of Service</a></li>
               )}
             </ul>
           </div>
