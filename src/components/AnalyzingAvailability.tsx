@@ -450,7 +450,7 @@ export default function AnalyzingAvailability({ formData, onComplete, onCancel, 
                       onClick={onCancel}
                       className="w-full text-gray-500 hover:text-gray-400 font-medium py-2 transition-colors text-sm"
                     >
-                      This won't work for me — cancel setup
+                      I need more time before confirming a date & time - cancel setup
                     </button>
                   </div>
                 </div>
