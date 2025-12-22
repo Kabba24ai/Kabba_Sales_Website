@@ -1,5 +1,6 @@
 import { useState, FormEvent } from 'react';
-import { Shield, Check } from 'lucide-react';
+import { Shield, Check, AlertCircle } from 'lucide-react';
+import { tokenizeCardData, validateCardNumber, validateExpiry, validateCVC, detectCardType } from '../lib/authorizenet';
 
 interface OnboardingSignupProps {
   onComplete: (formData: SignupFormData) => void;
@@ -22,6 +23,10 @@ export interface SignupFormData {
   cardExpiry: string;
   cardCvc: string;
   cardName: string;
+  consultationTime?: string; // ISO date string for scheduled consultation
+  // Authorize.Net payment token data
+  opaqueDataDescriptor?: string;
+  opaqueDataValue?: string;
 }
 
 const US_STATES = [
@@ -96,14 +101,76 @@ export default function OnboardingSignup({ onComplete, onBack, initialData }: On
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [paymentError, setPaymentError] = useState<string>('');
+  const [cardType, setCardType] = useState<string>('');
+  const [cardErrors, setCardErrors] = useState({
+    cardNumber: '',
+    expiry: '',
+    cvc: '',
+  });
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setPaymentError('');
 
-    setTimeout(() => {
-      onComplete(formData);
-    }, 500);
+    // Validate card data before tokenization
+    const errors = {
+      cardNumber: '',
+      expiry: '',
+      cvc: '',
+    };
+
+    if (!validateCardNumber(formData.cardNumber)) {
+      errors.cardNumber = 'Invalid card number';
+    }
+
+    if (!validateExpiry(formData.cardExpiry)) {
+      errors.expiry = 'Invalid or expired date';
+    }
+
+    if (!validateCVC(formData.cardCvc, cardType)) {
+      errors.cvc = 'Invalid CVC';
+    }
+
+    if (errors.cardNumber || errors.expiry || errors.cvc) {
+      setCardErrors(errors);
+      setIsSubmitting(false);
+      return;
+    }
+
+    try {
+      // Tokenize card data with Authorize.Net
+      const tokenResponse = await tokenizeCardData(
+        formData.cardNumber,
+        formData.cardExpiry,
+        formData.cardCvc,
+        formData.cardName,
+        formData.billingZip
+      );
+
+      if (tokenResponse.opaqueData) {
+        // Add payment token to form data
+        const completeFormData: SignupFormData = {
+          ...formData,
+          opaqueDataDescriptor: tokenResponse.opaqueData.dataDescriptor,
+          opaqueDataValue: tokenResponse.opaqueData.dataValue,
+        };
+
+        // Pass tokenized data to next step
+        onComplete(completeFormData);
+      } else {
+        throw new Error('Failed to tokenize payment information');
+      }
+    } catch (error) {
+      console.error('Payment tokenization error:', error);
+      setPaymentError(
+        error instanceof Error 
+          ? error.message 
+          : 'Unable to process payment information. Please check your card details and try again.'
+      );
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (field: keyof SignupFormData, value: string) => {
@@ -118,6 +185,17 @@ export default function OnboardingSignup({ onComplete, onBack, initialData }: On
 
       return updated;
     });
+
+    // Clear errors when user starts typing
+    if (field === 'cardNumber' || field === 'cardExpiry' || field === 'cardCvc') {
+      setCardErrors(prev => ({ ...prev, [field === 'cardExpiry' ? 'expiry' : field]: '' }));
+      setPaymentError('');
+    }
+
+    // Detect card type
+    if (field === 'cardNumber') {
+      setCardType(detectCardType(value));
+    }
   };
 
   const formatCardNumber = (value: string) => {
@@ -282,6 +360,18 @@ export default function OnboardingSignup({ onComplete, onBack, initialData }: On
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-6">
+
+                {paymentError && (
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                    <div className="flex items-start gap-3">
+                      <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <h4 className="text-sm font-semibold text-red-800 mb-1">Payment Error</h4>
+                        <p className="text-sm text-red-700">{paymentError}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
@@ -462,14 +552,24 @@ export default function OnboardingSignup({ onComplete, onBack, initialData }: On
                       <label className="block text-sm font-semibold mb-2 text-gray-700">
                         Card Number
                       </label>
-                      <input
-                        type="text"
-                        required
-                        value={formData.cardNumber}
-                        onChange={(e) => handleChange('cardNumber', formatCardNumber(e.target.value))}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all text-gray-900"
-                        placeholder="4242 4242 4242 4242"
-                      />
+                      <div className="relative">
+                        <input
+                          type="text"
+                          required
+                          value={formData.cardNumber}
+                          onChange={(e) => handleChange('cardNumber', formatCardNumber(e.target.value))}
+                          className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all text-gray-900 ${
+                            cardErrors.cardNumber ? 'border-red-300' : 'border-gray-300'
+                          }`}
+                          placeholder="4242 4242 4242 4242"
+                        />
+                        {cardType && cardType !== 'Unknown' && (
+                          <span className="absolute right-3 top-3 text-sm text-gray-500">{cardType}</span>
+                        )}
+                      </div>
+                      {cardErrors.cardNumber && (
+                        <p className="text-sm text-red-600 mt-1">{cardErrors.cardNumber}</p>
+                      )}
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
@@ -482,10 +582,15 @@ export default function OnboardingSignup({ onComplete, onBack, initialData }: On
                           required
                           value={formData.cardExpiry}
                           onChange={(e) => handleChange('cardExpiry', formatExpiry(e.target.value))}
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all text-gray-900"
+                          className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all text-gray-900 ${
+                            cardErrors.expiry ? 'border-red-300' : 'border-gray-300'
+                          }`}
                           placeholder="MM/YY"
                           maxLength={5}
                         />
+                        {cardErrors.expiry && (
+                          <p className="text-sm text-red-600 mt-1">{cardErrors.expiry}</p>
+                        )}
                       </div>
 
                       <div>
@@ -498,9 +603,14 @@ export default function OnboardingSignup({ onComplete, onBack, initialData }: On
                           maxLength={4}
                           value={formData.cardCvc}
                           onChange={(e) => handleChange('cardCvc', e.target.value.replace(/\D/g, ''))}
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all text-gray-900"
+                          className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all text-gray-900 ${
+                            cardErrors.cvc ? 'border-red-300' : 'border-gray-300'
+                          }`}
                           placeholder="123"
                         />
+                        {cardErrors.cvc && (
+                          <p className="text-sm text-red-600 mt-1">{cardErrors.cvc}</p>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -512,7 +622,17 @@ export default function OnboardingSignup({ onComplete, onBack, initialData }: On
                     disabled={isSubmitting}
                     className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-semibold py-4 px-6 rounded-lg hover:from-emerald-600 hover:to-emerald-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none text-lg"
                   >
-                    {isSubmitting ? 'Processing...' : 'Start My $4.95 Trial'}
+                    {isSubmitting ? (
+                      <span className="flex items-center justify-center">
+                        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Securing payment...
+                      </span>
+                    ) : (
+                      'Start My $4.95 Trial'
+                    )}
                   </button>
 
                   <p className="text-center text-sm text-gray-600 mt-4">

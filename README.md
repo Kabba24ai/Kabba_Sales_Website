@@ -89,11 +89,20 @@ project/
    npm install
    ```
 
-3. Environment variables are already configured in `.env`:
+3. Configure environment variables:
+   ```bash
+   cp .env.example .env
    ```
-   VITE_SUPABASE_URL=https://uqwwppofrcepqnystfll.supabase.co
-   VITE_SUPABASE_ANON_KEY=[configured]
+   
+   Update `.env` with your credentials:
    ```
+   VITE_SUPABASE_URL=your_supabase_url
+   VITE_SUPABASE_ANON_KEY=your_supabase_key
+   VITE_AUTHORIZENET_API_LOGIN_ID=your_authorize_net_api_login_id
+   VITE_AUTHORIZENET_CLIENT_KEY=your_authorize_net_client_key
+   ```
+
+   See [AUTHORIZE_NET_SETUP.md](AUTHORIZE_NET_SETUP.md) for detailed Authorize.Net setup instructions.
 
 ### Development
 
