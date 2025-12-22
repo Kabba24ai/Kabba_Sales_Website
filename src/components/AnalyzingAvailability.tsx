@@ -457,15 +457,6 @@ export default function AnalyzingAvailability({ formData, onComplete, onCancel, 
               )}
             </div>
           )}
-
-          <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-4">
-            <div className="flex items-start gap-3">
-              <Shield className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
-              <p className="text-sm text-emerald-400 font-medium">
-                Your card will not be charged until you confirm a consultation time. No charge. No obligation. No surprises.
-              </p>
-            </div>
-          </div>
         </div>
       </div>
     </div>
