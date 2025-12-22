@@ -507,15 +507,6 @@ export default function OnboardingSignup({ onComplete, onBack, initialData }: On
                 </div>
 
                 <div className="pt-6">
-                  <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4 mb-6">
-                    <div className="flex items-start gap-3">
-                      <Shield className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
-                      <p className="text-sm text-emerald-700 font-medium">
-                        Next step we'll confirm a consultation time.
-                      </p>
-                    </div>
-                  </div>
-
                   <button
                     type="submit"
                     disabled={isSubmitting}
@@ -527,6 +518,15 @@ export default function OnboardingSignup({ onComplete, onBack, initialData }: On
                   <p className="text-center text-sm text-gray-600 mt-4">
                     Secure checkout • Cancel anytime • No contracts
                   </p>
+
+                  <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4 mt-6">
+                    <div className="flex items-start gap-3">
+                      <Shield className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
+                      <p className="text-sm text-emerald-700 font-medium">
+                        Next Step: You'll choose your preferred consultation date & time.
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </form>
             </div>
