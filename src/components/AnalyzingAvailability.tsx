@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Check, Loader2, Calendar, Shield, ChevronDown } from 'lucide-react';
+import { Check, Loader2, Calendar, Shield, ChevronDown, AlertCircle } from 'lucide-react';
 import { SignupFormData } from './OnboardingSignup';
 
 interface AnalyzingAvailabilityProps {
@@ -46,6 +46,8 @@ export default function AnalyzingAvailability({ formData, onComplete, onCancel, 
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [refreshStep, setRefreshStep] = useState(0);
   const [refreshCompletedSteps, setRefreshCompletedSteps] = useState<number[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [scheduleErrors, setScheduleErrors] = useState<string[]>([]);
 
   const generateTimeSlots = (offset: number = 0): TimeSlot[] => {
     const slots: TimeSlot[] = [];
@@ -169,12 +171,63 @@ export default function AnalyzingAvailability({ formData, onComplete, onCancel, 
     return () => clearTimeout(timer);
   }, [isRefreshing, refreshStep, generationCount]);
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (selectedSlot) {
       const slot = timeSlots.find((s) => s.id === selectedSlot);
       if (slot) {
-        console.log('Selected consultation time:', slot.date.toISOString());
-        onComplete(slot.date.toISOString());
+        setIsSubmitting(true);
+        setScheduleErrors([]);
+
+        try {
+          // Format date as Y-m-d H:i:s as required by API
+          const date = slot.date;
+          const scheduleDatetime = date.getFullYear() + '-' +
+            String(date.getMonth() + 1).padStart(2, '0') + '-' +
+            String(date.getDate()).padStart(2, '0') + ' ' +
+            String(date.getHours()).padStart(2, '0') + ':' +
+            String(date.getMinutes()).padStart(2, '0') + ':' +
+            String(date.getSeconds()).padStart(2, '0');
+
+          const payload = {
+            unique_id: formData.reference,
+            schedule_datetime: scheduleDatetime
+          };
+
+          const response = await fetch("https://s-api.kabba.ai/api/admin/v1/schedule", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json"
+            },
+            body: JSON.stringify(payload)
+          });
+
+          const result = await response.json();
+
+          if (response.ok && result.success) {
+            onComplete(slot.date.toISOString());
+          } else if (response.status === 422) {
+            const apiErrors = result.errors || {};
+            const errorMessages: string[] = [];
+
+            Object.values(apiErrors).forEach((messages: any) => {
+              if (Array.isArray(messages)) {
+                errorMessages.push(...messages);
+              } else if (typeof messages === 'string') {
+                errorMessages.push(messages);
+              }
+            });
+
+            setScheduleErrors(errorMessages.length > 0 ? errorMessages : [result.message || 'Validation failed']);
+            setIsSubmitting(false);
+          } else {
+            throw new Error(result.message || 'Failed to schedule consultation');
+          }
+        } catch (error) {
+          console.error('Schedule API error:', error);
+          setScheduleErrors([error instanceof Error ? error.message : 'Unable to schedule consultation. Please try again.']);
+          setIsSubmitting(false);
+        }
       }
     }
   };
@@ -217,13 +270,12 @@ export default function AnalyzingAvailability({ formData, onComplete, onCancel, 
                       )}
                     </div>
                     <span
-                      className={`text-sm ${
-                        isCompleted
-                          ? 'text-gray-400'
-                          : isActive
+                      className={`text-sm ${isCompleted
+                        ? 'text-gray-400'
+                        : isActive
                           ? 'text-gray-200 font-medium'
                           : 'text-gray-600'
-                      }`}
+                        }`}
                     >
                       {step.label}
                     </span>
@@ -333,7 +385,7 @@ export default function AnalyzingAvailability({ formData, onComplete, onCancel, 
                 </p>
               </div>
 
-{isRefreshing ? (
+              {isRefreshing ? (
                 <div className="space-y-6">
                   <div>
                     <h3 className="text-xl font-bold mb-4">Finding more availability…</h3>
@@ -358,13 +410,12 @@ export default function AnalyzingAvailability({ formData, onComplete, onCancel, 
                               )}
                             </div>
                             <span
-                              className={`text-sm ${
-                                isCompleted
-                                  ? 'text-gray-400'
-                                  : isActive
+                              className={`text-sm ${isCompleted
+                                ? 'text-gray-400'
+                                : isActive
                                   ? 'text-gray-200 font-medium'
                                   : 'text-gray-600'
-                              }`}
+                                }`}
                             >
                               {step.label}
                             </span>
@@ -396,11 +447,10 @@ export default function AnalyzingAvailability({ formData, onComplete, onCancel, 
                         <button
                           key={slot.id}
                           onClick={() => setSelectedSlot(slot.id)}
-                          className={`w-full flex items-center justify-between gap-3 p-4 rounded-lg border transition-all ${
-                            selectedSlot === slot.id
-                              ? 'border-emerald-500 bg-emerald-500/10'
-                              : 'border-gray-700 bg-gray-950 hover:border-gray-600'
-                          }`}
+                          className={`w-full flex items-center justify-between gap-3 p-4 rounded-lg border transition-all ${selectedSlot === slot.id
+                            ? 'border-emerald-500 bg-emerald-500/10'
+                            : 'border-gray-700 bg-gray-950 hover:border-gray-600'
+                            }`}
                         >
                           <div className="flex items-center gap-3">
                             <Calendar className={`w-5 h-5 ${selectedSlot === slot.id ? 'text-emerald-500' : 'text-gray-500'}`} />
@@ -434,11 +484,31 @@ export default function AnalyzingAvailability({ formData, onComplete, onCancel, 
                   <div className="space-y-3">
                     <button
                       onClick={handleConfirm}
-                      disabled={!selectedSlot}
+                      disabled={!selectedSlot || isSubmitting}
                       className="w-full bg-emerald-600 hover:bg-emerald-500 disabled:bg-gray-800 disabled:text-gray-600 disabled:cursor-not-allowed text-white font-semibold py-4 px-6 rounded-lg transition-all transform hover:scale-[1.02] active:scale-[0.98] disabled:transform-none"
                     >
-                      Yes - This date and time works for me
+                      {isSubmitting ? (
+                        <span className="flex items-center justify-center">
+                          <Loader2 className="w-5 h-5 text-white animate-spin mr-3" />
+                          Scheduling...
+                        </span>
+                      ) : (
+                        'Yes - This date and time works for me'
+                      )}
                     </button>
+
+                    {scheduleErrors.length > 0 && (
+                      <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                        <div className="flex items-start gap-3">
+                          <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                          <ul className="list-disc list-inside space-y-1 text-left">
+                            {scheduleErrors.map((msg, i) => (
+                              <li key={i} className="text-sm text-red-700">{msg}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    )}
 
                     <button
                       onClick={handleShowMoreOptions}
