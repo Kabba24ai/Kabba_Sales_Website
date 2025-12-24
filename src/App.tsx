@@ -41,22 +41,6 @@ let globalConsultationTime: string = "";
 function HomePage() {
   const navigate = useNavigate();
 
-  const [currentPage, setCurrentPage] = useState<PageType>(
-    "onboarding-analyzing"
-  );
-  const [signupData, setSignupData] = useState<SignupFormData | null>({
-    firstName: "John",
-    lastName: "Doe",
-    email: "john@example.com",
-    phone: "(555) 123-4567",
-    businessName: "Demo Rentals",
-    businessType: "equipment",
-  });
-  const [consultationTime, setConsultationTime] = useState<string>(
-    "2024-01-15T10:00:00"
-  );
-  const [scrollToComparison, setScrollToComparison] = useState(false);
-
   const navigateToSignup = () => {
     navigate("/start-trial");
     window.scrollTo(0, 0);

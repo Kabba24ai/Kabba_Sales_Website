@@ -15,17 +15,29 @@ export default function ProcessingPayment({ formData, onSuccess, onError }: Proc
   useEffect(() => {
     const processPayment = async () => {
       try {
-        // Check if we have payment token data
+        // If we already have the profile IDs (from OnboardingSignup), skip redundant call
+        if (formData.customerProfileId && formData.paymentProfileId) {
+          setProcessingMessage('Payment successful! Setting up your account...');
+          setTimeout(() => {
+            onSuccess();
+          }, 1500);
+          return;
+        }
+
+        // Keep fallback logic if for some reason we don't have them but have opaque data
         if (!formData.opaqueDataDescriptor || !formData.opaqueDataValue) {
-          throw new Error('Payment information is missing');
+          // If we have neither IDs nor tokens, we can't proceed
+          if (!formData.customerProfileId) {
+            throw new Error('Payment information is missing');
+          }
         }
 
         setProcessingMessage('Creating your customer profile...');
-        
+
         // Calculate scheduled date (consultation date)
         // Parse the consultation time to get the date
         const consultationDate = new Date(formData.consultationTime || Date.now());
-        
+
         setProcessingMessage('Processing your $4.95 trial payment...');
 
         // Create customer profile, charge trial fee, and schedule future payment
@@ -42,8 +54,8 @@ export default function ProcessingPayment({ formData, onSuccess, onError }: Proc
           billingAddress: {
             street: formData.billingStreet,
             city: formData.billingCity,
-            state: formData.billingState,
-            zip: formData.billingZip,
+            state: formData.billingState || '',
+            zip: formData.billingZip || '',
           },
           initialPaymentAmount: 4.95, // Trial fee
           scheduledDate: consultationDate.toISOString(),
@@ -52,20 +64,20 @@ export default function ProcessingPayment({ formData, onSuccess, onError }: Proc
 
         if (paymentResult.success) {
           setProcessingMessage('Payment successful! Setting up your account...');
-          
+
           // Store customer profile IDs for future reference
           console.log('Customer Profile ID:', paymentResult.customerProfileId);
           console.log('Payment Profile ID:', paymentResult.paymentProfileId);
           console.log('Transaction ID:', paymentResult.transactionId);
-          
+
           // TODO: Store these IDs in your database
           // - paymentResult.customerProfileId
           // - paymentResult.paymentProfileId
           // - paymentResult.transactionId
           // - consultationDate
-          
+
           // TODO: Send welcome email with consultation details
-          
+
           setTimeout(() => {
             onSuccess();
           }, 1500);

@@ -1,6 +1,6 @@
 import { useState, FormEvent } from 'react';
 import { Shield, Check, AlertCircle } from 'lucide-react';
-import { tokenizeCardData, validateCardNumber, validateExpiry, validateCVC, detectCardType } from '../lib/authorizenet';
+import { validateCardNumber, validateExpiry, validateCVC, detectCardType } from '../lib/authorizenet';
 
 interface OnboardingSignupProps {
   onComplete: (formData: SignupFormData) => void;
@@ -27,6 +27,10 @@ export interface SignupFormData {
   // Authorize.Net payment token data
   opaqueDataDescriptor?: string;
   opaqueDataValue?: string;
+  // API response data
+  reference?: string;
+  customerProfileId?: string;
+  paymentProfileId?: string;
 }
 
 const US_STATES = [
@@ -140,33 +144,72 @@ export default function OnboardingSignup({ onComplete, onBack, initialData }: On
     }
 
     try {
-      // Tokenize card data with Authorize.Net
-      const tokenResponse = await tokenizeCardData(
-        formData.cardNumber,
-        formData.cardExpiry,
-        formData.cardCvc,
-        formData.cardName,
-        formData.billingZip
-      );
+      // Prepare the payload for the authorization API
+      // For schedule_datetime, we use a placeholder (3 days from now) as the actual scheduling happens in the next step
+      const futureDate = new Date();
+      futureDate.setDate(futureDate.getDate() + 3);
+      const scheduleDatetime = futureDate.toISOString().slice(0, 19).replace('T', ' ');
 
-      if (tokenResponse.opaqueData) {
-        // Add payment token to form data
+      const payload = {
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        phone_number: formData.phoneNumber.replace(/\D/g, ''),
+        email: formData.email,
+        password: formData.password,
+        business_name: formData.businessName,
+        street_address: formData.billingStreet,
+        city: formData.billingCity,
+        state: formData.billingState,
+        zip_code: formData.billingZip,
+        card_name: formData.cardName,
+        card_number: formData.cardNumber.replace(/\s/g, ''),
+        expiry_date: formData.cardExpiry,
+        cvc: formData.cardCvc,
+        amount: 4.95,
+        schedule_datetime: scheduleDatetime
+      };
+
+      const response = await fetch("https://s-api.kabba.ai/api/admin/v1/authorize", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        // Success: move forward
         const completeFormData: SignupFormData = {
           ...formData,
-          opaqueDataDescriptor: tokenResponse.opaqueData.dataDescriptor,
-          opaqueDataValue: tokenResponse.opaqueData.dataValue,
+          reference: result.data.reference,
+          customerProfileId: result.data.customer_profile_id,
+          paymentProfileId: result.data.payment_profile_id,
         };
-
-        // Pass tokenized data to next step
         onComplete(completeFormData);
+      } else if (response.status === 422) {
+        // Validation failed
+        const apiErrors = result.errors || {};
+        const newCardErrors = { ...errors };
+
+        if (apiErrors.card_number) newCardErrors.cardNumber = apiErrors.card_number[0];
+        if (apiErrors.expiry_date) newCardErrors.expiry = apiErrors.expiry_date[0];
+        if (apiErrors.cvc) newCardErrors.cvc = apiErrors.cvc[0];
+
+        setCardErrors(newCardErrors);
+        setPaymentError(result.message || 'Validation failed. Please check your card information.');
+        setIsSubmitting(false);
       } else {
-        throw new Error('Failed to tokenize payment information');
+        // Other errors
+        throw new Error(result.message || 'Failed to process authorization');
       }
     } catch (error) {
-      console.error('Payment tokenization error:', error);
+      console.error('Authorization API error:', error);
       setPaymentError(
-        error instanceof Error 
-          ? error.message 
+        error instanceof Error
+          ? error.message
           : 'Unable to process payment information. Please check your card details and try again.'
       );
       setIsSubmitting(false);
@@ -558,9 +601,8 @@ export default function OnboardingSignup({ onComplete, onBack, initialData }: On
                           required
                           value={formData.cardNumber}
                           onChange={(e) => handleChange('cardNumber', formatCardNumber(e.target.value))}
-                          className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all text-gray-900 ${
-                            cardErrors.cardNumber ? 'border-red-300' : 'border-gray-300'
-                          }`}
+                          className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all text-gray-900 ${cardErrors.cardNumber ? 'border-red-300' : 'border-gray-300'
+                            }`}
                           placeholder="4242 4242 4242 4242"
                         />
                         {cardType && cardType !== 'Unknown' && (
@@ -582,9 +624,8 @@ export default function OnboardingSignup({ onComplete, onBack, initialData }: On
                           required
                           value={formData.cardExpiry}
                           onChange={(e) => handleChange('cardExpiry', formatExpiry(e.target.value))}
-                          className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all text-gray-900 ${
-                            cardErrors.expiry ? 'border-red-300' : 'border-gray-300'
-                          }`}
+                          className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all text-gray-900 ${cardErrors.expiry ? 'border-red-300' : 'border-gray-300'
+                            }`}
                           placeholder="MM/YY"
                           maxLength={5}
                         />
@@ -603,9 +644,8 @@ export default function OnboardingSignup({ onComplete, onBack, initialData }: On
                           maxLength={4}
                           value={formData.cardCvc}
                           onChange={(e) => handleChange('cardCvc', e.target.value.replace(/\D/g, ''))}
-                          className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all text-gray-900 ${
-                            cardErrors.cvc ? 'border-red-300' : 'border-gray-300'
-                          }`}
+                          className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all text-gray-900 ${cardErrors.cvc ? 'border-red-300' : 'border-gray-300'
+                            }`}
                           placeholder="123"
                         />
                         {cardErrors.cvc && (
