@@ -173,6 +173,7 @@ export default function AnalyzingAvailability({ formData, onComplete, onCancel, 
     if (selectedSlot) {
       const slot = timeSlots.find((s) => s.id === selectedSlot);
       if (slot) {
+        console.log('Selected consultation time:', slot.date.toISOString());
         onComplete(slot.date.toISOString());
       }
     }

@@ -1,6 +1,7 @@
 import { Loader2, CreditCard } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { SignupFormData } from './OnboardingSignup';
+import { createCustomerWithPayment } from '../lib/payment-service';
 
 interface ProcessingPaymentProps {
   formData: SignupFormData;
@@ -9,19 +10,91 @@ interface ProcessingPaymentProps {
 }
 
 export default function ProcessingPayment({ formData, onSuccess, onError }: ProcessingPaymentProps) {
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      const cleanCardNumber = formData.cardNumber.replace(/\s/g, '');
-      const isTestCard = cleanCardNumber === '4242424242424242' &&
-                        formData.cardExpiry === '10/29' &&
-                        formData.cardCvc === '123';
+  const [processingMessage, setProcessingMessage] = useState('Verifying payment information...');
 
-      if (isTestCard) {
-        onSuccess();
-      } else {
+  useEffect(() => {
+    const processPayment = async () => {
+      try {
+        // If we already have the profile IDs (from OnboardingSignup), skip redundant call
+        if (formData.customerProfileId && formData.paymentProfileId) {
+          setProcessingMessage('Payment successful! Setting up your account...');
+          setTimeout(() => {
+            onSuccess();
+          }, 1500);
+          return;
+        }
+
+        // Keep fallback logic if for some reason we don't have them but have opaque data
+        if (!formData.opaqueDataDescriptor || !formData.opaqueDataValue) {
+          // If we have neither IDs nor tokens, we can't proceed
+          if (!formData.customerProfileId) {
+            throw new Error('Payment information is missing');
+          }
+        }
+
+        setProcessingMessage('Creating your customer profile...');
+
+        // Calculate scheduled date (consultation date)
+        // Parse the consultation time to get the date
+        const consultationDate = new Date(formData.consultationTime || Date.now());
+
+        setProcessingMessage('Processing your $4.95 trial payment...');
+
+        // Create customer profile, charge trial fee, and schedule future payment
+        const paymentResult = await createCustomerWithPayment({
+          opaqueDataDescriptor: formData.opaqueDataDescriptor,
+          opaqueDataValue: formData.opaqueDataValue,
+          customerInfo: {
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            email: formData.email,
+            phoneNumber: formData.phoneNumber,
+            businessName: formData.businessName,
+          },
+          billingAddress: {
+            street: formData.billingStreet,
+            city: formData.billingCity,
+            state: formData.billingState || '',
+            zip: formData.billingZip || '',
+          },
+          initialPaymentAmount: 4.95, // Trial fee
+          scheduledDate: consultationDate.toISOString(),
+          fullAmount: 397.00, // Full monthly amount to charge on consultation date
+        });
+
+        if (paymentResult.success) {
+          setProcessingMessage('Payment successful! Setting up your account...');
+
+          // Store customer profile IDs for future reference
+          console.log('Customer Profile ID:', paymentResult.customerProfileId);
+          console.log('Payment Profile ID:', paymentResult.paymentProfileId);
+          console.log('Transaction ID:', paymentResult.transactionId);
+
+          // TODO: Store these IDs in your database
+          // - paymentResult.customerProfileId
+          // - paymentResult.paymentProfileId
+          // - paymentResult.transactionId
+          // - consultationDate
+
+          // TODO: Send welcome email with consultation details
+
+          setTimeout(() => {
+            onSuccess();
+          }, 1500);
+        } else {
+          console.error('Payment failed:', paymentResult.error);
+          onError();
+        }
+      } catch (error) {
+        console.error('Payment processing error:', error);
         onError();
       }
-    }, 3000);
+    };
+
+    // Start payment processing after a brief delay
+    const timer = setTimeout(() => {
+      processPayment();
+    }, 1000);
 
     return () => clearTimeout(timer);
   }, [formData, onSuccess, onError]);
@@ -45,16 +118,16 @@ export default function ProcessingPayment({ formData, onSuccess, onError }: Proc
 
           <div className="space-y-3">
             <h1 className="text-3xl font-bold text-white">
-              Processing your trial subscription now
+              {processingMessage}
             </h1>
             <p className="text-gray-400">
-              Please wait while we process your payment and activate your account.
+              Please don't close this window or press the back button.
             </p>
           </div>
 
           <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
             <div className="w-2 h-2 rounded-full bg-cyan-500 animate-pulse" />
-            <span>This usually takes just a few seconds</span>
+            <span>Secure payment processing</span>
           </div>
         </div>
       </div>
