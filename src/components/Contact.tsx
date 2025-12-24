@@ -22,6 +22,8 @@ export default function Contact({ id = 'contact' }: ContactProps) {
     setSubmitStatus('idle');
 
     try {
+      console.log('Form submitted:', formData);
+
       // const { error } = await supabase
       //   .from('contact_submissions')
       //   .insert([{
