@@ -112,11 +112,13 @@ export default function OnboardingSignup({ onComplete, onBack, initialData }: On
     expiry: '',
     cvc: '',
   });
+  const [apiValidationErrors, setApiValidationErrors] = useState<string[]>([]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setPaymentError('');
+    setApiValidationErrors([]);
 
     // Validate card data before tokenization
     const errors = {
@@ -192,6 +194,19 @@ export default function OnboardingSignup({ onComplete, onBack, initialData }: On
       } else if (response.status === 422) {
         // Validation failed
         const apiErrors = result.errors || {};
+        const errorMessages: string[] = [];
+
+        // Flatten all API errors into a single list
+        Object.values(apiErrors).forEach((messages: any) => {
+          if (Array.isArray(messages)) {
+            errorMessages.push(...messages);
+          } else if (typeof messages === 'string') {
+            errorMessages.push(messages);
+          }
+        });
+
+        setApiValidationErrors(errorMessages);
+
         const newCardErrors = { ...errors };
 
         if (apiErrors.card_number) newCardErrors.cardNumber = apiErrors.card_number[0];
@@ -199,7 +214,7 @@ export default function OnboardingSignup({ onComplete, onBack, initialData }: On
         if (apiErrors.cvc) newCardErrors.cvc = apiErrors.cvc[0];
 
         setCardErrors(newCardErrors);
-        setPaymentError(result.message || 'Validation failed. Please check your card information.');
+        setPaymentError(result.message || 'Validation failed. Please check your information.');
         setIsSubmitting(false);
       } else {
         // Other errors
@@ -233,6 +248,7 @@ export default function OnboardingSignup({ onComplete, onBack, initialData }: On
     if (field === 'cardNumber' || field === 'cardExpiry' || field === 'cardCvc') {
       setCardErrors(prev => ({ ...prev, [field === 'cardExpiry' ? 'expiry' : field]: '' }));
       setPaymentError('');
+      setApiValidationErrors([]);
     }
 
     // Detect card type
@@ -674,6 +690,19 @@ export default function OnboardingSignup({ onComplete, onBack, initialData }: On
                       'Start My $4.95 Trial'
                     )}
                   </button>
+
+                  {apiValidationErrors.length > 0 && (
+                    <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                      <div className="flex items-start gap-3">
+                        <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                        <ul className="list-disc list-inside space-y-1">
+                          {apiValidationErrors.map((msg, i) => (
+                            <li key={i} className="text-sm text-red-700">{msg}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  )}
 
                   <p className="text-center text-sm text-gray-600 mt-4">
                     Secure checkout • Cancel anytime • No contracts
