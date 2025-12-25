@@ -23,21 +23,17 @@ import ProcessingPayment from './components/ProcessingPayment';
 import PaymentError from './components/PaymentError';
 import TrialActivated from './components/TrialActivated';
 import SetupCanceled from './components/SetupCanceled';
+import AdminSignupsList from './components/AdminSignupsList';
+import AdminSignupDetails from './components/AdminSignupDetails';
 
-type PageType = 'home' | 'pricing' | 'our-story' | 'contact' | 'privacy-policy' | 'terms-of-service' | 'refund-cancellation' | 'acceptable-use-policy' | 'onboarding-signup' | 'onboarding-analyzing' | 'processing-payment' | 'payment-error' | 'onboarding-activated' | 'setup-canceled';
+type PageType = 'home' | 'pricing' | 'our-story' | 'contact' | 'privacy-policy' | 'terms-of-service' | 'refund-cancellation' | 'acceptable-use-policy' | 'onboarding-signup' | 'onboarding-analyzing' | 'processing-payment' | 'payment-error' | 'onboarding-activated' | 'setup-canceled' | 'admin-signups' | 'admin-signup-details';
 
 function App() {
-  const [currentPage, setCurrentPage] = useState<PageType>('onboarding-analyzing');
-  const [signupData, setSignupData] = useState<SignupFormData | null>({
-    firstName: 'John',
-    lastName: 'Doe',
-    email: 'john@example.com',
-    phone: '(555) 123-4567',
-    businessName: 'Demo Rentals',
-    businessType: 'equipment'
-  });
-  const [consultationTime, setConsultationTime] = useState<string>('2024-01-15T10:00:00');
+  const [currentPage, setCurrentPage] = useState<PageType>('home');
+  const [signupData, setSignupData] = useState<SignupFormData | null>(null);
+  const [consultationTime, setConsultationTime] = useState<string | null>(null);
   const [scrollToComparison, setScrollToComparison] = useState(false);
+  const [selectedSignupId, setSelectedSignupId] = useState<string | null>(null);
 
   const navigateToSignup = () => {
     setCurrentPage('onboarding-signup');
@@ -161,6 +157,23 @@ function App() {
     window.scrollTo(0, 0);
   };
 
+  const navigateToAdminSignups = () => {
+    setCurrentPage('admin-signups');
+    window.scrollTo(0, 0);
+  };
+
+  const handleViewSignupDetails = (signupId: string) => {
+    setSelectedSignupId(signupId);
+    setCurrentPage('admin-signup-details');
+    window.scrollTo(0, 0);
+  };
+
+  const handleBackToAdminList = () => {
+    setSelectedSignupId(null);
+    setCurrentPage('admin-signups');
+    window.scrollTo(0, 0);
+  };
+
   if (currentPage === 'onboarding-signup') {
     return <OnboardingSignup onComplete={handleSignupComplete} onBack={navigateToHome} initialData={signupData || undefined} />;
   }
@@ -169,8 +182,8 @@ function App() {
     return <AnalyzingAvailability formData={signupData} onComplete={handleAnalyzingComplete} onCancel={handleSetupCancel} initialConsultationTime={consultationTime || undefined} />;
   }
 
-  if (currentPage === 'processing-payment' && signupData) {
-    return <ProcessingPayment formData={signupData} onSuccess={handlePaymentSuccess} onError={handlePaymentError} />;
+  if (currentPage === 'processing-payment' && signupData && consultationTime) {
+    return <ProcessingPayment formData={signupData} consultationTime={consultationTime} onSuccess={handlePaymentSuccess} onError={handlePaymentError} />;
   }
 
   if (currentPage === 'payment-error') {
@@ -222,6 +235,14 @@ function App() {
 
   if (currentPage === 'acceptable-use-policy') {
     return <AcceptableUsePolicyPage onBack={navigateToHome} onStartTrial={navigateToSignup} onViewPricing={navigateToPricing} onViewOurStory={navigateToOurStory} onViewContact={navigateToContact} onViewProduct={navigateToHomeProduct} onViewConsultation={navigateToHomeConsultation} onViewPrivacyPolicy={navigateToPrivacyPolicy} onViewTermsOfService={navigateToTermsOfService} onViewRefundPolicy={navigateToRefundCancellation} />;
+  }
+
+  if (currentPage === 'admin-signups') {
+    return <AdminSignupsList onViewDetails={handleViewSignupDetails} />;
+  }
+
+  if (currentPage === 'admin-signup-details' && selectedSignupId) {
+    return <AdminSignupDetails signupId={selectedSignupId} onBack={handleBackToAdminList} />;
   }
 
   return (

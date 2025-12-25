@@ -1,30 +1,62 @@
 import { Loader2, CreditCard } from 'lucide-react';
 import { useEffect } from 'react';
 import { SignupFormData } from './OnboardingSignup';
+import { supabase } from '../lib/supabase';
 
 interface ProcessingPaymentProps {
   formData: SignupFormData;
+  consultationTime: string;
   onSuccess: () => void;
   onError: () => void;
 }
 
-export default function ProcessingPayment({ formData, onSuccess, onError }: ProcessingPaymentProps) {
+export default function ProcessingPayment({ formData, consultationTime, onSuccess, onError }: ProcessingPaymentProps) {
   useEffect(() => {
-    const timer = setTimeout(() => {
+    const processPayment = async () => {
       const cleanCardNumber = formData.cardNumber.replace(/\s/g, '');
       const isTestCard = cleanCardNumber === '4242424242424242' &&
                         formData.cardExpiry === '10/29' &&
                         formData.cardCvc === '123';
 
-      if (isTestCard) {
+      if (!isTestCard) {
+        onError();
+        return;
+      }
+
+      try {
+        const { error: insertError } = await supabase
+          .from('signups')
+          .insert({
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+            email: formData.email,
+            phone_number: formData.phoneNumber,
+            business_name: formData.businessName,
+            billing_street: formData.billingStreet,
+            billing_city: formData.billingCity,
+            billing_state: formData.billingState,
+            billing_zip: formData.billingZip,
+            consultation_time: consultationTime,
+            status: 'trial'
+          });
+
+        if (insertError) {
+          console.error('Failed to save signup:', insertError);
+          onError();
+          return;
+        }
+
         onSuccess();
-      } else {
+      } catch (error) {
+        console.error('Error processing payment:', error);
         onError();
       }
-    }, 3000);
+    };
+
+    const timer = setTimeout(processPayment, 3000);
 
     return () => clearTimeout(timer);
-  }, [formData, onSuccess, onError]);
+  }, [formData, consultationTime, onSuccess, onError]);
 
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100 flex items-center justify-center px-4">
