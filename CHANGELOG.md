@@ -4,6 +4,23 @@ All notable changes to the KABBA Sales Website will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+- **Admin Section**: Complete admin dashboard for viewing and managing trial signups
+  - `AdminSignupsList.tsx`: Summary view of all signups with key information
+  - `AdminSignupDetails.tsx`: Detailed view of individual signup records
+  - Database table `signups` with complete schema for storing signup data
+  - Status management system (pending, trial, active, canceled)
+  - Real-time data fetching from Supabase
+  - Responsive admin UI with color-coded status badges
+  - One-click status updates
+  - Clickable email/phone links for quick customer contact
+  - Comprehensive admin documentation (`ADMIN.md`)
+- Database migration `20251225165258_create_signups_table.sql`
+- Signup data persistence in ProcessingPayment component
+- Admin routing in App.tsx
+- Database indexes for optimized queries (email, created_at, status)
+- Row Level Security (RLS) policies for admin access
+
 ### Changed
 - Split Full Name field into separate First Name and Last Name fields in signup forms
 - Added Phone Number field with automatic (xxx) xxx-xxxx formatting
@@ -13,6 +30,13 @@ All notable changes to the KABBA Sales Website will be documented in this file.
 - Card name now automatically combines first and last name
 - Updated consultation message to "Next Step: You'll choose your preferred consultation date & time." and moved it below the trial button
 - Reordered form fields: Email now appears after Phone Number and directly above Password field (using email as login ID)
+- ProcessingPayment component now saves signup data to database after successful payment
+- Updated README.md with admin section documentation, database schema, and enhancement roadmap
+
+### Security Notes
+- **Important**: Admin section currently has no authentication. Must add auth before production deployment.
+- Sensitive payment card data (card numbers, CVC, expiry) is never stored in database
+- RLS enabled on signups table - only authenticated users can view/update records
 
 ## [1.1.0] - 2024-12-22
 

@@ -30,6 +30,8 @@ project/
 ├── src/
 │   ├── components/
 │   │   ├── AcceptableUsePolicyPage.tsx   # Acceptable Use Policy page
+│   │   ├── AdminSignupDetails.tsx        # Admin: Individual signup details view
+│   │   ├── AdminSignupsList.tsx          # Admin: Signups list/summary view
 │   │   ├── AnalyzingAvailability.tsx     # Consultation scheduling interface
 │   │   ├── AntiDemo.tsx                  # Problem statement section
 │   │   ├── Consultation.tsx              # Consultation value proposition
@@ -47,7 +49,7 @@ project/
 │   │   ├── Pricing.tsx                   # Pricing overview section
 │   │   ├── PricingPage.tsx               # Detailed pricing page
 │   │   ├── PrivacyPolicyPage.tsx         # Privacy policy page
-│   │   ├── ProcessingPayment.tsx         # Payment processing screen
+│   │   ├── ProcessingPayment.tsx         # Payment processing & data persistence
 │   │   ├── RealShop.tsx                  # Live demo showcase
 │   │   ├── RefundCancellationPage.tsx    # Refund & Cancellation policy
 │   │   ├── SetupCanceled.tsx             # Cancellation confirmation
@@ -65,7 +67,8 @@ project/
 │   └── vite-env.d.ts                     # Vite type definitions
 ├── supabase/
 │   └── migrations/
-│       └── 20251222023246_create_contact_submissions.sql
+│       ├── 20251222023246_create_contact_submissions.sql
+│       └── 20251225165258_create_signups_table.sql
 ├── .env                                  # Environment variables
 ├── .gitignore                            # Git ignore rules
 ├── package.json                          # Project dependencies
@@ -140,6 +143,7 @@ npm run lint
 
 The application uses client-side routing with the following pages:
 
+**Public Pages:**
 1. **home** - Main landing page with all marketing sections
 2. **pricing** - Detailed pricing information page
 3. **our-story** - About KABBA and company story
@@ -148,12 +152,18 @@ The application uses client-side routing with the following pages:
 6. **terms-of-service** - Terms of service page
 7. **refund-cancellation** - Refund and cancellation policy
 8. **acceptable-use-policy** - Acceptable use policy
+
+**Onboarding Flow:**
 9. **onboarding-signup** - Trial signup form
 10. **onboarding-analyzing** - Consultation time selection
 11. **processing-payment** - Payment processing screen
 12. **payment-error** - Payment failure recovery
 13. **onboarding-activated** - Trial activation success
 14. **setup-canceled** - Setup cancellation confirmation
+
+**Admin Section:**
+15. **admin-signups** - Signups list/summary view
+16. **admin-signup-details** - Individual signup details view
 
 ### User Journey
 
@@ -226,12 +236,127 @@ The application uses client-side routing with the following pages:
 - **Per Transaction**: $0.39 per rental transaction
 - No contracts, cancel anytime
 
+## Admin Section
+
+### Overview
+
+The admin section provides a simple interface to view and manage trial signups. This is a foundational implementation designed to grow as the business scales.
+
+### Access Instructions
+
+**Temporary Access (Development)**:
+To access the admin section during development, you can modify line 32 in `src/App.tsx`:
+
+```typescript
+// Change from:
+const [currentPage, setCurrentPage] = useState<PageType>('home');
+
+// To:
+const [currentPage, setCurrentPage] = useState<PageType>('admin-signups');
+```
+
+Then refresh the browser to load directly into the admin dashboard.
+
+**Production Access Note**: Currently there is no authentication system. Before deploying to production, implement proper authentication to protect the admin section. Recommended: Supabase Auth with email/password or magic links.
+
+### Admin Features
+
+**Signups List Page** (`AdminSignupsList.tsx`):
+- Displays all trial signups in reverse chronological order
+- Shows key information: name, business, email, phone, consultation time
+- Color-coded status badges (pending, trial, active, canceled)
+- Real-time data from Supabase
+- Refresh button to reload data
+- Click any signup to view full details
+
+**Signup Details Page** (`AdminSignupDetails.tsx`):
+- Complete customer information
+- Full billing address
+- Consultation scheduling information
+- Status management (update status with one click)
+- Timeline showing creation and update timestamps
+- Clickable email/phone for quick contact
+
+### Database Schema
+
+**Table: `signups`**
+
+| Column | Type | Description |
+|--------|------|-------------|
+| id | uuid | Primary key |
+| first_name | text | Customer's first name |
+| last_name | text | Customer's last name |
+| email | text | Email address |
+| phone_number | text | Phone number |
+| business_name | text | Business name |
+| billing_street | text | Billing street address |
+| billing_city | text | Billing city |
+| billing_state | text | Billing state (2-letter code) |
+| billing_zip | text | Billing ZIP code |
+| consultation_time | timestamptz | Scheduled consultation date/time |
+| status | text | Current status (pending/trial/active/canceled) |
+| created_at | timestamptz | Signup timestamp |
+| updated_at | timestamptz | Last update timestamp |
+
+**Security**: Row Level Security (RLS) is enabled. Authenticated users can view and update all signups.
+
+**Note**: Payment card information (card numbers, CVC, expiry) is **never stored** in the database. Only business and contact information is persisted.
+
+### Data Flow
+
+1. User completes signup form (`OnboardingSignup.tsx`)
+2. User selects consultation time (`AnalyzingAvailability.tsx`)
+3. Payment is processed (`ProcessingPayment.tsx`)
+4. On successful payment, signup data is inserted into Supabase
+5. Admin can view signup immediately in admin section
+
+### Future Enhancements
+
+Planned improvements for the admin section:
+
+**Phase 1 - Security & Access**:
+- [ ] Implement Supabase Authentication
+- [ ] Add admin login page
+- [ ] Protect admin routes with auth check
+- [ ] Add user roles (admin, viewer, etc.)
+
+**Phase 2 - Search & Filtering**:
+- [ ] Search by name, email, or business
+- [ ] Filter by status
+- [ ] Filter by date range
+- [ ] Sort options (date, name, status)
+
+**Phase 3 - Communication**:
+- [ ] Send email directly from admin panel
+- [ ] SMS integration for quick contact
+- [ ] Note/comment system for each signup
+- [ ] Activity log (who viewed/updated)
+
+**Phase 4 - Analytics**:
+- [ ] Dashboard with key metrics
+- [ ] Signup trends graph
+- [ ] Conversion rate tracking
+- [ ] Consultation completion rate
+
+**Phase 5 - Export & Reporting**:
+- [ ] Export to CSV
+- [ ] Export to Excel
+- [ ] Automated weekly reports
+- [ ] Integration with CRM systems
+
+**Phase 6 - Automation**:
+- [ ] Automated follow-up email sequences
+- [ ] Calendar integration (Google/Outlook)
+- [ ] Automated consultation reminders
+- [ ] Status update triggers
+
 ## State Management
 
 The application uses React useState hooks for:
 - Page navigation (currentPage)
 - Form data persistence (signupData)
 - Consultation time (consultationTime)
+- Admin navigation (selectedSignupId)
 
 State flows through the component tree via props and callbacks.
 
@@ -251,14 +376,17 @@ Modern browsers supporting:
 
 ## Future Enhancements
 
-Potential areas for expansion:
+### Sales Website
 - Real payment integration (Stripe recommended)
-- Supabase database integration for lead capture
 - Email confirmation flows
-- Analytics tracking
+- Analytics tracking (Google Analytics, Mixpanel)
 - A/B testing capabilities
 - Blog/content section
 - Live chat integration
+- Email marketing integration (Mailchimp, ConvertKit)
+
+### Admin Section
+See detailed admin enhancement roadmap in the "Admin Section" section above.
 
 ## Development Notes
 
