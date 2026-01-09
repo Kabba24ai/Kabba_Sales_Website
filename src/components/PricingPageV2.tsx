@@ -322,7 +322,7 @@ export default function PricingPageV2({
       <section className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl sm:text-5xl font-bold text-white mb-8">
-            Seasonality is real. Your pricing should reflect that.
+            Seasonality is real.<br /> Your pricing should reflect that.
           </h2>
           <p className="text-xl text-slate-300 mb-8 leading-relaxed">
             Some businesses benefit from upfront pricing.<br />
