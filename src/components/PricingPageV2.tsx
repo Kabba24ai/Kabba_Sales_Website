@@ -154,7 +154,47 @@ export default function PricingPageV2({
           </div>
 
           <div className="grid lg:grid-cols-3 gap-8 mb-12">
-            {/* MODEL 1 — FLEXIBLE / GROWTH-ALIGNED (PRIMARY) */}
+            {/* MODEL 1 — HIGH-VOLUME BUY-OUT */}
+            <div className="bg-gradient-to-br from-slate-800 to-slate-700 border-2 border-slate-600 rounded-2xl p-8 shadow-xl">
+              <div className="text-center mb-6">
+                <h3 className="text-2xl font-bold text-white mb-2">High-Volume Buy-Out</h3>
+                <p className="text-slate-400 text-sm font-semibold">Best for established, high-volume operations</p>
+              </div>
+
+              <div className="bg-white/5 rounded-xl p-6 mb-6 text-center">
+                <div className="text-4xl font-bold text-white mb-1">$6,000</div>
+                <div className="text-slate-300 mb-1">one-time fee per location</div>
+                <div className="text-slate-400 text-sm">(No transaction fees)</div>
+              </div>
+
+              <ul className="space-y-3 mb-8 text-slate-300">
+                {[
+                  'Eliminates per-transaction fees',
+                  'One-time software investment per location',
+                  'Same KABBA system, different payment structure',
+                  'Designed for predictable, high-volume workflows'
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-3">
+                    <Check className="text-slate-400 flex-shrink-0 mt-1" size={20} />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <button
+                onClick={onStartTrial}
+                className="w-full bg-amber-500 hover:bg-amber-600 text-white px-6 py-4 rounded-lg font-bold text-lg transition shadow-xl hover:shadow-2xl inline-flex items-center justify-center group mb-3"
+              >
+                Start My $4.95 Trial
+                <ArrowRight className="ml-2 group-hover:translate-x-1 transition" size={20} />
+              </button>
+
+              <p className="text-cyan-300 text-center text-sm">
+                Cancel anytime • No long-term commitment
+              </p>
+            </div>
+
+            {/* MODEL 2 — FLEXIBLE / GROWTH-ALIGNED (PRIMARY) */}
             <div className="bg-gradient-to-br from-cyan-900/40 to-blue-900/40 border-4 border-cyan-500/70 rounded-2xl p-8 shadow-2xl transform lg:scale-105 relative">
               <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
                 <div className="bg-amber-500 text-white px-6 py-2 rounded-full text-sm font-bold shadow-lg flex items-center gap-2">
@@ -189,46 +229,6 @@ export default function PricingPageV2({
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-3">
                     <Check className="text-cyan-400 flex-shrink-0 mt-1" size={20} />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <button
-                onClick={onStartTrial}
-                className="w-full bg-amber-500 hover:bg-amber-600 text-white px-6 py-4 rounded-lg font-bold text-lg transition shadow-xl hover:shadow-2xl inline-flex items-center justify-center group mb-3"
-              >
-                Start My $4.95 Trial
-                <ArrowRight className="ml-2 group-hover:translate-x-1 transition" size={20} />
-              </button>
-
-              <p className="text-cyan-300 text-center text-sm">
-                Cancel anytime • No long-term commitment
-              </p>
-            </div>
-
-            {/* MODEL 2 — HIGH-VOLUME BUY-OUT (ANCHOR) */}
-            <div className="bg-gradient-to-br from-slate-800 to-slate-700 border-2 border-slate-600 rounded-2xl p-8 shadow-xl">
-              <div className="text-center mb-6">
-                <h3 className="text-2xl font-bold text-white mb-2">High-Volume Buy-Out</h3>
-                <p className="text-slate-400 text-sm font-semibold">Best for established, high-volume operations</p>
-              </div>
-
-              <div className="bg-white/5 rounded-xl p-6 mb-6 text-center">
-                <div className="text-4xl font-bold text-white mb-1">$6,000</div>
-                <div className="text-slate-300 mb-1">one-time fee per location</div>
-                <div className="text-slate-400 text-sm">(No transaction fees)</div>
-              </div>
-
-              <ul className="space-y-3 mb-8 text-slate-300">
-                {[
-                  'Eliminates per-transaction fees',
-                  'One-time software investment per location',
-                  'Same KABBA system, different payment structure',
-                  'Designed for predictable, high-volume workflows'
-                ].map((item) => (
-                  <li key={item} className="flex items-start gap-3">
-                    <Check className="text-slate-400 flex-shrink-0 mt-1" size={20} />
                     <span>{item}</span>
                   </li>
                 ))}
