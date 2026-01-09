@@ -382,6 +382,9 @@ export default function PricingPageV2({
       {/* SECTION 8 — FAQ (PRICING) */}
       <section className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-900/50">
         <div className="max-w-4xl mx-auto">
+          <h2 className="text-4xl md:text-5xl font-bold text-white text-center mb-12">
+            Common Questions
+          </h2>
           <div className="space-y-6">
             {[
               {
