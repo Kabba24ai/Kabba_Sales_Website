@@ -27,7 +27,7 @@ import AdminSignupsList from './components/AdminSignupsList';
 import AdminSignupDetails from './components/AdminSignupDetails';
 import LiveDemoModal from './components/LiveDemoModal';
 
-type PageType = 'home' | 'pricing' | 'our-story' | 'contact' | 'privacy-policy' | 'terms-of-service' | 'refund-cancellation' | 'acceptable-use-policy' | 'onboarding-signup' | 'onboarding-analyzing' | 'processing-payment' | 'payment-error' | 'onboarding-activated' | 'setup-canceled' | 'admin-signups' | 'admin-signup-details';
+type PageType = 'home' | 'product' | 'pricing' | 'our-story' | 'contact' | 'privacy-policy' | 'terms-of-service' | 'refund-cancellation' | 'acceptable-use-policy' | 'onboarding-signup' | 'onboarding-analyzing' | 'processing-payment' | 'payment-error' | 'onboarding-activated' | 'setup-canceled' | 'admin-signups' | 'admin-signup-details';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<PageType>('home');
@@ -42,6 +42,10 @@ function App() {
       'home': {
         title: 'KABBA | Rental Software Built by Real Rental Shop Operators',
         description: 'KABBA is modern rental software built and used by real rental shop owners. Pay only when you rent, protect your cash flow, and grow without $6,000 upfront fees.'
+      },
+      'product': {
+        title: 'Rental Software Features Built for Real Rental Shops | KABBA',
+        description: 'See how KABBA simplifies scheduling, inventory, dispatch, payments, and customer management — built around how rental shops actually operate.'
       },
       'pricing': {
         title: 'Pricing',
