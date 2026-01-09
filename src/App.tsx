@@ -48,8 +48,8 @@ function App() {
         description: 'See how KABBA simplifies scheduling, inventory, dispatch, payments, and customer management — built around how rental shops actually operate.'
       },
       'pricing': {
-        title: 'Pricing',
-        description: 'Pricing description'
+        title: 'Rental Software Pricing That Respects Cash Flow | KABBA',
+        description: 'Flexible rental software pricing built for seasonal businesses. Start for $4.95, pay $9.95 monthly, and only pay transaction fees when you rent.'
       },
       'our-story': {
         title: 'Our Story',
