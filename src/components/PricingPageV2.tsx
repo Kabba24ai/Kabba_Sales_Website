@@ -398,8 +398,12 @@ export default function PricingPageV2({
               }
             ].map((faq, idx) => (
               <div key={idx} className="bg-white/5 border border-white/10 rounded-xl p-8">
-                <h3 className="text-xl font-bold text-white mb-3">{faq.q}</h3>
-                <p className="text-lg text-slate-300">{faq.a}</p>
+                <h3 className="text-xl font-bold text-white mb-3">
+                  <span className="text-cyan-400">Q:</span> {faq.q}
+                </h3>
+                <p className="text-lg text-slate-300">
+                  <span className="text-cyan-400 font-semibold">A:</span> {faq.a}
+                </p>
               </div>
             ))}
           </div>
