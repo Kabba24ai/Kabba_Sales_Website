@@ -83,29 +83,59 @@ export default function PricingPageV2({
 
       {/* SECTION 2 — REALITY CHECK */}
       <section className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-900/50">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl sm:text-5xl font-bold text-white mb-8">
-            Rental businesses don't all operate the same way.
-          </h2>
-          <p className="text-xl text-slate-300 mb-10 leading-relaxed">
-            Your volume, your seasonality, and your growth stage all affect how software should support you — and how you should pay for it.
-          </p>
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6">
+              If your rental business is seasonal, why isn't your software pricing?
+            </h2>
+          </div>
 
-          <div className="grid md:grid-cols-3 gap-6 mb-10">
-            <div className="bg-white/5 border border-white/10 rounded-xl p-6">
-              <p className="text-lg text-slate-300">Some months are busy. Others are slow.</p>
+          <div className="grid md:grid-cols-2 gap-8 mb-12">
+            <div className="bg-red-900/20 border border-red-500/30 rounded-xl p-8">
+              <h3 className="text-2xl font-bold text-red-400 mb-4">Traditional Software</h3>
+              <ul className="space-y-3 text-slate-300">
+                <li className="flex items-start gap-3">
+                  <X className="text-red-400 flex-shrink-0 mt-1" size={20} />
+                  <span>Large upfront fees</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <X className="text-red-400 flex-shrink-0 mt-1" size={20} />
+                  <span>Fixed monthly or annual payments</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <X className="text-red-400 flex-shrink-0 mt-1" size={20} />
+                  <span>Same cost whether rentals happen or not</span>
+                </li>
+              </ul>
             </div>
-            <div className="bg-white/5 border border-white/10 rounded-xl p-6">
-              <p className="text-lg text-slate-300">Cash flow matters as much as features.</p>
-            </div>
-            <div className="bg-white/5 border border-white/10 rounded-xl p-6">
-              <p className="text-lg text-slate-300">The wrong pricing model can limit growth.</p>
+
+            <div className="bg-cyan-900/20 border border-cyan-500/30 rounded-xl p-8">
+              <h3 className="text-2xl font-bold text-cyan-400 mb-4">KABBA is Different</h3>
+              <ul className="space-y-3 text-slate-300">
+                <li className="flex items-start gap-3">
+                  <Check className="text-cyan-400 flex-shrink-0 mt-1" size={20} />
+                  <span>When rentals are strong → you pay a little more</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="text-cyan-400 flex-shrink-0 mt-1" size={20} />
+                  <span>When rentals slow down → your costs drop automatically</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="text-cyan-400 flex-shrink-0 mt-1" size={20} />
+                  <span>When you don't rent → you pay only $9.95 monthly</span>
+                </li>
+              </ul>
             </div>
           </div>
 
-          <p className="text-2xl font-semibold text-cyan-400">
-            Your rental software should adapt to your business — not force your business to adapt to it.
-          </p>
+          <div className="bg-gradient-to-r from-slate-800 to-slate-700 border border-slate-600 rounded-xl p-8 text-center">
+            <p className="text-2xl font-bold text-white mb-3">
+              Your software shouldn't hurt your cash flow during slow seasons.
+            </p>
+            <p className="text-slate-300 text-lg">
+              KABBA is built to handle the busy season — with pricing designed to get you through the winter.
+            </p>
+          </div>
         </div>
       </section>
 
