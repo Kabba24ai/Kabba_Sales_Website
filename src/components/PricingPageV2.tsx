@@ -147,7 +147,8 @@ export default function PricingPageV2({
               Choose the pricing model that fits how you operate.
             </h2>
             <p className="text-xl text-slate-300 leading-relaxed max-w-3xl mx-auto">
-              Every option below gives you access to the same KABBA platform.
+              Every option is fully featured, giving you access to the complete KABBA platform.
+              <br />
               The difference is how you prefer to pay as your business grows.
             </p>
           </div>
