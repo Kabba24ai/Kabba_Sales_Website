@@ -52,28 +52,28 @@ function App() {
         description: 'Flexible rental software pricing built for seasonal businesses. Start for $4.95, pay $9.95 monthly, and only pay transaction fees when you rent.'
       },
       'our-story': {
-        title: 'Our Story',
-        description: 'Our Story description'
+        title: 'Our Story | Built Inside a Real Rental Shop | KABBA',
+        description: 'KABBA was built inside a real rental business after enterprise software failed independent operators. Learn why we built it and who it\'s for.'
       },
       'contact': {
-        title: 'Contact',
-        description: 'Contact description'
+        title: 'Contact KABBA | Talk to Real Rental Software Operators',
+        description: 'Have questions about KABBA? Contact our team to speak directly with people who own and operate real rental shops.'
       },
       'privacy-policy': {
-        title: 'Privacy Policy',
-        description: 'Privacy Policy description'
+        title: 'Privacy Policy | KABBA Rental Software',
+        description: 'Review how KABBA collects, uses, and protects your information. Built to meet industry and payment processor standards.'
       },
       'terms-of-service': {
-        title: 'Terms of Service',
-        description: 'Terms of Service description'
+        title: 'Terms of Service | KABBA Rental Software',
+        description: 'Read the terms and conditions for using KABBA rental software, including subscriptions, transactions, and account responsibilities.'
       },
       'refund-cancellation': {
-        title: 'Refund & Cancellation',
-        description: 'Refund & Cancellation description'
+        title: 'Refund & Cancellation Policy | KABBA',
+        description: 'Understand KABBA\'s refund and cancellation policy, including subscription terms and transaction fee responsibilities.'
       },
       'acceptable-use-policy': {
-        title: 'Acceptable Use Policy',
-        description: 'Acceptable Use Policy description'
+        title: 'Acceptable Use Policy | KABBA',
+        description: 'Guidelines for acceptable use of the KABBA rental software platform to ensure reliability, security, and fair use.'
       },
       'onboarding-signup': {
         title: 'Start Your Trial',
