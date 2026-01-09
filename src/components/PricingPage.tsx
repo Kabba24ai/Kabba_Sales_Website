@@ -89,7 +89,7 @@ export default function PricingPage({ onBack, onStartTrial, onViewOurStory, onVi
 
               <div className="bg-white/10 rounded-xl p-6 backdrop-blur-sm">
                 <div className="text-cyan-300 text-lg font-semibold mb-2">Plus</div>
-                <div className="text-4xl font-bold text-white mb-2">$0.39</div>
+                <div className="text-4xl font-bold text-white mb-2">$0.49</div>
                 <div className="text-slate-300 text-lg">per rental transaction</div>
               </div>
             </div>

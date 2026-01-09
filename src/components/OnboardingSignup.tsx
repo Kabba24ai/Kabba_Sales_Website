@@ -185,7 +185,7 @@ export default function OnboardingSignup({ onComplete, onBack, initialData }: On
                   'No demos. No pressure. No sales reps',
                   'Software built inside a real rental shop',
                   'Access to our Rental Business Growth Consultation',
-                  'Pay only when you rent — just $0.39 per transaction',
+                  'Pay only when you rent — just $0.49 per transaction',
                 ].map((item, index) => (
                   <li key={index} className="flex items-start gap-3">
                     <Check className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />

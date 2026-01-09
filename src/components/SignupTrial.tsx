@@ -44,7 +44,7 @@ export default function SignupTrial({ onBack }: SignupTrialProps) {
                 </li>
                 <li className="flex items-start">
                   <span className="text-cyan-400 mr-2">✓</span>
-                  <span>Pay only when you rent - $0.39 per transaction</span>
+                  <span>Pay only when you rent - $0.49 per transaction</span>
                 </li>
                 <li className="flex items-start">
                   <span className="text-cyan-400 mr-2">✓</span>

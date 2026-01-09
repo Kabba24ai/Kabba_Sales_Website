@@ -170,7 +170,7 @@ export default function PricingPageV2({
               <div className="bg-white/10 rounded-xl p-6 mb-6 text-center backdrop-blur-sm">
                 <div className="text-4xl font-bold text-white mb-1">$9.95</div>
                 <div className="text-slate-300 mb-3">monthly</div>
-                <div className="text-3xl font-bold text-cyan-400">+ $0.39</div>
+                <div className="text-3xl font-bold text-cyan-400">+ $0.49</div>
                 <div className="text-slate-300">per transaction</div>
               </div>
 

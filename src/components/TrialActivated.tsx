@@ -154,7 +154,7 @@ export default function TrialActivated({ formData, consultationTime, onGoToDashb
                     <span className="text-gray-400">After trial:</span>
                     <div className="text-right">
                       <div className="text-gray-300 font-semibold">$9.95/month</div>
-                      <div className="text-gray-500 text-xs">+ $0.39 per rental transaction</div>
+                      <div className="text-gray-500 text-xs">+ $0.49 per rental transaction</div>
                     </div>
                   </div>
                   <div className="pt-3 border-t border-gray-800">
