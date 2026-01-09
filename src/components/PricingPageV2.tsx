@@ -235,11 +235,16 @@ export default function PricingPageV2({
               </ul>
 
               <button
-                onClick={onViewContact}
-                className="w-full bg-slate-700 hover:bg-slate-600 border-2 border-slate-500 text-white px-6 py-4 rounded-lg font-bold text-lg transition"
+                onClick={onStartTrial}
+                className="w-full bg-amber-500 hover:bg-amber-600 text-white px-6 py-4 rounded-lg font-bold text-lg transition shadow-xl hover:shadow-2xl inline-flex items-center justify-center group mb-3"
               >
-                Talk to Us
+                Start My $4.95 Trial
+                <ArrowRight className="ml-2 group-hover:translate-x-1 transition" size={20} />
               </button>
+
+              <p className="text-cyan-300 text-center text-sm">
+                Cancel anytime • No long-term commitment
+              </p>
             </div>
 
             {/* MODEL 3 — ENTERPRISE / CUSTOM */}
