@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import AntiDemo from './components/AntiDemo';
@@ -36,6 +36,86 @@ function App() {
   const [scrollToComparison, setScrollToComparison] = useState(false);
   const [selectedSignupId, setSelectedSignupId] = useState<string | null>(null);
   const [isLiveDemoModalOpen, setIsLiveDemoModalOpen] = useState(false);
+
+  useEffect(() => {
+    const pageMetadata: Record<PageType, { title: string; description: string }> = {
+      'home': {
+        title: 'KABBA | Rental Software Built by Real Rental Shop Operators',
+        description: 'KABBA is modern rental software built and used by real rental shop owners. Pay only when you rent, protect your cash flow, and grow without $6,000 upfront fees.'
+      },
+      'pricing': {
+        title: 'Pricing',
+        description: 'Pricing description'
+      },
+      'our-story': {
+        title: 'Our Story',
+        description: 'Our Story description'
+      },
+      'contact': {
+        title: 'Contact',
+        description: 'Contact description'
+      },
+      'privacy-policy': {
+        title: 'Privacy Policy',
+        description: 'Privacy Policy description'
+      },
+      'terms-of-service': {
+        title: 'Terms of Service',
+        description: 'Terms of Service description'
+      },
+      'refund-cancellation': {
+        title: 'Refund & Cancellation',
+        description: 'Refund & Cancellation description'
+      },
+      'acceptable-use-policy': {
+        title: 'Acceptable Use Policy',
+        description: 'Acceptable Use Policy description'
+      },
+      'onboarding-signup': {
+        title: 'Start Your Trial',
+        description: 'Start your KABBA trial'
+      },
+      'onboarding-analyzing': {
+        title: 'Analyzing Availability',
+        description: 'Analyzing your availability'
+      },
+      'processing-payment': {
+        title: 'Processing Payment',
+        description: 'Processing your payment'
+      },
+      'payment-error': {
+        title: 'Payment Error',
+        description: 'Payment error'
+      },
+      'onboarding-activated': {
+        title: 'Trial Activated',
+        description: 'Your trial has been activated'
+      },
+      'setup-canceled': {
+        title: 'Setup Canceled',
+        description: 'Setup has been canceled'
+      },
+      'admin-signups': {
+        title: 'Admin - Signups',
+        description: 'Admin signups list'
+      },
+      'admin-signup-details': {
+        title: 'Admin - Signup Details',
+        description: 'Admin signup details'
+      }
+    };
+
+    const metadata = pageMetadata[currentPage];
+    document.title = metadata.title;
+
+    let metaDescription = document.querySelector('meta[name="description"]');
+    if (!metaDescription) {
+      metaDescription = document.createElement('meta');
+      metaDescription.setAttribute('name', 'description');
+      document.head.appendChild(metaDescription);
+    }
+    metaDescription.setAttribute('content', metadata.description);
+  }, [currentPage]);
 
   const navigateToSignup = () => {
     setCurrentPage('onboarding-signup');
