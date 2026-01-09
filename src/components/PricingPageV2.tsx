@@ -243,7 +243,7 @@ export default function PricingPageV2({
               </button>
 
               <p className="text-cyan-300 text-center text-sm">
-                Convert anytime • Choose when you're ready
+                Cancel anytime • No long-term commitment
               </p>
             </div>
 
