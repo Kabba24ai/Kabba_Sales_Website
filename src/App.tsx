@@ -10,7 +10,7 @@ import Consultation from './components/Consultation';
 import SocialProof from './components/SocialProof';
 import FinalCTA from './components/FinalCTA';
 import Footer from './components/Footer';
-import PricingPage from './components/PricingPage';
+import PricingPageV2 from './components/PricingPageV2';
 import OurStory from './components/OurStory';
 import ContactPage from './components/ContactPage';
 import PrivacyPolicyPage from './components/PrivacyPolicyPage';
@@ -25,6 +25,7 @@ import TrialActivated from './components/TrialActivated';
 import SetupCanceled from './components/SetupCanceled';
 import AdminSignupsList from './components/AdminSignupsList';
 import AdminSignupDetails from './components/AdminSignupDetails';
+import LiveDemoModal from './components/LiveDemoModal';
 
 type PageType = 'home' | 'pricing' | 'our-story' | 'contact' | 'privacy-policy' | 'terms-of-service' | 'refund-cancellation' | 'acceptable-use-policy' | 'onboarding-signup' | 'onboarding-analyzing' | 'processing-payment' | 'payment-error' | 'onboarding-activated' | 'setup-canceled' | 'admin-signups' | 'admin-signup-details';
 
@@ -34,6 +35,7 @@ function App() {
   const [consultationTime, setConsultationTime] = useState<string | null>(null);
   const [scrollToComparison, setScrollToComparison] = useState(false);
   const [selectedSignupId, setSelectedSignupId] = useState<string | null>(null);
+  const [isLiveDemoModalOpen, setIsLiveDemoModalOpen] = useState(false);
 
   const navigateToSignup = () => {
     setCurrentPage('onboarding-signup');
@@ -174,6 +176,19 @@ function App() {
     window.scrollTo(0, 0);
   };
 
+  const handleViewLiveDemo = () => {
+    setIsLiveDemoModalOpen(true);
+  };
+
+  const handleCloseLiveDemo = () => {
+    setIsLiveDemoModalOpen(false);
+  };
+
+  const handleContinueToLiveDemo = () => {
+    setIsLiveDemoModalOpen(false);
+    window.open('https://capstonerentals.kabba.io/', '_blank');
+  };
+
   if (currentPage === 'onboarding-signup') {
     return <OnboardingSignup onComplete={handleSignupComplete} onBack={navigateToHome} initialData={signupData || undefined} />;
   }
@@ -210,7 +225,7 @@ function App() {
   }
 
   if (currentPage === 'pricing') {
-    return <PricingPage onBack={navigateToHome} onStartTrial={navigateToSignup} onViewOurStory={navigateToOurStory} onViewContact={navigateToContact} onViewProduct={navigateToHomeProduct} onViewConsultation={navigateToHomeConsultation} scrollToComparison={scrollToComparison} />;
+    return <PricingPageV2 onBack={navigateToHome} onStartTrial={navigateToSignup} onViewOurStory={navigateToOurStory} onViewContact={navigateToContact} onViewProduct={navigateToHomeProduct} onViewConsultation={navigateToHomeConsultation} onViewLiveDemo={handleViewLiveDemo} scrollToComparison={scrollToComparison} />;
   }
 
   if (currentPage === 'our-story') {
@@ -258,6 +273,7 @@ function App() {
       <SocialProof />
       <FinalCTA onStartTrial={navigateToSignup} />
       <Footer onViewOurStory={navigateToOurStory} onViewContact={navigateToContact} onViewProduct={navigateToHomeProduct} onViewPricing={navigateToPricing} onViewConsultation={navigateToHomeConsultation} onViewPrivacyPolicy={navigateToPrivacyPolicy} onViewTermsOfService={navigateToTermsOfService} onViewRefundPolicy={navigateToRefundCancellation} onViewAcceptableUsePolicy={navigateToAcceptableUsePolicy} />
+      <LiveDemoModal isOpen={isLiveDemoModalOpen} onClose={handleCloseLiveDemo} onContinue={handleContinueToLiveDemo} />
     </div>
   );
 }
