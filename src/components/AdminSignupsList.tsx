@@ -1,6 +1,14 @@
-import { useState, useEffect } from 'react';
-import { Users, Calendar, Mail, Phone, Building, ChevronRight, RefreshCw } from 'lucide-react';
-import { supabase } from '../lib/supabase';
+import { useState, useEffect } from "react";
+import {
+  Users,
+  Calendar,
+  Mail,
+  Phone,
+  Building,
+  ChevronRight,
+  RefreshCw,
+} from "lucide-react";
+// import { supabase } from "../lib/supabase";
 
 interface Signup {
   id: string;
@@ -18,7 +26,9 @@ interface AdminSignupsListProps {
   onViewDetails: (signupId: string) => void;
 }
 
-export default function AdminSignupsList({ onViewDetails }: AdminSignupsListProps) {
+export default function AdminSignupsList({
+  onViewDetails,
+}: AdminSignupsListProps) {
   const [signups, setSignups] = useState<Signup[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -28,15 +38,14 @@ export default function AdminSignupsList({ onViewDetails }: AdminSignupsListProp
     setError(null);
 
     try {
-      const { data, error: fetchError } = await supabase
-        .from('signups')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (fetchError) throw fetchError;
-      setSignups(data || []);
+      // const { data, error: fetchError } = await supabase
+      //   .from("signups")
+      //   .select("*")
+      //   .order("created_at", { ascending: false });
+      // if (fetchError) throw fetchError;
+      // setSignups(data || []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load signups');
+      setError(err instanceof Error ? err.message : "Failed to load signups");
     } finally {
       setLoading(false);
     }
@@ -48,27 +57,27 @@ export default function AdminSignupsList({ onViewDetails }: AdminSignupsListProp
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit'
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
     });
   };
 
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
-      case 'active':
-        return 'bg-emerald-500/10 text-emerald-500 border-emerald-500/30';
-      case 'trial':
-        return 'bg-cyan-500/10 text-cyan-500 border-cyan-500/30';
-      case 'pending':
-        return 'bg-yellow-500/10 text-yellow-500 border-yellow-500/30';
-      case 'canceled':
-        return 'bg-gray-500/10 text-gray-500 border-gray-500/30';
+      case "active":
+        return "bg-emerald-500/10 text-emerald-500 border-emerald-500/30";
+      case "trial":
+        return "bg-cyan-500/10 text-cyan-500 border-cyan-500/30";
+      case "pending":
+        return "bg-yellow-500/10 text-yellow-500 border-yellow-500/30";
+      case "canceled":
+        return "bg-gray-500/10 text-gray-500 border-gray-500/30";
       default:
-        return 'bg-gray-500/10 text-gray-400 border-gray-500/30';
+        return "bg-gray-500/10 text-gray-400 border-gray-500/30";
     }
   };
 
@@ -83,7 +92,8 @@ export default function AdminSignupsList({ onViewDetails }: AdminSignupsListProp
             <div>
               <h1 className="text-3xl font-bold">Trial Signups</h1>
               <p className="text-gray-400 text-sm mt-1">
-                {signups.length} {signups.length === 1 ? 'signup' : 'signups'} total
+                {signups.length} {signups.length === 1 ? "signup" : "signups"}{" "}
+                total
               </p>
             </div>
           </div>
@@ -93,7 +103,7 @@ export default function AdminSignupsList({ onViewDetails }: AdminSignupsListProp
             disabled={loading}
             className="flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-750 border border-gray-700 rounded-lg transition-colors disabled:opacity-50"
           >
-            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
             Refresh
           </button>
         </div>
@@ -111,7 +121,9 @@ export default function AdminSignupsList({ onViewDetails }: AdminSignupsListProp
         ) : signups.length === 0 ? (
           <div className="bg-gray-900 border border-gray-800 rounded-xl p-12 text-center">
             <Users className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-            <h2 className="text-xl font-semibold text-gray-400 mb-2">No signups yet</h2>
+            <h2 className="text-xl font-semibold text-gray-400 mb-2">
+              No signups yet
+            </h2>
             <p className="text-gray-500">New trial signups will appear here</p>
           </div>
         ) : (
@@ -128,7 +140,11 @@ export default function AdminSignupsList({ onViewDetails }: AdminSignupsListProp
                       <h3 className="text-lg font-semibold text-white group-hover:text-emerald-400 transition-colors">
                         {signup.first_name} {signup.last_name}
                       </h3>
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(signup.status)}`}>
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(
+                          signup.status
+                        )}`}
+                      >
                         {signup.status}
                       </span>
                     </div>

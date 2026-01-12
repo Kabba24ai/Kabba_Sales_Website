@@ -1,6 +1,16 @@
-import { useState, useEffect } from 'react';
-import { ArrowLeft, User, Mail, Phone, Building, MapPin, Calendar, Clock, RefreshCw } from 'lucide-react';
-import { supabase } from '../lib/supabase';
+import { useState, useEffect } from "react";
+import {
+  ArrowLeft,
+  User,
+  Mail,
+  Phone,
+  Building,
+  MapPin,
+  Calendar,
+  Clock,
+  RefreshCw,
+} from "lucide-react";
+// import { supabase } from '../lib/supabase';
 
 interface Signup {
   id: string;
@@ -24,7 +34,10 @@ interface AdminSignupDetailsProps {
   onBack: () => void;
 }
 
-export default function AdminSignupDetails({ signupId, onBack }: AdminSignupDetailsProps) {
+export default function AdminSignupDetails({
+  signupId,
+  onBack,
+}: AdminSignupDetailsProps) {
   const [signup, setSignup] = useState<Signup | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -35,18 +48,18 @@ export default function AdminSignupDetails({ signupId, onBack }: AdminSignupDeta
     setError(null);
 
     try {
-      const { data, error: fetchError } = await supabase
-        .from('signups')
-        .select('*')
-        .eq('id', signupId)
-        .maybeSingle();
-
-      if (fetchError) throw fetchError;
-      if (!data) throw new Error('Signup not found');
-
-      setSignup(data);
+      // const { data, error: fetchError } = await supabase
+      //   .from('signups')
+      //   .select('*')
+      //   .eq('id', signupId)
+      //   .maybeSingle();
+      // if (fetchError) throw fetchError;
+      // if (!data) throw new Error('Signup not found');
+      // setSignup(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load signup details');
+      setError(
+        err instanceof Error ? err.message : "Failed to load signup details"
+      );
     } finally {
       setLoading(false);
     }
@@ -61,16 +74,14 @@ export default function AdminSignupDetails({ signupId, onBack }: AdminSignupDeta
 
     setUpdating(true);
     try {
-      const { error: updateError } = await supabase
-        .from('signups')
-        .update({ status: newStatus, updated_at: new Date().toISOString() })
-        .eq('id', signupId);
-
-      if (updateError) throw updateError;
-
-      setSignup({ ...signup, status: newStatus });
+      // const { error: updateError } = await supabase
+      //   .from("signups")
+      //   .update({ status: newStatus, updated_at: new Date().toISOString() })
+      //   .eq("id", signupId);
+      // if (updateError) throw updateError;
+      // setSignup({ ...signup, status: newStatus });
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update status');
+      setError(err instanceof Error ? err.message : "Failed to update status");
     } finally {
       setUpdating(false);
     }
@@ -78,27 +89,27 @@ export default function AdminSignupDetails({ signupId, onBack }: AdminSignupDeta
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      month: 'long',
-      day: 'numeric',
-      year: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit'
+    return date.toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
     });
   };
 
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
-      case 'active':
-        return 'bg-emerald-500/10 text-emerald-500 border-emerald-500/30';
-      case 'trial':
-        return 'bg-cyan-500/10 text-cyan-500 border-cyan-500/30';
-      case 'pending':
-        return 'bg-yellow-500/10 text-yellow-500 border-yellow-500/30';
-      case 'canceled':
-        return 'bg-gray-500/10 text-gray-500 border-gray-500/30';
+      case "active":
+        return "bg-emerald-500/10 text-emerald-500 border-emerald-500/30";
+      case "trial":
+        return "bg-cyan-500/10 text-cyan-500 border-cyan-500/30";
+      case "pending":
+        return "bg-yellow-500/10 text-yellow-500 border-yellow-500/30";
+      case "canceled":
+        return "bg-gray-500/10 text-gray-500 border-gray-500/30";
       default:
-        return 'bg-gray-500/10 text-gray-400 border-gray-500/30';
+        return "bg-gray-500/10 text-gray-400 border-gray-500/30";
     }
   };
 
@@ -123,7 +134,9 @@ export default function AdminSignupDetails({ signupId, onBack }: AdminSignupDeta
           </button>
 
           <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-8 text-center">
-            <p className="text-red-400 text-lg">{error || 'Signup not found'}</p>
+            <p className="text-red-400 text-lg">
+              {error || "Signup not found"}
+            </p>
           </div>
         </div>
       </div>
@@ -150,7 +163,11 @@ export default function AdminSignupDetails({ signupId, onBack }: AdminSignupDeta
                 </h1>
                 <p className="text-gray-400">{signup.business_name}</p>
               </div>
-              <span className={`px-4 py-2 rounded-lg text-sm font-medium border ${getStatusColor(signup.status)}`}>
+              <span
+                className={`px-4 py-2 rounded-lg text-sm font-medium border ${getStatusColor(
+                  signup.status
+                )}`}
+              >
                 {signup.status}
               </span>
             </div>
@@ -160,7 +177,10 @@ export default function AdminSignupDetails({ signupId, onBack }: AdminSignupDeta
                 <Mail className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
                 <div>
                   <div className="text-sm text-gray-500 mb-1">Email</div>
-                  <a href={`mailto:${signup.email}`} className="text-gray-200 hover:text-emerald-400 transition-colors">
+                  <a
+                    href={`mailto:${signup.email}`}
+                    className="text-gray-200 hover:text-emerald-400 transition-colors"
+                  >
                     {signup.email}
                   </a>
                 </div>
@@ -170,7 +190,10 @@ export default function AdminSignupDetails({ signupId, onBack }: AdminSignupDeta
                 <Phone className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
                 <div>
                   <div className="text-sm text-gray-500 mb-1">Phone</div>
-                  <a href={`tel:${signup.phone_number}`} className="text-gray-200 hover:text-emerald-400 transition-colors">
+                  <a
+                    href={`tel:${signup.phone_number}`}
+                    className="text-gray-200 hover:text-emerald-400 transition-colors"
+                  >
                     {signup.phone_number}
                   </a>
                 </div>
@@ -179,7 +202,9 @@ export default function AdminSignupDetails({ signupId, onBack }: AdminSignupDeta
               <div className="flex items-start gap-3">
                 <Building className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
                 <div>
-                  <div className="text-sm text-gray-500 mb-1">Business Name</div>
+                  <div className="text-sm text-gray-500 mb-1">
+                    Business Name
+                  </div>
                   <div className="text-gray-200">{signup.business_name}</div>
                 </div>
               </div>
@@ -205,7 +230,8 @@ export default function AdminSignupDetails({ signupId, onBack }: AdminSignupDeta
             <div className="space-y-3 text-gray-300">
               <div>{signup.billing_street}</div>
               <div>
-                {signup.billing_city}, {signup.billing_state} {signup.billing_zip}
+                {signup.billing_city}, {signup.billing_state}{" "}
+                {signup.billing_zip}
               </div>
             </div>
           </div>
@@ -232,11 +258,15 @@ export default function AdminSignupDetails({ signupId, onBack }: AdminSignupDeta
             <div className="space-y-3 text-sm">
               <div className="flex justify-between text-gray-400">
                 <span>Created:</span>
-                <span className="text-gray-300">{formatDate(signup.created_at)}</span>
+                <span className="text-gray-300">
+                  {formatDate(signup.created_at)}
+                </span>
               </div>
               <div className="flex justify-between text-gray-400">
                 <span>Last Updated:</span>
-                <span className="text-gray-300">{formatDate(signup.updated_at)}</span>
+                <span className="text-gray-300">
+                  {formatDate(signup.updated_at)}
+                </span>
               </div>
             </div>
           </div>
@@ -245,15 +275,15 @@ export default function AdminSignupDetails({ signupId, onBack }: AdminSignupDeta
             <h2 className="text-xl font-semibold mb-6">Update Status</h2>
 
             <div className="flex flex-wrap gap-3">
-              {['pending', 'trial', 'active', 'canceled'].map((status) => (
+              {["pending", "trial", "active", "canceled"].map((status) => (
                 <button
                   key={status}
                   onClick={() => updateStatus(status)}
                   disabled={updating || signup.status === status}
                   className={`px-4 py-2 rounded-lg font-medium transition-all ${
                     signup.status === status
-                      ? 'bg-emerald-500 text-white'
-                      : 'bg-gray-800 hover:bg-gray-750 text-gray-300 border border-gray-700'
+                      ? "bg-emerald-500 text-white"
+                      : "bg-gray-800 hover:bg-gray-750 text-gray-300 border border-gray-700"
                   } disabled:opacity-50 disabled:cursor-not-allowed capitalize`}
                 >
                   {status}
