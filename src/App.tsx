@@ -1,364 +1,407 @@
-import { useState, useEffect } from 'react';
-import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import AntiDemo from './components/AntiDemo';
-import RealShop from './components/RealShop';
-import ValueProposition from './components/ValueProposition';
-import Features from './components/Features';
-import Pricing from './components/Pricing';
-import Consultation from './components/Consultation';
-import SocialProof from './components/SocialProof';
-import FinalCTA from './components/FinalCTA';
-import Footer from './components/Footer';
-import PricingPageV2 from './components/PricingPageV2';
-import OurStory from './components/OurStory';
-import ContactPage from './components/ContactPage';
-import PrivacyPolicyPage from './components/PrivacyPolicyPage';
-import TermsOfServicePage from './components/TermsOfServicePage';
-import RefundCancellationPage from './components/RefundCancellationPage';
-import AcceptableUsePolicyPage from './components/AcceptableUsePolicyPage';
-import OnboardingSignup, { SignupFormData } from './components/OnboardingSignup';
-import AnalyzingAvailability from './components/AnalyzingAvailability';
-import ProcessingPayment from './components/ProcessingPayment';
-import PaymentError from './components/PaymentError';
-import TrialActivated from './components/TrialActivated';
-import SetupCanceled from './components/SetupCanceled';
-import AdminSignupsList from './components/AdminSignupsList';
-import AdminSignupDetails from './components/AdminSignupDetails';
-import LiveDemoModal from './components/LiveDemoModal';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useNavigate,
+  useLocation,
+  useSearchParams,
+  useParams,
+} from "react-router-dom";
+import { useEffect, useState } from "react";
 
-type PageType = 'home' | 'product' | 'pricing' | 'our-story' | 'contact' | 'privacy-policy' | 'terms-of-service' | 'refund-cancellation' | 'acceptable-use-policy' | 'onboarding-signup' | 'onboarding-analyzing' | 'processing-payment' | 'payment-error' | 'onboarding-activated' | 'setup-canceled' | 'admin-signups' | 'admin-signup-details';
+/* ===========================
+   Components
+=========================== */
+import Navbar from "./components/Navbar";
+import Hero from "./components/Hero";
+import AntiDemo from "./components/AntiDemo";
+import RealShop from "./components/RealShop";
+import ValueProposition from "./components/ValueProposition";
+import Features from "./components/Features";
+import Pricing from "./components/Pricing";
+import Consultation from "./components/Consultation";
+import SocialProof from "./components/SocialProof";
+import FinalCTA from "./components/FinalCTA";
+import Footer from "./components/Footer";
 
-function App() {
-  const [currentPage, setCurrentPage] = useState<PageType>('home');
-  const [signupData, setSignupData] = useState<SignupFormData | null>(null);
-  const [consultationTime, setConsultationTime] = useState<string | null>(null);
-  const [scrollToComparison, setScrollToComparison] = useState(false);
-  const [selectedSignupId, setSelectedSignupId] = useState<string | null>(null);
-  const [isLiveDemoModalOpen, setIsLiveDemoModalOpen] = useState(false);
+import PricingPageV2 from "./components/PricingPageV2";
+import OurStory from "./components/OurStory";
+import ContactPage from "./components/ContactPage";
+import PrivacyPolicyPage from "./components/PrivacyPolicyPage";
+import TermsOfServicePage from "./components/TermsOfServicePage";
+import RefundCancellationPage from "./components/RefundCancellationPage";
+import AcceptableUsePolicyPage from "./components/AcceptableUsePolicyPage";
+
+import OnboardingSignup, {
+  SignupFormData,
+} from "./components/OnboardingSignup";
+import AnalyzingAvailability from "./components/AnalyzingAvailability";
+import ProcessingPayment from "./components/ProcessingPayment";
+import PaymentError from "./components/PaymentError";
+import TrialActivated from "./components/TrialActivated";
+import SetupCanceled from "./components/SetupCanceled";
+
+import AdminSignupsList from "./components/AdminSignupsList";
+import AdminSignupDetails from "./components/AdminSignupDetails";
+
+import LiveDemoModal from "./components/LiveDemoModal";
+
+/* ===========================
+   Session Globals (same as new code)
+=========================== */
+let globalSignupData: SignupFormData | null = null;
+let globalConsultationTime = "";
+
+/* ===========================
+   Metadata Hook
+=========================== */
+function usePageMetadata(title: string, description: string) {
+  useEffect(() => {
+    document.title = title;
+
+    let meta = document.querySelector('meta[name="description"]');
+    if (!meta) {
+      meta = document.createElement("meta");
+      meta.setAttribute("name", "description");
+      document.head.appendChild(meta);
+    }
+    meta.setAttribute("content", description);
+  }, [title, description]);
+}
+
+/* ===========================
+   Pages / Wrappers
+=========================== */
+
+function HomePage() {
+  usePageMetadata(
+    "KABBA | Rental Software Built by Real Rental Shop Operators",
+    "KABBA is modern rental software built and used by real rental shop owners."
+  );
+
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
-    const pageMetadata: Record<PageType, { title: string; description: string }> = {
-      'home': {
-        title: 'KABBA | Rental Software Built by Real Rental Shop Operators',
-        description: 'KABBA is modern rental software built and used by real rental shop owners. Pay only when you rent, protect your cash flow, and grow without $6,000 upfront fees.'
-      },
-      'product': {
-        title: 'Rental Software Features Built for Real Rental Shops | KABBA',
-        description: 'See how KABBA simplifies scheduling, inventory, dispatch, payments, and customer management — built around how rental shops actually operate.'
-      },
-      'pricing': {
-        title: 'Rental Software Pricing That Respects Cash Flow | KABBA',
-        description: 'Flexible rental software pricing built for seasonal businesses. Start for $4.95, pay $9.95 monthly, and only pay transaction fees when you rent.'
-      },
-      'our-story': {
-        title: 'Our Story | Built Inside a Real Rental Shop | KABBA',
-        description: 'KABBA was built inside a real rental business after enterprise software failed independent operators. Learn why we built it and who it\'s for.'
-      },
-      'contact': {
-        title: 'Contact KABBA | Talk to Real Rental Software Operators',
-        description: 'Have questions about KABBA? Contact our team to speak directly with people who own and operate real rental shops.'
-      },
-      'privacy-policy': {
-        title: 'Privacy Policy | KABBA Rental Software',
-        description: 'Review how KABBA collects, uses, and protects your information. Built to meet industry and payment processor standards.'
-      },
-      'terms-of-service': {
-        title: 'Terms of Service | KABBA Rental Software',
-        description: 'Read the terms and conditions for using KABBA rental software, including subscriptions, transactions, and account responsibilities.'
-      },
-      'refund-cancellation': {
-        title: 'Refund & Cancellation Policy | KABBA',
-        description: 'Understand KABBA\'s refund and cancellation policy, including subscription terms and transaction fee responsibilities.'
-      },
-      'acceptable-use-policy': {
-        title: 'Acceptable Use Policy | KABBA',
-        description: 'Guidelines for acceptable use of the KABBA rental software platform to ensure reliability, security, and fair use.'
-      },
-      'onboarding-signup': {
-        title: 'Start Your Trial',
-        description: 'Start your KABBA trial'
-      },
-      'onboarding-analyzing': {
-        title: 'Analyzing Availability',
-        description: 'Analyzing your availability'
-      },
-      'processing-payment': {
-        title: 'Processing Payment',
-        description: 'Processing your payment'
-      },
-      'payment-error': {
-        title: 'Payment Error',
-        description: 'Payment error'
-      },
-      'onboarding-activated': {
-        title: 'Trial Activated',
-        description: 'Your trial has been activated'
-      },
-      'setup-canceled': {
-        title: 'Setup Canceled',
-        description: 'Setup has been canceled'
-      },
-      'admin-signups': {
-        title: 'Admin - Signups',
-        description: 'Admin signups list'
-      },
-      'admin-signup-details': {
-        title: 'Admin - Signup Details',
-        description: 'Admin signup details'
-      }
-    };
-
-    const metadata = pageMetadata[currentPage];
-    document.title = metadata.title;
-
-    let metaDescription = document.querySelector('meta[name="description"]');
-    if (!metaDescription) {
-      metaDescription = document.createElement('meta');
-      metaDescription.setAttribute('name', 'description');
-      document.head.appendChild(metaDescription);
+    const scrollTarget = searchParams.get("scroll");
+    if (scrollTarget) {
+      setTimeout(() => {
+        document
+          .getElementById(scrollTarget)
+          ?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
     }
-    metaDescription.setAttribute('content', metadata.description);
-  }, [currentPage]);
-
-  const navigateToSignup = () => {
-    setCurrentPage('onboarding-signup');
-    window.scrollTo(0, 0);
-  };
-
-  const navigateToPricing = () => {
-    setScrollToComparison(false);
-    setCurrentPage('pricing');
-    window.scrollTo(0, 0);
-  };
-
-  const navigateToPricingComparison = () => {
-    setScrollToComparison(true);
-    setCurrentPage('pricing');
-  };
-
-  const navigateToOurStory = () => {
-    setScrollToComparison(false);
-    setCurrentPage('our-story');
-    window.scrollTo(0, 0);
-  };
-
-  const navigateToContact = () => {
-    setScrollToComparison(false);
-    setCurrentPage('contact');
-    window.scrollTo(0, 0);
-  };
-
-  const navigateToPrivacyPolicy = () => {
-    setScrollToComparison(false);
-    setCurrentPage('privacy-policy');
-    window.scrollTo(0, 0);
-  };
-
-  const navigateToTermsOfService = () => {
-    setScrollToComparison(false);
-    setCurrentPage('terms-of-service');
-    window.scrollTo(0, 0);
-  };
-
-  const navigateToRefundCancellation = () => {
-    setScrollToComparison(false);
-    setCurrentPage('refund-cancellation');
-    window.scrollTo(0, 0);
-  };
-
-  const navigateToAcceptableUsePolicy = () => {
-    setScrollToComparison(false);
-    setCurrentPage('acceptable-use-policy');
-    window.scrollTo(0, 0);
-  };
-
-  const navigateToHome = () => {
-    setScrollToComparison(false);
-    setCurrentPage('home');
-    window.scrollTo(0, 0);
-  };
-
-  const navigateToHomeProduct = () => {
-    setScrollToComparison(false);
-    setCurrentPage('home');
-    setTimeout(() => {
-      const element = document.getElementById('product');
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    }, 100);
-  };
-
-  const navigateToHomeConsultation = () => {
-    setScrollToComparison(false);
-    setCurrentPage('home');
-    setTimeout(() => {
-      const element = document.getElementById('consultation');
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    }, 100);
-  };
-
-  const handleSignupComplete = (formData: SignupFormData) => {
-    setSignupData(formData);
-    setCurrentPage('onboarding-analyzing');
-    window.scrollTo(0, 0);
-  };
-
-  const handleAnalyzingComplete = (time: string) => {
-    setConsultationTime(time);
-    setCurrentPage('processing-payment');
-    window.scrollTo(0, 0);
-  };
-
-  const handlePaymentSuccess = () => {
-    setCurrentPage('onboarding-activated');
-    window.scrollTo(0, 0);
-  };
-
-  const handlePaymentError = () => {
-    setCurrentPage('payment-error');
-    window.scrollTo(0, 0);
-  };
-
-  const handleRetryPayment = () => {
-    setCurrentPage('onboarding-signup');
-    window.scrollTo(0, 0);
-  };
-
-  const handleCancelFromError = () => {
-    setCurrentPage('setup-canceled');
-    window.scrollTo(0, 0);
-  };
-
-  const handleSetupCancel = () => {
-    setCurrentPage('setup-canceled');
-    window.scrollTo(0, 0);
-  };
-
-  const handleRestartSetup = () => {
-    setCurrentPage('onboarding-analyzing');
-    window.scrollTo(0, 0);
-  };
-
-  const navigateToAdminSignups = () => {
-    setCurrentPage('admin-signups');
-    window.scrollTo(0, 0);
-  };
-
-  const handleViewSignupDetails = (signupId: string) => {
-    setSelectedSignupId(signupId);
-    setCurrentPage('admin-signup-details');
-    window.scrollTo(0, 0);
-  };
-
-  const handleBackToAdminList = () => {
-    setSelectedSignupId(null);
-    setCurrentPage('admin-signups');
-    window.scrollTo(0, 0);
-  };
-
-  const handleViewLiveDemo = () => {
-    setIsLiveDemoModalOpen(true);
-  };
-
-  const handleCloseLiveDemo = () => {
-    setIsLiveDemoModalOpen(false);
-  };
-
-  const handleContinueToLiveDemo = () => {
-    setIsLiveDemoModalOpen(false);
-    window.open('https://capstonerentals.kabba.io/', '_blank');
-  };
-
-  if (currentPage === 'onboarding-signup') {
-    return <OnboardingSignup onComplete={handleSignupComplete} onBack={navigateToHome} initialData={signupData || undefined} />;
-  }
-
-  if (currentPage === 'onboarding-analyzing' && signupData) {
-    return <AnalyzingAvailability formData={signupData} onComplete={handleAnalyzingComplete} onCancel={handleSetupCancel} initialConsultationTime={consultationTime || undefined} />;
-  }
-
-  if (currentPage === 'processing-payment' && signupData && consultationTime) {
-    return <ProcessingPayment formData={signupData} consultationTime={consultationTime} onSuccess={handlePaymentSuccess} onError={handlePaymentError} />;
-  }
-
-  if (currentPage === 'payment-error') {
-    return <PaymentError onRetry={handleRetryPayment} onCancel={handleCancelFromError} />;
-  }
-
-  if (currentPage === 'setup-canceled') {
-    return <SetupCanceled onRestartSetup={handleRestartSetup} onBackToPricing={navigateToPricing} />;
-  }
-
-  if (currentPage === 'onboarding-activated' && signupData && consultationTime) {
-    return (
-      <TrialActivated
-        formData={signupData}
-        consultationTime={consultationTime}
-        onGoToDashboard={() => {
-          window.scrollTo(0, 0);
-        }}
-        onViewDetails={() => {
-          window.scrollTo(0, 0);
-        }}
-      />
-    );
-  }
-
-  if (currentPage === 'pricing') {
-    return <PricingPageV2 onBack={navigateToHome} onStartTrial={navigateToSignup} onViewOurStory={navigateToOurStory} onViewContact={navigateToContact} onViewProduct={navigateToHomeProduct} onViewConsultation={navigateToHomeConsultation} onViewLiveDemo={handleViewLiveDemo} scrollToComparison={scrollToComparison} />;
-  }
-
-  if (currentPage === 'our-story') {
-    return <OurStory onStartTrial={navigateToSignup} onViewPricing={navigateToPricing} onBack={navigateToHome} onViewContact={navigateToContact} onViewProduct={navigateToHomeProduct} onViewConsultation={navigateToHomeConsultation} onViewPrivacyPolicy={navigateToPrivacyPolicy} onViewTermsOfService={navigateToTermsOfService} onViewRefundPolicy={navigateToRefundCancellation} onViewAcceptableUsePolicy={navigateToAcceptableUsePolicy} />;
-  }
-
-  if (currentPage === 'contact') {
-    return <ContactPage onBack={navigateToHome} onStartTrial={navigateToSignup} onViewPricing={navigateToPricing} onViewOurStory={navigateToOurStory} onViewProduct={navigateToHomeProduct} onViewConsultation={navigateToHomeConsultation} onViewPrivacyPolicy={navigateToPrivacyPolicy} onViewTermsOfService={navigateToTermsOfService} onViewRefundPolicy={navigateToRefundCancellation} onViewAcceptableUsePolicy={navigateToAcceptableUsePolicy} />;
-  }
-
-  if (currentPage === 'privacy-policy') {
-    return <PrivacyPolicyPage onBack={navigateToHome} onStartTrial={navigateToSignup} onViewPricing={navigateToPricing} onViewOurStory={navigateToOurStory} onViewContact={navigateToContact} onViewProduct={navigateToHomeProduct} onViewConsultation={navigateToHomeConsultation} onViewTermsOfService={navigateToTermsOfService} onViewRefundPolicy={navigateToRefundCancellation} onViewAcceptableUsePolicy={navigateToAcceptableUsePolicy} />;
-  }
-
-  if (currentPage === 'terms-of-service') {
-    return <TermsOfServicePage onBack={navigateToHome} onStartTrial={navigateToSignup} onViewPricing={navigateToPricing} onViewOurStory={navigateToOurStory} onViewContact={navigateToContact} onViewProduct={navigateToHomeProduct} onViewConsultation={navigateToHomeConsultation} onViewPrivacyPolicy={navigateToPrivacyPolicy} onViewRefundPolicy={navigateToRefundCancellation} onViewAcceptableUsePolicy={navigateToAcceptableUsePolicy} />;
-  }
-
-  if (currentPage === 'refund-cancellation') {
-    return <RefundCancellationPage onBack={navigateToHome} onStartTrial={navigateToSignup} onViewPricing={navigateToPricing} onViewOurStory={navigateToOurStory} onViewContact={navigateToContact} onViewProduct={navigateToHomeProduct} onViewConsultation={navigateToHomeConsultation} onViewPrivacyPolicy={navigateToPrivacyPolicy} onViewTermsOfService={navigateToTermsOfService} onViewAcceptableUsePolicy={navigateToAcceptableUsePolicy} />;
-  }
-
-  if (currentPage === 'acceptable-use-policy') {
-    return <AcceptableUsePolicyPage onBack={navigateToHome} onStartTrial={navigateToSignup} onViewPricing={navigateToPricing} onViewOurStory={navigateToOurStory} onViewContact={navigateToContact} onViewProduct={navigateToHomeProduct} onViewConsultation={navigateToHomeConsultation} onViewPrivacyPolicy={navigateToPrivacyPolicy} onViewTermsOfService={navigateToTermsOfService} onViewRefundPolicy={navigateToRefundCancellation} />;
-  }
-
-  if (currentPage === 'admin-signups') {
-    return <AdminSignupsList onViewDetails={handleViewSignupDetails} />;
-  }
-
-  if (currentPage === 'admin-signup-details' && selectedSignupId) {
-    return <AdminSignupDetails signupId={selectedSignupId} onBack={handleBackToAdminList} />;
-  }
+  }, [location, searchParams]);
 
   return (
     <div className="min-h-screen bg-white">
-      <Navbar onStartTrial={navigateToSignup} onViewPricing={navigateToPricing} onViewOurStory={navigateToOurStory} onViewContact={navigateToContact} onBackToHome={navigateToHome} />
-      <Hero onStartTrial={navigateToSignup} />
+      <Navbar
+        onStartTrial={() => navigate("/start-trial")}
+        onViewPricing={() => navigate("/pricing")}
+        onViewOurStory={() => navigate("/our-story")}
+        onViewContact={() => navigate("/contact")}
+        onBackToHome={() => navigate("/")}
+      />
+      <Hero onStartTrial={() => navigate("/start-trial")} />
       <AntiDemo />
       <RealShop />
       <ValueProposition />
       <Features />
-      <Pricing onStartTrial={navigateToSignup} onViewDetailedPricing={navigateToPricingComparison} />
-      <Consultation onStartTrial={navigateToSignup} />
+      <Pricing
+        onStartTrial={() => navigate("/start-trial")}
+        onViewDetailedPricing={() => navigate("/pricing?scroll=comparison")}
+      />
+      <Consultation onStartTrial={() => navigate("/start-trial")} />
       <SocialProof />
-      <FinalCTA onStartTrial={navigateToSignup} />
-      <Footer onViewOurStory={navigateToOurStory} onViewContact={navigateToContact} onViewProduct={navigateToHomeProduct} onViewPricing={navigateToPricing} onViewConsultation={navigateToHomeConsultation} onViewPrivacyPolicy={navigateToPrivacyPolicy} onViewTermsOfService={navigateToTermsOfService} onViewRefundPolicy={navigateToRefundCancellation} onViewAcceptableUsePolicy={navigateToAcceptableUsePolicy} />
-      <LiveDemoModal isOpen={isLiveDemoModalOpen} onClose={handleCloseLiveDemo} onContinue={handleContinueToLiveDemo} />
+      <FinalCTA onStartTrial={() => navigate("/start-trial")} />
+      <Footer
+        onViewOurStory={() => navigate("/our-story")}
+        onViewContact={() => navigate("/contact")}
+        onViewProduct={() => navigate("/?scroll=product")}
+        onViewPricing={() => navigate("/pricing")}
+        onViewConsultation={() => navigate("/?scroll=consultation")}
+        onViewPrivacyPolicy={() => navigate("/privacy-policy")}
+        onViewTermsOfService={() => navigate("/terms-of-service")}
+        onViewRefundPolicy={() => navigate("/refund-cancellation")}
+        onViewAcceptableUsePolicy={() => navigate("/acceptable-use-policy")}
+      />
     </div>
+  );
+}
+
+function PricingPageWrapper({
+  onOpenLiveDemo,
+}: {
+  onOpenLiveDemo: () => void;
+}) {
+  usePageMetadata(
+    "Rental Software Pricing That Respects Cash Flow | KABBA",
+    "Flexible rental software pricing built for seasonal businesses."
+  );
+
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  return (
+    <PricingPageV2
+      scrollToComparison={searchParams.get("scroll") === "comparison"}
+      onBack={() => navigate("/")}
+      onStartTrial={() => navigate("/start-trial")}
+      onViewOurStory={() => navigate("/our-story")}
+      onViewContact={() => navigate("/contact")}
+      onViewProduct={() => navigate("/?scroll=product")}
+      onViewConsultation={() => navigate("/?scroll=consultation")}
+      onViewLiveDemo={onOpenLiveDemo}
+    />
+  );
+}
+
+/* ---------- Legal / Content Wrappers ---------- */
+
+function simpleWrapper(Component: any, title: string, description: string) {
+  return function Wrapper() {
+    usePageMetadata(title, description);
+    const navigate = useNavigate();
+    return (
+      <Component
+        onBack={() => navigate("/")}
+        onStartTrial={() => navigate("/start-trial")}
+        onViewPricing={() => navigate("/pricing")}
+        onViewOurStory={() => navigate("/our-story")}
+        onViewContact={() => navigate("/contact")}
+        onViewProduct={() => navigate("/?scroll=product")}
+        onViewConsultation={() => navigate("/?scroll=consultation")}
+        onViewPrivacyPolicy={() => navigate("/privacy-policy")}
+        onViewTermsOfService={() => navigate("/terms-of-service")}
+        onViewRefundPolicy={() => navigate("/refund-cancellation")}
+        onViewAcceptableUsePolicy={() => navigate("/acceptable-use-policy")}
+      />
+    );
+  };
+}
+
+const OurStoryWrapper = simpleWrapper(
+  OurStory,
+  "Our Story | Built Inside a Real Rental Shop | KABBA",
+  "Why KABBA was built inside a real rental business."
+);
+
+const ContactPageWrapper = simpleWrapper(
+  ContactPage,
+  "Contact KABBA | Talk to Real Rental Software Operators",
+  "Contact the KABBA team."
+);
+
+const PrivacyPolicyPageWrapper = simpleWrapper(
+  PrivacyPolicyPage,
+  "Privacy Policy | KABBA Rental Software",
+  "How KABBA protects your information."
+);
+
+const TermsOfServicePageWrapper = simpleWrapper(
+  TermsOfServicePage,
+  "Terms of Service | KABBA Rental Software",
+  "Terms and conditions for using KABBA."
+);
+
+const RefundCancellationPageWrapper = simpleWrapper(
+  RefundCancellationPage,
+  "Refund & Cancellation Policy | KABBA",
+  "KABBA refund and cancellation policy."
+);
+
+const AcceptableUsePolicyPageWrapper = simpleWrapper(
+  AcceptableUsePolicyPage,
+  "Acceptable Use Policy | KABBA",
+  "Guidelines for acceptable use."
+);
+
+/* ---------- Onboarding ---------- */
+
+function OnboardingSignupWrapper() {
+  const navigate = useNavigate();
+
+  return (
+    <OnboardingSignup
+      initialData={globalSignupData || undefined}
+      onBack={() => navigate("/")}
+      onComplete={(data) => {
+        globalSignupData = data;
+        navigate("/analyzing-availability");
+      }}
+    />
+  );
+}
+
+function AnalyzingAvailabilityWrapper() {
+  const navigate = useNavigate();
+
+  if (!globalSignupData) {
+    navigate("/start-trial");
+    return null;
+  }
+
+  return (
+    <AnalyzingAvailability
+      formData={globalSignupData}
+      initialConsultationTime={globalConsultationTime || undefined}
+      onCancel={() => navigate("/setup-canceled")}
+      onComplete={(time) => {
+        globalConsultationTime = time;
+        globalSignupData!.consultationTime = time;
+        navigate("/charge-payment");
+      }}
+    />
+  );
+}
+
+function ProcessingPaymentWrapper() {
+  const navigate = useNavigate();
+
+  if (!globalSignupData) {
+    navigate("/start-trial");
+    return null;
+  }
+
+  return (
+    <ProcessingPayment
+      formData={globalSignupData}
+      onSuccess={() => navigate("/trial-activated")}
+      onError={() => navigate("/payment-error")}
+    />
+  );
+}
+
+function PaymentErrorWrapper() {
+  const navigate = useNavigate();
+  return (
+    <PaymentError
+      onRetry={() => navigate("/start-trial")}
+      onCancel={() => navigate("/setup-canceled")}
+    />
+  );
+}
+
+function SetupCanceledWrapper() {
+  const navigate = useNavigate();
+  return (
+    <SetupCanceled
+      onRestartSetup={() => navigate("/analyzing-availability")}
+      onBackToPricing={() => navigate("/pricing")}
+    />
+  );
+}
+
+function TrialActivatedWrapper() {
+  const navigate = useNavigate();
+
+  if (!globalSignupData || !globalConsultationTime) {
+    navigate("/start-trial");
+    return null;
+  }
+
+  return (
+    <TrialActivated
+      formData={globalSignupData}
+      consultationTime={globalConsultationTime}
+      onGoToDashboard={() => window.scrollTo(0, 0)}
+      onViewDetails={() => window.scrollTo(0, 0)}
+    />
+  );
+}
+
+/* ---------- Admin ---------- */
+
+function AdminSignupsWrapper() {
+  usePageMetadata("Admin - Signups", "Admin signups list");
+  const navigate = useNavigate();
+
+  return (
+    <AdminSignupsList
+      onViewDetails={(id) => navigate(`/admin/signups/${id}`)}
+    />
+  );
+}
+
+function AdminSignupDetailsWrapper() {
+  usePageMetadata("Admin - Signup Details", "Admin signup details");
+
+  const { signupId } = useParams();
+  if (!signupId) return null;
+
+  return (
+    <AdminSignupDetails
+      signupId={signupId}
+      onBack={() => window.history.back()}
+    />
+  );
+}
+
+/* ===========================
+   App
+=========================== */
+
+function App() {
+  const [isLiveDemoModalOpen, setIsLiveDemoModalOpen] = useState(false);
+
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+
+        <Route
+          path="/pricing"
+          element={
+            <PricingPageWrapper
+              onOpenLiveDemo={() => setIsLiveDemoModalOpen(true)}
+            />
+          }
+        />
+
+        <Route path="/our-story" element={<OurStoryWrapper />} />
+        <Route path="/contact" element={<ContactPageWrapper />} />
+
+        <Route path="/privacy-policy" element={<PrivacyPolicyPageWrapper />} />
+        <Route
+          path="/terms-of-service"
+          element={<TermsOfServicePageWrapper />}
+        />
+        <Route
+          path="/refund-cancellation"
+          element={<RefundCancellationPageWrapper />}
+        />
+        <Route
+          path="/acceptable-use-policy"
+          element={<AcceptableUsePolicyPageWrapper />}
+        />
+
+        <Route path="/start-trial" element={<OnboardingSignupWrapper />} />
+        <Route
+          path="/analyzing-availability"
+          element={<AnalyzingAvailabilityWrapper />}
+        />
+        <Route path="/charge-payment" element={<ProcessingPaymentWrapper />} />
+        <Route path="/payment-error" element={<PaymentErrorWrapper />} />
+        <Route path="/setup-canceled" element={<SetupCanceledWrapper />} />
+        <Route path="/trial-activated" element={<TrialActivatedWrapper />} />
+
+        <Route path="/admin/signups" element={<AdminSignupsWrapper />} />
+        <Route
+          path="/admin/signups/:signupId"
+          element={<AdminSignupDetailsWrapper />}
+        />
+      </Routes>
+
+      <LiveDemoModal
+        isOpen={isLiveDemoModalOpen}
+        onClose={() => setIsLiveDemoModalOpen(false)}
+        onContinue={() => {
+          setIsLiveDemoModalOpen(false);
+          window.open("https://capstonerentals.kabba.io/", "_blank");
+        }}
+      />
+    </Router>
   );
 }
 

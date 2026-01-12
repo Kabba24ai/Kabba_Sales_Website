@@ -1,7 +1,7 @@
-import { Loader2, CreditCard } from 'lucide-react';
-import { useEffect } from 'react';
-import { SignupFormData } from './OnboardingSignup';
-import { supabase } from '../lib/supabase';
+import { Loader2, CreditCard } from "lucide-react";
+import { useEffect, useState } from "react";
+import { SignupFormData } from "./OnboardingSignup";
+import { createCustomerWithPayment } from "../lib/payment-service";
 
 interface ProcessingPaymentProps {
   formData: SignupFormData;
@@ -10,53 +10,107 @@ interface ProcessingPaymentProps {
   onError: () => void;
 }
 
-export default function ProcessingPayment({ formData, consultationTime, onSuccess, onError }: ProcessingPaymentProps) {
+export default function ProcessingPayment({
+  formData,
+  onSuccess,
+  onError,
+}: ProcessingPaymentProps) {
+  const [processingMessage, setProcessingMessage] = useState(
+    "Verifying payment information..."
+  );
+
   useEffect(() => {
     const processPayment = async () => {
-      const cleanCardNumber = formData.cardNumber.replace(/\s/g, '');
-      const isTestCard = cleanCardNumber === '4242424242424242' &&
-                        formData.cardExpiry === '10/29' &&
-                        formData.cardCvc === '123';
-
-      if (!isTestCard) {
-        onError();
-        return;
-      }
-
       try {
-        const { error: insertError } = await supabase
-          .from('signups')
-          .insert({
-            first_name: formData.firstName,
-            last_name: formData.lastName,
-            email: formData.email,
-            phone_number: formData.phoneNumber,
-            business_name: formData.businessName,
-            billing_street: formData.billingStreet,
-            billing_city: formData.billingCity,
-            billing_state: formData.billingState,
-            billing_zip: formData.billingZip,
-            consultation_time: consultationTime,
-            status: 'trial'
-          });
-
-        if (insertError) {
-          console.error('Failed to save signup:', insertError);
-          onError();
+        // If we already have the profile IDs (from OnboardingSignup), skip redundant call
+        if (formData.customerProfileId && formData.paymentProfileId) {
+          setProcessingMessage(
+            "Payment successful! Setting up your account..."
+          );
+          setTimeout(() => {
+            onSuccess();
+          }, 1500);
           return;
         }
 
-        onSuccess();
+        // Keep fallback logic if for some reason we don't have them but have opaque data
+        if (!formData.opaqueDataDescriptor || !formData.opaqueDataValue) {
+          // If we have neither IDs nor tokens, we can't proceed
+          if (!formData.customerProfileId) {
+            throw new Error("Payment information is missing");
+          }
+        }
+
+        setProcessingMessage("Creating your customer profile...");
+
+        // Calculate scheduled date (consultation date)
+        // Parse the consultation time to get the date
+        const consultationDate = new Date(
+          formData.consultationTime || Date.now()
+        );
+
+        setProcessingMessage("Processing your $4.95 trial payment...");
+
+        // Create customer profile, charge trial fee, and schedule future payment
+        const paymentResult = await createCustomerWithPayment({
+          opaqueDataDescriptor: formData.opaqueDataDescriptor,
+          opaqueDataValue: formData.opaqueDataValue,
+          customerInfo: {
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            email: formData.email,
+            phoneNumber: formData.phoneNumber,
+            businessName: formData.businessName,
+          },
+          billingAddress: {
+            street: formData.billingStreet,
+            city: formData.billingCity,
+            state: formData.billingState || "",
+            zip: formData.billingZip || "",
+          },
+          initialPaymentAmount: 4.95, // Trial fee
+          scheduledDate: consultationDate.toISOString(),
+          fullAmount: 397.0, // Full monthly amount to charge on consultation date
+        });
+
+        if (paymentResult.success) {
+          setProcessingMessage(
+            "Payment successful! Setting up your account..."
+          );
+
+          // Store customer profile IDs for future reference
+          console.log("Customer Profile ID:", paymentResult.customerProfileId);
+          console.log("Payment Profile ID:", paymentResult.paymentProfileId);
+          console.log("Transaction ID:", paymentResult.transactionId);
+
+          // TODO: Store these IDs in your database
+          // - paymentResult.customerProfileId
+          // - paymentResult.paymentProfileId
+          // - paymentResult.transactionId
+          // - consultationDate
+
+          // TODO: Send welcome email with consultation details
+
+          setTimeout(() => {
+            onSuccess();
+          }, 1500);
+        } else {
+          console.error("Payment failed:", paymentResult.error);
+          onError();
+        }
       } catch (error) {
-        console.error('Error processing payment:', error);
+        console.error("Payment processing error:", error);
         onError();
       }
     };
 
-    const timer = setTimeout(processPayment, 3000);
+    // Start payment processing after a brief delay
+    const timer = setTimeout(() => {
+      processPayment();
+    }, 1000);
 
     return () => clearTimeout(timer);
-  }, [formData, consultationTime, onSuccess, onError]);
+  }, [formData, onSuccess, onError]);
 
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100 flex items-center justify-center px-4">
@@ -77,16 +131,16 @@ export default function ProcessingPayment({ formData, consultationTime, onSucces
 
           <div className="space-y-3">
             <h1 className="text-3xl font-bold text-white">
-              Processing your trial subscription now
+              {processingMessage}
             </h1>
             <p className="text-gray-400">
-              Please wait while we process your payment and activate your account.
+              Please don't close this window or press the back button.
             </p>
           </div>
 
           <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
             <div className="w-2 h-2 rounded-full bg-cyan-500 animate-pulse" />
-            <span>This usually takes just a few seconds</span>
+            <span>Secure payment processing</span>
           </div>
         </div>
       </div>
