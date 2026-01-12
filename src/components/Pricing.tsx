@@ -9,7 +9,7 @@ export default function Pricing({ onStartTrial, onViewDetailedPricing }: Pricing
   const features = [
     '$4.95 Starter Trial',
     'Then $9.95/month',
-    '$0.39 per rental transaction',
+    '$0.49 per rental transaction',
     'No startup fees',
     'No contracts',
     'No risk'

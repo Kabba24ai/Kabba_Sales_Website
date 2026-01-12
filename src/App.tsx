@@ -5,8 +5,13 @@ import {
   useNavigate,
   useLocation,
   useSearchParams,
+  useParams,
 } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+
+/* ===========================
+   Components
+=========================== */
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import AntiDemo from "./components/AntiDemo";
@@ -18,13 +23,15 @@ import Consultation from "./components/Consultation";
 import SocialProof from "./components/SocialProof";
 import FinalCTA from "./components/FinalCTA";
 import Footer from "./components/Footer";
-import PricingPage from "./components/PricingPage";
+
+import PricingPageV2 from "./components/PricingPageV2";
 import OurStory from "./components/OurStory";
 import ContactPage from "./components/ContactPage";
 import PrivacyPolicyPage from "./components/PrivacyPolicyPage";
 import TermsOfServicePage from "./components/TermsOfServicePage";
 import RefundCancellationPage from "./components/RefundCancellationPage";
 import AcceptableUsePolicyPage from "./components/AcceptableUsePolicyPage";
+
 import OnboardingSignup, {
   SignupFormData,
 } from "./components/OnboardingSignup";
@@ -34,50 +41,45 @@ import PaymentError from "./components/PaymentError";
 import TrialActivated from "./components/TrialActivated";
 import SetupCanceled from "./components/SetupCanceled";
 
-// Store signup data globally for the session
+import AdminSignupsList from "./components/AdminSignupsList";
+import AdminSignupDetails from "./components/AdminSignupDetails";
+
+import LiveDemoModal from "./components/LiveDemoModal";
+
+/* ===========================
+   Session Globals (same as new code)
+=========================== */
 let globalSignupData: SignupFormData | null = null;
-let globalConsultationTime: string = "";
+let globalConsultationTime = "";
+
+/* ===========================
+   Metadata Hook
+=========================== */
+function usePageMetadata(title: string, description: string) {
+  useEffect(() => {
+    document.title = title;
+
+    let meta = document.querySelector('meta[name="description"]');
+    if (!meta) {
+      meta = document.createElement("meta");
+      meta.setAttribute("name", "description");
+      document.head.appendChild(meta);
+    }
+    meta.setAttribute("content", description);
+  }, [title, description]);
+}
+
+/* ===========================
+   Pages / Wrappers
+=========================== */
 
 function HomePage() {
+  usePageMetadata(
+    "KABBA | Rental Software Built by Real Rental Shop Operators",
+    "KABBA is modern rental software built and used by real rental shop owners."
+  );
+
   const navigate = useNavigate();
-
-  const navigateToSignup = () => {
-    navigate("/start-trial");
-    window.scrollTo(0, 0);
-  };
-
-  const navigateToPricing = () => {
-    navigate("/pricing");
-    window.scrollTo(0, 0);
-  };
-
-  const navigateToPricingComparison = () => {
-    navigate("/pricing?scroll=comparison");
-  };
-
-  const navigateToOurStory = () => {
-    navigate("/our-story");
-    window.scrollTo(0, 0);
-  };
-
-  const navigateToContact = () => {
-    navigate("/contact");
-    window.scrollTo(0, 0);
-  };
-
-  const navigateToHome = () => {
-    navigate("/");
-    window.scrollTo(0, 0);
-  };
-
-  const navigateToHomeProduct = () => {
-    navigate("/?scroll=product");
-  };
-
-  const navigateToHomeConsultation = () => {
-    navigate("/?scroll=consultation");
-  };
-
   const location = useLocation();
   const [searchParams] = useSearchParams();
 
@@ -85,10 +87,9 @@ function HomePage() {
     const scrollTarget = searchParams.get("scroll");
     if (scrollTarget) {
       setTimeout(() => {
-        const element = document.getElementById(scrollTarget);
-        if (element) {
-          element.scrollIntoView({ behavior: "smooth", block: "start" });
-        }
+        document
+          .getElementById(scrollTarget)
+          ?.scrollIntoView({ behavior: "smooth" });
       }, 100);
     }
   }, [location, searchParams]);
@@ -96,30 +97,30 @@ function HomePage() {
   return (
     <div className="min-h-screen bg-white">
       <Navbar
-        onStartTrial={navigateToSignup}
-        onViewPricing={navigateToPricing}
-        onViewOurStory={navigateToOurStory}
-        onViewContact={navigateToContact}
-        onBackToHome={navigateToHome}
+        onStartTrial={() => navigate("/start-trial")}
+        onViewPricing={() => navigate("/pricing")}
+        onViewOurStory={() => navigate("/our-story")}
+        onViewContact={() => navigate("/contact")}
+        onBackToHome={() => navigate("/")}
       />
-      <Hero onStartTrial={navigateToSignup} />
+      <Hero onStartTrial={() => navigate("/start-trial")} />
       <AntiDemo />
       <RealShop />
       <ValueProposition />
       <Features />
       <Pricing
-        onStartTrial={navigateToSignup}
-        onViewDetailedPricing={navigateToPricingComparison}
+        onStartTrial={() => navigate("/start-trial")}
+        onViewDetailedPricing={() => navigate("/pricing?scroll=comparison")}
       />
-      <Consultation onStartTrial={navigateToSignup} />
+      <Consultation onStartTrial={() => navigate("/start-trial")} />
       <SocialProof />
-      <FinalCTA onStartTrial={navigateToSignup} />
+      <FinalCTA onStartTrial={() => navigate("/start-trial")} />
       <Footer
-        onViewOurStory={navigateToOurStory}
-        onViewContact={navigateToContact}
-        onViewProduct={navigateToHomeProduct}
-        onViewPricing={navigateToPricing}
-        onViewConsultation={navigateToHomeConsultation}
+        onViewOurStory={() => navigate("/our-story")}
+        onViewContact={() => navigate("/contact")}
+        onViewProduct={() => navigate("/?scroll=product")}
+        onViewPricing={() => navigate("/pricing")}
+        onViewConsultation={() => navigate("/?scroll=consultation")}
         onViewPrivacyPolicy={() => navigate("/privacy-policy")}
         onViewTermsOfService={() => navigate("/terms-of-service")}
         onViewRefundPolicy={() => navigate("/refund-cancellation")}
@@ -129,167 +130,112 @@ function HomePage() {
   );
 }
 
-function PricingPageWrapper() {
+function PricingPageWrapper({
+  onOpenLiveDemo,
+}: {
+  onOpenLiveDemo: () => void;
+}) {
+  usePageMetadata(
+    "Rental Software Pricing That Respects Cash Flow | KABBA",
+    "Flexible rental software pricing built for seasonal businesses."
+  );
+
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const [scrollToComparison, setScrollToComparison] = useState(false);
-
-  useEffect(() => {
-    const scroll = searchParams.get("scroll");
-    setScrollToComparison(scroll === "comparison");
-  }, [searchParams]);
 
   return (
-    <PricingPage
+    <PricingPageV2
+      scrollToComparison={searchParams.get("scroll") === "comparison"}
       onBack={() => navigate("/")}
       onStartTrial={() => navigate("/start-trial")}
       onViewOurStory={() => navigate("/our-story")}
       onViewContact={() => navigate("/contact")}
       onViewProduct={() => navigate("/?scroll=product")}
       onViewConsultation={() => navigate("/?scroll=consultation")}
-      scrollToComparison={scrollToComparison}
+      onViewLiveDemo={onOpenLiveDemo}
     />
   );
 }
 
-function OurStoryWrapper() {
-  const navigate = useNavigate();
-  return (
-    <OurStory
-      onStartTrial={() => navigate("/start-trial")}
-      onViewPricing={() => navigate("/pricing")}
-      onBack={() => navigate("/")}
-      onViewContact={() => navigate("/contact")}
-      onViewProduct={() => navigate("/?scroll=product")}
-      onViewConsultation={() => navigate("/?scroll=consultation")}
-      onViewPrivacyPolicy={() => navigate("/privacy-policy")}
-      onViewTermsOfService={() => navigate("/terms-of-service")}
-      onViewRefundPolicy={() => navigate("/refund-cancellation")}
-      onViewAcceptableUsePolicy={() => navigate("/acceptable-use-policy")}
-    />
-  );
+/* ---------- Legal / Content Wrappers ---------- */
+
+function simpleWrapper(Component: any, title: string, description: string) {
+  return function Wrapper() {
+    usePageMetadata(title, description);
+    const navigate = useNavigate();
+    return (
+      <Component
+        onBack={() => navigate("/")}
+        onStartTrial={() => navigate("/start-trial")}
+        onViewPricing={() => navigate("/pricing")}
+        onViewOurStory={() => navigate("/our-story")}
+        onViewContact={() => navigate("/contact")}
+        onViewProduct={() => navigate("/?scroll=product")}
+        onViewConsultation={() => navigate("/?scroll=consultation")}
+        onViewPrivacyPolicy={() => navigate("/privacy-policy")}
+        onViewTermsOfService={() => navigate("/terms-of-service")}
+        onViewRefundPolicy={() => navigate("/refund-cancellation")}
+        onViewAcceptableUsePolicy={() => navigate("/acceptable-use-policy")}
+      />
+    );
+  };
 }
 
-function ContactPageWrapper() {
-  const navigate = useNavigate();
-  return (
-    <ContactPage
-      onBack={() => navigate("/")}
-      onStartTrial={() => navigate("/start-trial")}
-      onViewPricing={() => navigate("/pricing")}
-      onViewOurStory={() => navigate("/our-story")}
-      onViewProduct={() => navigate("/?scroll=product")}
-      onViewConsultation={() => navigate("/?scroll=consultation")}
-      onViewPrivacyPolicy={() => navigate("/privacy-policy")}
-      onViewTermsOfService={() => navigate("/terms-of-service")}
-      onViewRefundPolicy={() => navigate("/refund-cancellation")}
-      onViewAcceptableUsePolicy={() => navigate("/acceptable-use-policy")}
-    />
-  );
-}
+const OurStoryWrapper = simpleWrapper(
+  OurStory,
+  "Our Story | Built Inside a Real Rental Shop | KABBA",
+  "Why KABBA was built inside a real rental business."
+);
 
-function PrivacyPolicyPageWrapper() {
-  const navigate = useNavigate();
-  return (
-    <PrivacyPolicyPage
-      onBack={() => navigate("/")}
-      onStartTrial={() => navigate("/start-trial")}
-      onViewPricing={() => navigate("/pricing")}
-      onViewOurStory={() => navigate("/our-story")}
-      onViewContact={() => navigate("/contact")}
-      onViewProduct={() => navigate("/?scroll=product")}
-      onViewConsultation={() => navigate("/?scroll=consultation")}
-      onViewTermsOfService={() => navigate("/terms-of-service")}
-      onViewRefundPolicy={() => navigate("/refund-cancellation")}
-      onViewAcceptableUsePolicy={() => navigate("/acceptable-use-policy")}
-    />
-  );
-}
+const ContactPageWrapper = simpleWrapper(
+  ContactPage,
+  "Contact KABBA | Talk to Real Rental Software Operators",
+  "Contact the KABBA team."
+);
 
-function TermsOfServicePageWrapper() {
-  const navigate = useNavigate();
-  return (
-    <TermsOfServicePage
-      onBack={() => navigate("/")}
-      onStartTrial={() => navigate("/start-trial")}
-      onViewPricing={() => navigate("/pricing")}
-      onViewOurStory={() => navigate("/our-story")}
-      onViewContact={() => navigate("/contact")}
-      onViewProduct={() => navigate("/?scroll=product")}
-      onViewConsultation={() => navigate("/?scroll=consultation")}
-      onViewPrivacyPolicy={() => navigate("/privacy-policy")}
-      onViewRefundPolicy={() => navigate("/refund-cancellation")}
-      onViewAcceptableUsePolicy={() => navigate("/acceptable-use-policy")}
-    />
-  );
-}
+const PrivacyPolicyPageWrapper = simpleWrapper(
+  PrivacyPolicyPage,
+  "Privacy Policy | KABBA Rental Software",
+  "How KABBA protects your information."
+);
 
-function RefundCancellationPageWrapper() {
-  const navigate = useNavigate();
-  return (
-    <RefundCancellationPage
-      onBack={() => navigate("/")}
-      onStartTrial={() => navigate("/start-trial")}
-      onViewPricing={() => navigate("/pricing")}
-      onViewOurStory={() => navigate("/our-story")}
-      onViewContact={() => navigate("/contact")}
-      onViewProduct={() => navigate("/?scroll=product")}
-      onViewConsultation={() => navigate("/?scroll=consultation")}
-      onViewPrivacyPolicy={() => navigate("/privacy-policy")}
-      onViewTermsOfService={() => navigate("/terms-of-service")}
-      onViewAcceptableUsePolicy={() => navigate("/acceptable-use-policy")}
-    />
-  );
-}
+const TermsOfServicePageWrapper = simpleWrapper(
+  TermsOfServicePage,
+  "Terms of Service | KABBA Rental Software",
+  "Terms and conditions for using KABBA."
+);
 
-function AcceptableUsePolicyPageWrapper() {
-  const navigate = useNavigate();
-  return (
-    <AcceptableUsePolicyPage
-      onBack={() => navigate("/")}
-      onStartTrial={() => navigate("/start-trial")}
-      onViewPricing={() => navigate("/pricing")}
-      onViewOurStory={() => navigate("/our-story")}
-      onViewContact={() => navigate("/contact")}
-      onViewProduct={() => navigate("/?scroll=product")}
-      onViewConsultation={() => navigate("/?scroll=consultation")}
-      onViewPrivacyPolicy={() => navigate("/privacy-policy")}
-      onViewTermsOfService={() => navigate("/terms-of-service")}
-      onViewRefundPolicy={() => navigate("/refund-cancellation")}
-    />
-  );
-}
+const RefundCancellationPageWrapper = simpleWrapper(
+  RefundCancellationPage,
+  "Refund & Cancellation Policy | KABBA",
+  "KABBA refund and cancellation policy."
+);
+
+const AcceptableUsePolicyPageWrapper = simpleWrapper(
+  AcceptableUsePolicyPage,
+  "Acceptable Use Policy | KABBA",
+  "Guidelines for acceptable use."
+);
+
+/* ---------- Onboarding ---------- */
 
 function OnboardingSignupWrapper() {
   const navigate = useNavigate();
 
-  const handleComplete = (formData: SignupFormData) => {
-    globalSignupData = formData;
-    navigate("/analyzing-availability");
-    window.scrollTo(0, 0);
-  };
-
   return (
     <OnboardingSignup
-      onComplete={handleComplete}
-      onBack={() => navigate("/")}
       initialData={globalSignupData || undefined}
+      onBack={() => navigate("/")}
+      onComplete={(data) => {
+        globalSignupData = data;
+        navigate("/analyzing-availability");
+      }}
     />
   );
 }
 
 function AnalyzingAvailabilityWrapper() {
   const navigate = useNavigate();
-
-  const handleComplete = (time: string) => {
-    globalConsultationTime = time;
-    // Also store it in the signup data for easy access
-    if (globalSignupData) {
-      globalSignupData.consultationTime = time;
-    }
-    navigate("/charge-payment");
-    window.scrollTo(0, 0);
-  };
 
   if (!globalSignupData) {
     navigate("/start-trial");
@@ -299,9 +245,13 @@ function AnalyzingAvailabilityWrapper() {
   return (
     <AnalyzingAvailability
       formData={globalSignupData}
-      onComplete={handleComplete}
-      onCancel={() => navigate("/setup-canceled")}
       initialConsultationTime={globalConsultationTime || undefined}
+      onCancel={() => navigate("/setup-canceled")}
+      onComplete={(time) => {
+        globalConsultationTime = time;
+        globalSignupData!.consultationTime = time;
+        navigate("/charge-payment");
+      }}
     />
   );
 }
@@ -325,7 +275,6 @@ function ProcessingPaymentWrapper() {
 
 function PaymentErrorWrapper() {
   const navigate = useNavigate();
-
   return (
     <PaymentError
       onRetry={() => navigate("/start-trial")}
@@ -336,7 +285,6 @@ function PaymentErrorWrapper() {
 
 function SetupCanceledWrapper() {
   const navigate = useNavigate();
-
   return (
     <SetupCanceled
       onRestartSetup={() => navigate("/analyzing-availability")}
@@ -363,14 +311,57 @@ function TrialActivatedWrapper() {
   );
 }
 
+/* ---------- Admin ---------- */
+
+function AdminSignupsWrapper() {
+  usePageMetadata("Admin - Signups", "Admin signups list");
+  const navigate = useNavigate();
+
+  return (
+    <AdminSignupsList
+      onViewDetails={(id) => navigate(`/admin/signups/${id}`)}
+    />
+  );
+}
+
+function AdminSignupDetailsWrapper() {
+  usePageMetadata("Admin - Signup Details", "Admin signup details");
+
+  const { signupId } = useParams();
+  if (!signupId) return null;
+
+  return (
+    <AdminSignupDetails
+      signupId={signupId}
+      onBack={() => window.history.back()}
+    />
+  );
+}
+
+/* ===========================
+   App
+=========================== */
+
 function App() {
+  const [isLiveDemoModalOpen, setIsLiveDemoModalOpen] = useState(false);
+
   return (
     <Router>
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/pricing" element={<PricingPageWrapper />} />
+
+        <Route
+          path="/pricing"
+          element={
+            <PricingPageWrapper
+              onOpenLiveDemo={() => setIsLiveDemoModalOpen(true)}
+            />
+          }
+        />
+
         <Route path="/our-story" element={<OurStoryWrapper />} />
         <Route path="/contact" element={<ContactPageWrapper />} />
+
         <Route path="/privacy-policy" element={<PrivacyPolicyPageWrapper />} />
         <Route
           path="/terms-of-service"
@@ -384,6 +375,7 @@ function App() {
           path="/acceptable-use-policy"
           element={<AcceptableUsePolicyPageWrapper />}
         />
+
         <Route path="/start-trial" element={<OnboardingSignupWrapper />} />
         <Route
           path="/analyzing-availability"
@@ -393,7 +385,22 @@ function App() {
         <Route path="/payment-error" element={<PaymentErrorWrapper />} />
         <Route path="/setup-canceled" element={<SetupCanceledWrapper />} />
         <Route path="/trial-activated" element={<TrialActivatedWrapper />} />
+
+        <Route path="/admin/signups" element={<AdminSignupsWrapper />} />
+        <Route
+          path="/admin/signups/:signupId"
+          element={<AdminSignupDetailsWrapper />}
+        />
       </Routes>
+
+      <LiveDemoModal
+        isOpen={isLiveDemoModalOpen}
+        onClose={() => setIsLiveDemoModalOpen(false)}
+        onContinue={() => {
+          setIsLiveDemoModalOpen(false);
+          window.open("https://capstonerentals.kabba.io/", "_blank");
+        }}
+      />
     </Router>
   );
 }

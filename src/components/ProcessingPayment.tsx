@@ -1,23 +1,32 @@
-import { Loader2, CreditCard } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { SignupFormData } from './OnboardingSignup';
-import { createCustomerWithPayment } from '../lib/payment-service';
+import { Loader2, CreditCard } from "lucide-react";
+import { useEffect, useState } from "react";
+import { SignupFormData } from "./OnboardingSignup";
+import { createCustomerWithPayment } from "../lib/payment-service";
 
 interface ProcessingPaymentProps {
   formData: SignupFormData;
+  consultationTime: string;
   onSuccess: () => void;
   onError: () => void;
 }
 
-export default function ProcessingPayment({ formData, onSuccess, onError }: ProcessingPaymentProps) {
-  const [processingMessage, setProcessingMessage] = useState('Verifying payment information...');
+export default function ProcessingPayment({
+  formData,
+  onSuccess,
+  onError,
+}: ProcessingPaymentProps) {
+  const [processingMessage, setProcessingMessage] = useState(
+    "Verifying payment information..."
+  );
 
   useEffect(() => {
     const processPayment = async () => {
       try {
         // If we already have the profile IDs (from OnboardingSignup), skip redundant call
         if (formData.customerProfileId && formData.paymentProfileId) {
-          setProcessingMessage('Payment successful! Setting up your account...');
+          setProcessingMessage(
+            "Payment successful! Setting up your account..."
+          );
           setTimeout(() => {
             onSuccess();
           }, 1500);
@@ -28,17 +37,19 @@ export default function ProcessingPayment({ formData, onSuccess, onError }: Proc
         if (!formData.opaqueDataDescriptor || !formData.opaqueDataValue) {
           // If we have neither IDs nor tokens, we can't proceed
           if (!formData.customerProfileId) {
-            throw new Error('Payment information is missing');
+            throw new Error("Payment information is missing");
           }
         }
 
-        setProcessingMessage('Creating your customer profile...');
+        setProcessingMessage("Creating your customer profile...");
 
         // Calculate scheduled date (consultation date)
         // Parse the consultation time to get the date
-        const consultationDate = new Date(formData.consultationTime || Date.now());
+        const consultationDate = new Date(
+          formData.consultationTime || Date.now()
+        );
 
-        setProcessingMessage('Processing your $4.95 trial payment...');
+        setProcessingMessage("Processing your $4.95 trial payment...");
 
         // Create customer profile, charge trial fee, and schedule future payment
         const paymentResult = await createCustomerWithPayment({
@@ -54,21 +65,23 @@ export default function ProcessingPayment({ formData, onSuccess, onError }: Proc
           billingAddress: {
             street: formData.billingStreet,
             city: formData.billingCity,
-            state: formData.billingState || '',
-            zip: formData.billingZip || '',
+            state: formData.billingState || "",
+            zip: formData.billingZip || "",
           },
           initialPaymentAmount: 4.95, // Trial fee
           scheduledDate: consultationDate.toISOString(),
-          fullAmount: 397.00, // Full monthly amount to charge on consultation date
+          fullAmount: 397.0, // Full monthly amount to charge on consultation date
         });
 
         if (paymentResult.success) {
-          setProcessingMessage('Payment successful! Setting up your account...');
+          setProcessingMessage(
+            "Payment successful! Setting up your account..."
+          );
 
           // Store customer profile IDs for future reference
-          console.log('Customer Profile ID:', paymentResult.customerProfileId);
-          console.log('Payment Profile ID:', paymentResult.paymentProfileId);
-          console.log('Transaction ID:', paymentResult.transactionId);
+          console.log("Customer Profile ID:", paymentResult.customerProfileId);
+          console.log("Payment Profile ID:", paymentResult.paymentProfileId);
+          console.log("Transaction ID:", paymentResult.transactionId);
 
           // TODO: Store these IDs in your database
           // - paymentResult.customerProfileId
@@ -82,11 +95,11 @@ export default function ProcessingPayment({ formData, onSuccess, onError }: Proc
             onSuccess();
           }, 1500);
         } else {
-          console.error('Payment failed:', paymentResult.error);
+          console.error("Payment failed:", paymentResult.error);
           onError();
         }
       } catch (error) {
-        console.error('Payment processing error:', error);
+        console.error("Payment processing error:", error);
         onError();
       }
     };
