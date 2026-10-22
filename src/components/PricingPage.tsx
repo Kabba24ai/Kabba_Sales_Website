@@ -83,7 +83,7 @@ export default function PricingPage({ onBack, onStartTrial, onViewOurStory, onVi
 
               <div className="bg-white/10 rounded-xl p-6 backdrop-blur-sm">
                 <div className="text-cyan-300 text-lg font-semibold mb-2">Then</div>
-                <div className="text-4xl font-bold text-white mb-2">$9.95<span className="text-2xl text-slate-300">/month</span></div>
+                <div className="text-4xl font-bold text-white mb-2">$9.95<span className="text-2xl text-slate-300"> every 28 days</span></div>
                 <div className="text-slate-300 text-lg">Base platform fee</div>
               </div>
 
@@ -105,7 +105,7 @@ export default function PricingPage({ onBack, onStartTrial, onViewOurStory, onVi
 
             <div className="bg-cyan-400/10 border border-cyan-400/30 rounded-xl p-6 mb-8">
               <p className="text-white text-lg leading-relaxed">
-                If you don't rent anything, you don't pay us anything beyond the trial — and after that, only the $9.95 monthly fee.
+                If you don't rent anything, you don't pay us anything beyond the trial — and after that, only the $9.95 subscription fee every 28 days.
               </p>
             </div>
 
@@ -162,7 +162,7 @@ export default function PricingPage({ onBack, onStartTrial, onViewOurStory, onVi
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="text-cyan-400 flex-shrink-0 mt-1" size={20} />
-                  <span>When you don't rent → you pay only $9.95 monthly</span>
+                  <span>When you don't rent → you pay only $9.95 every 28 days</span>
                 </li>
               </ul>
             </div>

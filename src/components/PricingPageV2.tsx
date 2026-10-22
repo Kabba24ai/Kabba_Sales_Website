@@ -122,7 +122,7 @@ export default function PricingPageV2({
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="text-cyan-400 flex-shrink-0 mt-1" size={20} />
-                  <span>When you don't rent → you pay only $9.95 monthly</span>
+                  <span>When you don't rent → you pay only $9.95 every 28 days</span>
                 </li>
               </ul>
             </div>
@@ -209,7 +209,7 @@ export default function PricingPageV2({
 
               <div className="bg-white/10 rounded-xl p-6 mb-6 text-center backdrop-blur-sm">
                 <div className="text-4xl font-bold text-white mb-1">$9.95</div>
-                <div className="text-slate-300 mb-3">monthly</div>
+                <div className="text-slate-300 mb-3">every 28 days</div>
                 <div className="text-3xl font-bold text-cyan-400">+ $0.49</div>
                 <div className="text-slate-300">per transaction</div>
               </div>

@@ -8,7 +8,7 @@ interface PricingProps {
 export default function Pricing({ onStartTrial, onViewDetailedPricing }: PricingProps) {
   const features = [
     '$4.95 Starter Trial',
-    'Then $9.95/month',
+    'Then $9.95 every 28 days',
     '$0.49 per rental transaction',
     'No startup fees',
     'No contracts',

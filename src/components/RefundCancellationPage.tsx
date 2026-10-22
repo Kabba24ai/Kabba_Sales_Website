@@ -74,7 +74,7 @@ export default function RefundCancellationPage({
           <section className="mb-12">
             <h2 className="text-2xl font-semibold text-slate-900 mb-4">Subscription Fees</h2>
             <p className="text-slate-700 leading-relaxed mb-4">
-              KABBA charges a monthly subscription fee and per-transaction usage fees, as disclosed at signup.
+              KABBA charges a subscription fee every 28 days and per-transaction usage fees, as disclosed at signup.
             </p>
             <p className="text-slate-700 leading-relaxed mb-4">
               Subscription fees are billed in advance.

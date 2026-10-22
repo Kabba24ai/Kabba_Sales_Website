@@ -104,7 +104,7 @@ export default function TermsOfServicePage({
               Fees may include:
             </p>
             <ul className="list-disc pl-6 mb-6 text-slate-700 space-y-1">
-              <li>A monthly subscription fee</li>
+              <li>A subscription fee every 28 days</li>
               <li>Per-transaction usage fees</li>
               <li>Applicable taxes</li>
             </ul>
