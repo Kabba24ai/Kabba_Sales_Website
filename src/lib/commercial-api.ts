@@ -42,8 +42,23 @@ export interface OfferUsage {
 }
 
 export interface OfferBilling {
-  mode: string;
+  /** "advance": each period's subscription fee is charged when the period starts. */
+  subscription_timing: "advance" | string;
+  /** "arrears": transaction fees are charged after the period they occurred in. */
+  usage_timing: "arrears" | string;
+  /** "when_trial_ends" | "at_signup" */
+  first_subscription_charge: string;
   one_invoice_one_payment: boolean;
+  /** Older servers sent `mode` instead of the two timing fields. */
+  mode?: string;
+}
+
+export interface OfferTax {
+  enabled: boolean;
+  /** e.g. "9.25" when enabled, otherwise null */
+  rate_percent: string | null;
+  /** Server-written sentence to show verbatim. */
+  note: string;
 }
 
 export interface CommercialOffer {
@@ -54,6 +69,7 @@ export interface CommercialOffer {
   subscription: OfferSubscription;
   usage: OfferUsage;
   billing: OfferBilling;
+  tax?: OfferTax;
   /** Canonical one-sentence description of the offer, written by the server. */
   description: string;
 }

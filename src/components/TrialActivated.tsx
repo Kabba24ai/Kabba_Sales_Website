@@ -385,10 +385,20 @@ export default function TrialActivated({
                   <div className="space-y-3 text-sm">
                     <div className="flex justify-between items-center">
                       <span className="text-gray-400">Today:</span>
-                      <span className="text-emerald-400 font-semibold">{trialCharge} trial</span>
+                      <span className="text-emerald-400 font-semibold">{trialCharge} trial enrollment</span>
                     </div>
                     <div className="flex justify-between items-start">
-                      <span className="text-gray-400">After trial:</span>
+                      <span className="text-gray-400">When the trial ends:</span>
+                      <div className="text-right">
+                        <div className="text-gray-300 font-semibold">
+                          {formatMoney(offer.subscription.fee_cents, offer.currency, offer.subscription.fee)} for your first{" "}
+                          {offer.subscription.interval_days} days
+                        </div>
+                        <div className="text-gray-500 text-xs">billed in advance</div>
+                      </div>
+                    </div>
+                    <div className="flex justify-between items-start">
+                      <span className="text-gray-400">Every {offer.subscription.interval_days} days after:</span>
                       <div className="text-right">
                         <div className="text-gray-300 font-semibold">
                           {formatMoney(offer.subscription.fee_cents, offer.currency, offer.subscription.fee)}{" "}
@@ -398,14 +408,15 @@ export default function TrialActivated({
                           + {formatMoney(offer.usage.transaction_fee_cents, offer.currency, offer.usage.transaction_fee)}{" "}
                           per qualifying rental of{" "}
                           {formatMoney(offer.usage.minimum_qualifying_cents, offer.currency, offer.usage.minimum_qualifying)}
-                          {offer.usage.threshold_inclusive ? " or more" : " or over"}
+                          {offer.usage.threshold_inclusive ? " or more" : " or over"} from the period just completed — one invoice, one payment
                         </div>
                       </div>
                     </div>
                     <div className="pt-3 border-t border-gray-800">
                       <p className="text-gray-500 text-xs text-center">
                         Your subscription renews every {offer.subscription.interval_days} days (about{" "}
-                        {offer.subscription.periods_per_year} periods a year), not monthly. No contracts. Cancel anytime.
+                        {offer.subscription.periods_per_year} periods a year), not monthly. Subscription fees are billed in advance;
+                        transaction fees are billed in arrears. {offer.tax?.note ?? "Applicable sales taxes, if any, are added."} No contracts. Cancel anytime.
                       </p>
                     </div>
                   </div>

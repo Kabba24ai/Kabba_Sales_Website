@@ -77,13 +77,13 @@ export default function RefundCancellationPage({
               KABBA charges a subscription fee every 28 days and per-transaction usage fees, as disclosed at signup.
             </p>
             <p className="text-slate-700 leading-relaxed mb-4">
-              Subscription fees are billed in advance.
+              Subscription fees are billed in advance for each 28-day period. Per-transaction usage fees are billed in arrears, for the 28-day period in which the rental transactions occurred, on the same invoice as the next period&apos;s subscription fee.
             </p>
             <p className="text-slate-700 leading-relaxed mb-4">
               Subscription fees are non-refundable, including for partial billing periods.
             </p>
             <p className="text-slate-700 leading-relaxed">
-              Canceling a subscription stops future subscription billing but does not immediately disable account access.
+              Canceling a subscription stops future subscription billing but does not immediately disable account access; service continues to the end of the period already paid for. Usage fees already incurred in the final period are billed once after that period ends.
             </p>
           </section>
 

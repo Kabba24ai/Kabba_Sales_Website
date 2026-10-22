@@ -104,8 +104,8 @@ export default function TermsOfServicePage({
               Fees may include:
             </p>
             <ul className="list-disc pl-6 mb-6 text-slate-700 space-y-1">
-              <li>A subscription fee every 28 days</li>
-              <li>Per-transaction usage fees</li>
+              <li>A subscription fee every 28 days, billed in advance for each period</li>
+              <li>Per-transaction usage fees, billed in arrears for the completed period</li>
               <li>Applicable taxes</li>
             </ul>
             <p className="text-slate-700 leading-relaxed mb-4">

@@ -498,23 +498,38 @@ function OfferSummary({ offer }: { offer: CommercialOffer }) {
     ? `${minimum} or more`
     : `over ${minimum}`;
 
-  const rows = [
-    {
-      label: "Today",
-      value: `${trialCharge} trial`,
-      sub: trial.enabled ? `${trial.days} days of full access` : undefined,
-    },
-    {
-      label: "Then",
-      value: `${fee} every ${subscription.interval_days} days`,
-      sub: "subscription fee",
-    },
-    {
-      label: "Plus",
-      value: `${txn} per qualifying rental`,
-      sub: `per qualifying rental of ${qualifier}`,
-    },
-  ];
+  const days = subscription.interval_days;
+  const taxNote = offer.tax?.note ?? "Applicable sales taxes, if any, are added to each charge.";
+  const rows = trial.enabled
+    ? [
+        {
+          label: "Today (day 1)",
+          value: `${trialCharge} trial enrollment`,
+          sub: `${trial.days} days of full access — not your first subscription payment`,
+        },
+        {
+          label: `When the trial ends (day ${trial.days + 1})`,
+          value: `${fee} for your first ${days} days`,
+          sub: "subscription fee, billed in advance",
+        },
+        {
+          label: `Every ${days} days after`,
+          value: `${fee} + usage`,
+          sub: `next ${days}-day subscription (in advance) + ${txn} per qualifying rental of ${qualifier} from the period just completed (in arrears), on one invoice, one payment`,
+        },
+      ]
+    : [
+        {
+          label: "Today (day 1)",
+          value: `${fee} for your first ${days} days`,
+          sub: "subscription fee, billed in advance",
+        },
+        {
+          label: `Every ${days} days after`,
+          value: `${fee} + usage`,
+          sub: `next ${days}-day subscription (in advance) + ${txn} per qualifying rental of ${qualifier} from the period just completed (in arrears), on one invoice, one payment`,
+        },
+      ];
 
   return (
     <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
@@ -534,8 +549,10 @@ function OfferSummary({ offer }: { offer: CommercialOffer }) {
       </dl>
       <p className="mt-4 pt-4 border-t border-gray-700 text-gray-300 text-sm">
         Your subscription renews every {subscription.interval_days} days (about{" "}
-        {subscription.periods_per_year} periods a year), not monthly.
+        {subscription.periods_per_year} periods a year), not monthly. Subscription fees are
+        billed in advance; rental transaction fees are billed after each period.
       </p>
+      <p className="mt-2 text-gray-400 text-xs leading-relaxed">{taxNote}</p>
       <p className="mt-2 text-gray-500 text-xs leading-relaxed">
         {offer.description}
       </p>
