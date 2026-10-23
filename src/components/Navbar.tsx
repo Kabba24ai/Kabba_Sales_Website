@@ -1,5 +1,6 @@
 import { Menu, X } from 'lucide-react';
 import { useState } from 'react';
+import { useTrialCopy } from '../lib/useTrialCopy';
 
 interface NavbarProps {
   onStartTrial: () => void;
@@ -13,6 +14,7 @@ interface NavbarProps {
 
 export default function Navbar({ onStartTrial, onViewPricing, onViewOurStory, onViewContact, onBackToHome, onViewProduct, onViewConsultation }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const trial = useTrialCopy();
 
   return (
     <nav className="fixed top-0 w-full bg-black/95 backdrop-blur-sm shadow-lg z-50">
@@ -45,7 +47,7 @@ export default function Navbar({ onStartTrial, onViewPricing, onViewOurStory, on
               <button onClick={onViewContact} className="text-slate-200 hover:text-[#02ffff] transition">Contact</button>
             )}
             <button onClick={onStartTrial} className="bg-amber-500 hover:bg-amber-600 text-white px-6 py-2 rounded-lg font-semibold transition">
-              Start $4.95 Trial
+              {trial.startTrialShort}
             </button>
           </div>
 
@@ -76,7 +78,7 @@ export default function Navbar({ onStartTrial, onViewPricing, onViewOurStory, on
               <button onClick={() => { onViewContact(); setIsOpen(false); }} className="block py-2 text-slate-200 hover:text-[#02ffff] text-left w-full">Contact</button>
             )}
             <button onClick={onStartTrial} className="w-full mt-2 bg-amber-500 hover:bg-amber-600 text-white px-6 py-2 rounded-lg font-semibold">
-              Start $4.95 Trial
+              {trial.startTrialShort}
             </button>
           </div>
         )}

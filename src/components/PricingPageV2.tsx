@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
 import { ArrowRight, Check, X, Play } from 'lucide-react';
 import Navbar from './Navbar';
+import { formatMoney } from '../lib/commercial-api';
+import { useCommercialOffer } from '../lib/useCommercialOffer';
 
 interface PricingPageV2Props {
   onBack: () => void;
@@ -13,6 +15,15 @@ interface PricingPageV2Props {
   scrollToComparison?: boolean;
 }
 
+/**
+ * The standard (Flexible / Growth-Aligned) offer is rendered from the
+ * published pricing API — trial charge, trial length, subscription fee,
+ * period length, transaction fee and threshold — never from constants.
+ *
+ * The buy-out and enterprise models remain marketing content pending
+ * business approval: they are available by consultation only and are never
+ * routed into the online checkout, which provisions the standard plan alone.
+ */
 export default function PricingPageV2({
   onBack,
   onStartTrial,
@@ -23,6 +34,8 @@ export default function PricingPageV2({
   onViewLiveDemo,
   scrollToComparison
 }: PricingPageV2Props) {
+  const { status, offer } = useCommercialOffer();
+
   useEffect(() => {
     if (scrollToComparison) {
       const element = document.getElementById('comparison');
@@ -33,6 +46,16 @@ export default function PricingPageV2({
       }
     }
   }, [scrollToComparison]);
+
+  const money = (cents: number | undefined, decimal?: string) =>
+    offer ? formatMoney(cents, offer.currency, decimal) : '';
+  const trial = offer ? money(offer.trial.charge_cents, offer.trial.charge) : null;
+  const fee = offer ? money(offer.subscription.fee_cents, offer.subscription.fee) : null;
+  const txn = offer ? money(offer.usage.transaction_fee_cents, offer.usage.transaction_fee) : null;
+  const minimum = offer ? money(offer.usage.minimum_qualifying_cents, offer.usage.minimum_qualifying) : null;
+  const days = offer?.subscription.interval_days;
+  const trialCta = offer?.trial.enabled && trial ? `Start My ${trial} Trial` : 'Start My Trial';
+  const pricingUnavailable = status === 'unavailable';
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
@@ -62,7 +85,7 @@ export default function PricingPageV2({
               onClick={onStartTrial}
               className="bg-amber-500 hover:bg-amber-600 text-white px-10 py-5 rounded-lg font-bold text-xl transition shadow-2xl hover:shadow-3xl inline-flex items-center group"
             >
-              Start My $4.95 Trial
+              {trialCta}
               <ArrowRight className="ml-2 group-hover:translate-x-1 transition" size={24} />
             </button>
 
@@ -122,7 +145,11 @@ export default function PricingPageV2({
                 </li>
                 <li className="flex items-start gap-3">
                   <Check className="text-cyan-400 flex-shrink-0 mt-1" size={20} />
-                  <span>When you don't rent → you pay only $9.95 every 28 days</span>
+                  <span>
+                    {offer
+                      ? `When you don't rent → you pay only ${fee} every ${days} days`
+                      : "When you don't rent → you pay only the subscription fee"}
+                  </span>
                 </li>
               </ul>
             </div>
@@ -154,7 +181,7 @@ export default function PricingPageV2({
           </div>
 
           <div className="grid lg:grid-cols-3 gap-8 mb-12">
-            {/* MODEL 1 — HIGH-VOLUME BUY-OUT */}
+            {/* MODEL 1 — HIGH-VOLUME BUY-OUT (by consultation; not available at online checkout) */}
             <div className="bg-gradient-to-br from-slate-800 to-slate-700 border-2 border-slate-600 rounded-2xl p-8 shadow-xl">
               <div className="text-center mb-6">
                 <h3 className="text-2xl font-bold text-white mb-2">High-Volume Buy-Out</h3>
@@ -182,19 +209,18 @@ export default function PricingPageV2({
               </ul>
 
               <button
-                onClick={onStartTrial}
-                className="w-full bg-amber-500 hover:bg-amber-600 text-white px-6 py-4 rounded-lg font-bold text-lg transition shadow-xl hover:shadow-2xl inline-flex items-center justify-center group mb-3"
+                onClick={onViewConsultation}
+                className="w-full bg-slate-700 hover:bg-slate-600 border-2 border-slate-500 text-white px-6 py-4 rounded-lg font-bold text-lg transition mb-3"
               >
-                Start My $4.95 Trial
-                <ArrowRight className="ml-2 group-hover:translate-x-1 transition" size={20} />
+                Request a Consultation
               </button>
 
-              <p className="text-cyan-300 text-center text-sm">
-                Convert anytime • Choose when you're ready
+              <p className="text-slate-400 text-center text-sm">
+                Arranged by consultation • Not available at online checkout
               </p>
             </div>
 
-            {/* MODEL 2 — FLEXIBLE / GROWTH-ALIGNED (PRIMARY) */}
+            {/* MODEL 2 — FLEXIBLE / GROWTH-ALIGNED (PRIMARY, from the published offer) */}
             <div className="bg-gradient-to-br from-cyan-900/40 to-blue-900/40 border-4 border-cyan-500/70 rounded-2xl p-8 shadow-2xl transform lg:scale-105 relative">
               <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
                 <div className="bg-amber-500 text-white px-6 py-2 rounded-full text-sm font-bold shadow-lg flex items-center gap-2">
@@ -208,17 +234,27 @@ export default function PricingPageV2({
               </div>
 
               <div className="bg-white/10 rounded-xl p-6 mb-6 text-center backdrop-blur-sm">
-                <div className="text-4xl font-bold text-white mb-1">$9.95</div>
-                <div className="text-slate-300 mb-3">every 28 days</div>
-                <div className="text-3xl font-bold text-cyan-400">+ $0.49</div>
-                <div className="text-slate-300">per transaction</div>
+                {offer ? (
+                  <>
+                    <div className="text-4xl font-bold text-white mb-1">{fee}</div>
+                    <div className="text-slate-300 mb-3">every {days} days, billed in advance</div>
+                    <div className="text-3xl font-bold text-cyan-400">+ {txn}</div>
+                    <div className="text-slate-300">per qualifying rental of {minimum} or more, billed after each period</div>
+                  </>
+                ) : (
+                  <div className="text-slate-300">
+                    {pricingUnavailable ? 'Current pricing is shown at signup.' : 'Loading current pricing…'}
+                  </div>
+                )}
               </div>
 
-              <div className="bg-cyan-400/10 border border-cyan-400/30 rounded-lg p-4 mb-6">
-                <p className="text-cyan-300 text-center font-semibold">
-                  Start with a $4.95 trial (28 days)
-                </p>
-              </div>
+              {offer?.trial.enabled && (
+                <div className="bg-cyan-400/10 border border-cyan-400/30 rounded-lg p-4 mb-6">
+                  <p className="text-cyan-300 text-center font-semibold">
+                    Start with a {trial} trial ({offer.trial.days} days)
+                  </p>
+                </div>
+              )}
 
               <ul className="space-y-3 mb-8 text-white">
                 {[
@@ -238,16 +274,17 @@ export default function PricingPageV2({
                 onClick={onStartTrial}
                 className="w-full bg-amber-500 hover:bg-amber-600 text-white px-6 py-4 rounded-lg font-bold text-lg transition shadow-xl hover:shadow-2xl inline-flex items-center justify-center group mb-3"
               >
-                Start My $4.95 Trial
+                {trialCta}
                 <ArrowRight className="ml-2 group-hover:translate-x-1 transition" size={20} />
               </button>
 
               <p className="text-cyan-300 text-center text-sm">
                 Cancel anytime • No long-term commitment
               </p>
+              {offer?.tax?.note && <p className="text-slate-400 text-center text-xs mt-2">{offer.tax.note}</p>}
             </div>
 
-            {/* MODEL 3 — ENTERPRISE / CUSTOM */}
+            {/* MODEL 3 — ENTERPRISE / CUSTOM (by consultation) */}
             <div className="bg-gradient-to-br from-slate-800 to-slate-700 border-2 border-slate-600 rounded-2xl p-8 shadow-xl">
               <div className="text-center mb-6">
                 <h3 className="text-2xl font-bold text-white mb-2">Enterprise / Custom</h3>
@@ -281,6 +318,9 @@ export default function PricingPageV2({
               >
                 Request a Consultation
               </button>
+              <p className="text-slate-400 text-center text-sm mt-3">
+                Arranged by consultation • Not available at online checkout
+              </p>
             </div>
           </div>
         </div>
@@ -312,7 +352,7 @@ export default function PricingPageV2({
 
           <div className="bg-gradient-to-r from-slate-800 to-slate-700 border border-slate-600 rounded-xl p-8 text-center">
             <p className="text-xl font-semibold text-white">
-              You can move into a buy-out or enterprise model anytime as your business evolves.
+              Online signup starts the Flexible plan. A buy-out or enterprise arrangement is set up with us directly, whenever your business is ready.
             </p>
           </div>
         </div>
@@ -429,7 +469,7 @@ export default function PricingPageV2({
               },
               {
                 q: 'Which option should I start with?',
-                a: 'Most businesses start with the flexible model and adjust as volume grows.'
+                a: 'Most businesses start with the flexible model and adjust as volume grows. Online signup starts the flexible model; the other arrangements are set up with us directly.'
               },
               {
                 q: 'Can I change pricing models later?',
@@ -456,14 +496,16 @@ export default function PricingPageV2({
             Start with the model that fits your business today.
           </h2>
           <p className="text-2xl text-slate-300 mb-10 leading-relaxed">
-            Begin with the $4.95 trial and choose pricing that aligns with how you operate now — and where you're headed next.
+            {offer?.trial.enabled && trial
+              ? `Begin with the ${trial} trial and choose pricing that aligns with how you operate now — and where you're headed next.`
+              : 'Begin with the flexible plan and choose pricing that aligns with how you operate now — and where you\'re headed next.'}
           </p>
 
           <button
             onClick={onStartTrial}
             className="bg-amber-500 hover:bg-amber-600 text-white px-12 py-6 rounded-lg font-bold text-2xl transition shadow-2xl hover:shadow-3xl inline-flex items-center group mb-4"
           >
-            Start My $4.95 Trial
+            {trialCta}
             <ArrowRight className="ml-3 group-hover:translate-x-1 transition" size={28} />
           </button>
 

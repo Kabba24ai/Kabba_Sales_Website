@@ -500,33 +500,44 @@ function OfferSummary({ offer }: { offer: CommercialOffer }) {
 
   const days = subscription.interval_days;
   const taxNote = offer.tax?.note ?? "Applicable sales taxes, if any, are added to each charge.";
+  // Exact amounts computed by the server (base + tax = total), when the server sent them.
+  const initial = offer.initial_charge;
+  const renewal = offer.renewal_charge;
+  const withTax = (charge: typeof initial, fallback: string): string =>
+    charge ? formatMoney(charge.total_cents, currency, charge.total) : fallback;
+  const taxDetail = (charge: typeof initial): string =>
+    charge && charge.tax_cents > 0
+      ? ` (${formatMoney(charge.subtotal_cents, currency, charge.subtotal)} + ${formatMoney(charge.tax_cents, currency, charge.tax)} sales tax${charge.tax_rate_percent ? ` at ${charge.tax_rate_percent}%` : ""})`
+      : "";
+  const initialTotal = withTax(initial, trial.enabled ? trialCharge : fee);
+  const renewalTotal = withTax(renewal, fee);
   const rows = trial.enabled
     ? [
         {
           label: "Today (day 1)",
-          value: `${trialCharge} trial enrollment`,
-          sub: `${trial.days} days of full access — not your first subscription payment`,
+          value: `${initialTotal} trial enrollment`,
+          sub: `${trial.days} days of full access — not your first subscription payment${taxDetail(initial)}`,
         },
         {
           label: `When the trial ends (day ${trial.days + 1})`,
-          value: `${fee} for your first ${days} days`,
-          sub: "subscription fee, billed in advance",
+          value: `${renewalTotal} for your first ${days} days`,
+          sub: `subscription fee, billed in advance${taxDetail(renewal)}`,
         },
         {
           label: `Every ${days} days after`,
-          value: `${fee} + usage`,
+          value: `${renewalTotal} + usage`,
           sub: `next ${days}-day subscription (in advance) + ${txn} per qualifying rental of ${qualifier} from the period just completed (in arrears), on one invoice, one payment`,
         },
       ]
     : [
         {
           label: "Today (day 1)",
-          value: `${fee} for your first ${days} days`,
-          sub: "subscription fee, billed in advance",
+          value: `${initialTotal} for your first ${days} days`,
+          sub: `subscription fee, billed in advance${taxDetail(initial)}`,
         },
         {
           label: `Every ${days} days after`,
-          value: `${fee} + usage`,
+          value: `${renewalTotal} + usage`,
           sub: `next ${days}-day subscription (in advance) + ${txn} per qualifying rental of ${qualifier} from the period just completed (in arrears), on one invoice, one payment`,
         },
       ];
@@ -1264,13 +1275,29 @@ export default function OnboardingSignup({
                   <span className="text-sm font-semibold text-emerald-800">
                     Charged today
                   </span>
-                  <span className="text-lg font-bold text-emerald-700">{trialCharge}</span>
+                  <span className="text-lg font-bold text-emerald-700">
+                    {offer.initial_charge
+                      ? money(offer.initial_charge.total_cents, offer.initial_charge.total)
+                      : trialCharge}
+                  </span>
                 </div>
+                {offer.initial_charge && offer.initial_charge.tax_cents > 0 && (
+                  <p className="text-xs text-emerald-800 mt-1">
+                    {money(offer.initial_charge.subtotal_cents, offer.initial_charge.subtotal)}{" "}
+                    {offer.initial_charge.label.toLowerCase()} +{" "}
+                    {money(offer.initial_charge.tax_cents, offer.initial_charge.tax)} sales tax
+                    {offer.initial_charge.tax_rate_percent ? ` (${offer.initial_charge.tax_rate_percent}%)` : ""}.
+                  </p>
+                )}
                 <p className="text-xs text-emerald-700 mt-1">
-                  Then {money(offer.subscription.fee_cents, offer.subscription.fee)} every{" "}
-                  {offer.subscription.interval_days} days, plus{" "}
+                  Then{" "}
+                  {offer.renewal_charge
+                    ? money(offer.renewal_charge.total_cents, offer.renewal_charge.total)
+                    : money(offer.subscription.fee_cents, offer.subscription.fee)}{" "}
+                  every {offer.subscription.interval_days} days
+                  {offer.renewal_charge && offer.renewal_charge.tax_cents > 0 ? " including sales tax" : ""}, plus{" "}
                   {money(offer.usage.transaction_fee_cents, offer.usage.transaction_fee)} per
-                  qualifying rental.
+                  qualifying rental{offer.tax?.applies_to_new_customers ? " plus tax" : ""}.
                 </p>
               </div>
             )}

@@ -55,21 +55,44 @@ export interface OfferBilling {
 
 export interface OfferTax {
   enabled: boolean;
+  /** True when a NEW customer is charged tax today (collection on, new customers taxable). */
+  applies_to_new_customers?: boolean;
   /** e.g. "9.25" when enabled, otherwise null */
   rate_percent: string | null;
+  /** disabled | taxable | exempt | pending | missing_rate */
+  status?: string;
   /** Server-written sentence to show verbatim. */
   note: string;
 }
 
+/**
+ * One amount the server computed exactly as the invoice will: base, tax and
+ * total. The browser never does money arithmetic.
+ */
+export interface OfferCharge {
+  label: string;
+  subtotal_cents: number;
+  subtotal: string;
+  tax_cents: number;
+  tax: string;
+  tax_rate_percent: string | null;
+  total_cents: number;
+  total: string;
+}
+
 export interface CommercialOffer {
   plan_code: string;
-  pricing_version: string | number;
+  pricing_version: string | number | null;
   currency: string;
   trial: OfferTrial;
   subscription: OfferSubscription;
   usage: OfferUsage;
   billing: OfferBilling;
   tax?: OfferTax;
+  /** The exact amount charged today (trial enrollment, or the first prepaid period), with tax. */
+  initial_charge?: OfferCharge;
+  /** Each subscription renewal before usage fees, with tax. */
+  renewal_charge?: OfferCharge;
   /** Canonical one-sentence description of the offer, written by the server. */
   description: string;
 }

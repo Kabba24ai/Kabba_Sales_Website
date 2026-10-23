@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ArrowRight, Eye } from 'lucide-react';
 import LiveDemoModal from './LiveDemoModal';
+import { useTrialCopy } from '../lib/useTrialCopy';
 
 interface HeroProps {
 onStartTrial: () => void;
@@ -8,6 +9,7 @@ onStartTrial: () => void;
 
 export default function Hero({ onStartTrial }: HeroProps) {
 const [isLiveDemoModalOpen, setIsLiveDemoModalOpen] = useState(false);
+const trial = useTrialCopy();
 
 return (
 <>
@@ -34,14 +36,14 @@ return (
             <p className="text-lg sm:text-xl text-slate-600 mb-6">
                 See everything upfront — no demos, no pressure, no hidden pricing.
                 <span className="block mt-2 font-semibold text-slate-700">
-                    Start for just $4.95, and only pay when you rent.
+                    {trial.forJust}
                 </span>
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
                 <button onClick={onStartTrial}
                     className="bg-amber-500 hover:bg-amber-600 text-white px-8 py-4 rounded-lg font-semibold text-lg transition shadow-lg hover:shadow-xl flex items-center justify-center group">
-                    Start Your $4.95 Trial
+                    {trial.startTrial}
                     <ArrowRight className="ml-2 group-hover:translate-x-1 transition" size={20} />
                 </button>
                 <button

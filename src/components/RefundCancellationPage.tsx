@@ -58,7 +58,7 @@ export default function RefundCancellationPage({
           <section className="mb-12">
             <h2 className="text-2xl font-semibold text-slate-900 mb-4">Trial Fees</h2>
             <p className="text-slate-700 leading-relaxed mb-4">
-              KABBA may offer a $4.95 trial that provides access to the platform and onboarding resources.
+              KABBA may offer a paid trial, at the trial enrollment fee disclosed at signup, that provides access to the platform and onboarding resources.
             </p>
             <p className="text-slate-700 leading-relaxed mb-4">
               The trial fee is non-refundable.

@@ -385,16 +385,31 @@ export default function TrialActivated({
                   <div className="space-y-3 text-sm">
                     <div className="flex justify-between items-center">
                       <span className="text-gray-400">Today:</span>
-                      <span className="text-emerald-400 font-semibold">{trialCharge} trial enrollment</span>
+                      <span className="text-emerald-400 font-semibold">
+                        {offer.initial_charge
+                          ? formatMoney(offer.initial_charge.total_cents, offer.currency, offer.initial_charge.total)
+                          : trialCharge}{" "}
+                        {offer.trial.enabled ? "trial enrollment" : "first period"}
+                        {offer.initial_charge && offer.initial_charge.tax_cents > 0
+                          ? ` (incl. ${formatMoney(offer.initial_charge.tax_cents, offer.currency, offer.initial_charge.tax)} sales tax)`
+                          : ""}
+                      </span>
                     </div>
                     <div className="flex justify-between items-start">
                       <span className="text-gray-400">When the trial ends:</span>
                       <div className="text-right">
                         <div className="text-gray-300 font-semibold">
-                          {formatMoney(offer.subscription.fee_cents, offer.currency, offer.subscription.fee)} for your first{" "}
-                          {offer.subscription.interval_days} days
+                          {offer.renewal_charge
+                            ? formatMoney(offer.renewal_charge.total_cents, offer.currency, offer.renewal_charge.total)
+                            : formatMoney(offer.subscription.fee_cents, offer.currency, offer.subscription.fee)}{" "}
+                          for your first {offer.subscription.interval_days} days
                         </div>
-                        <div className="text-gray-500 text-xs">billed in advance</div>
+                        <div className="text-gray-500 text-xs">
+                          billed in advance
+                          {offer.renewal_charge && offer.renewal_charge.tax_cents > 0
+                            ? ` (${formatMoney(offer.renewal_charge.subtotal_cents, offer.currency, offer.renewal_charge.subtotal)} + ${formatMoney(offer.renewal_charge.tax_cents, offer.currency, offer.renewal_charge.tax)} sales tax)`
+                            : ""}
+                        </div>
                       </div>
                     </div>
                     <div className="flex justify-between items-start">
