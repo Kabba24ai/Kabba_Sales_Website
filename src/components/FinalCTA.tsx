@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ArrowRight, Eye } from 'lucide-react';
 import LiveDemoModal from './LiveDemoModal';
+import { useTrialCopy } from '../lib/useTrialCopy';
 
 interface FinalCTAProps {
   onStartTrial: () => void;
@@ -8,6 +9,7 @@ interface FinalCTAProps {
 
 export default function FinalCTA({ onStartTrial }: FinalCTAProps) {
   const [isLiveDemoModalOpen, setIsLiveDemoModalOpen] = useState(false);
+  const trial = useTrialCopy();
 
   return (
     <>
@@ -26,7 +28,7 @@ export default function FinalCTA({ onStartTrial }: FinalCTAProps) {
             Ready to run your rental shop the smarter way?
           </h2>
           <p className="text-xl sm:text-2xl text-blue-100 mb-10 leading-relaxed">
-            Start today for $4.95. See everything instantly.
+            {trial.trialCharge ? `Start today for ${trial.trialCharge}. See everything instantly.` : 'Start today. See everything instantly.'}
             <span className="block mt-2 font-semibold">
               And get the real-world growth strategies you can't get anywhere else.
             </span>
@@ -34,7 +36,7 @@ export default function FinalCTA({ onStartTrial }: FinalCTAProps) {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
             <button onClick={onStartTrial} className="bg-amber-500 hover:bg-amber-600 text-white px-10 py-5 rounded-lg font-bold text-xl transition shadow-2xl hover:shadow-3xl flex items-center justify-center group">
-              Start Your $4.95 Trial
+              {trial.startTrial}
               <ArrowRight className="ml-2 group-hover:translate-x-1 transition" size={24} />
             </button>
             <button className="group relative bg-white hover:bg-slate-100 text-blue-600 px-10 py-5 rounded-lg font-bold text-xl transition shadow-xl flex items-center justify-center">

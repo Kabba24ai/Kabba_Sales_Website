@@ -35,7 +35,7 @@ export default function SetupCanceled({ onRestartSetup, onBackToPricing }: Setup
 
             <div className="pt-6 border-t border-gray-800">
               <p className="text-sm text-gray-400 leading-relaxed">
-                We only activate trials after a consultation time is confirmed — no surprises.
+                No trial is activated until your payment is confirmed — no surprises.
               </p>
             </div>
           </div>
@@ -75,7 +75,7 @@ export default function SetupCanceled({ onRestartSetup, onBackToPricing }: Setup
 
           <div className="bg-gray-900/50 border border-gray-800/50 rounded-lg p-6 mb-8">
             <p className="text-sm text-gray-400 leading-relaxed text-center">
-              We build rental websites and onboarding correctly the first time. If scheduling doesn't work right now, that's okay.
+              We build rental websites and onboarding correctly the first time. If now isn't the right time, that's okay.
             </p>
           </div>
 

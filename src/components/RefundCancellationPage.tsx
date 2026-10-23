@@ -58,7 +58,7 @@ export default function RefundCancellationPage({
           <section className="mb-12">
             <h2 className="text-2xl font-semibold text-slate-900 mb-4">Trial Fees</h2>
             <p className="text-slate-700 leading-relaxed mb-4">
-              KABBA may offer a $4.95 trial that provides access to the platform and onboarding resources.
+              KABBA may offer a paid trial, at the trial enrollment fee disclosed at signup, that provides access to the platform and onboarding resources.
             </p>
             <p className="text-slate-700 leading-relaxed mb-4">
               The trial fee is non-refundable.
@@ -74,16 +74,16 @@ export default function RefundCancellationPage({
           <section className="mb-12">
             <h2 className="text-2xl font-semibold text-slate-900 mb-4">Subscription Fees</h2>
             <p className="text-slate-700 leading-relaxed mb-4">
-              KABBA charges a monthly subscription fee and per-transaction usage fees, as disclosed at signup.
+              KABBA charges a subscription fee every 28 days and per-transaction usage fees, as disclosed at signup.
             </p>
             <p className="text-slate-700 leading-relaxed mb-4">
-              Subscription fees are billed in advance.
+              Subscription fees are billed in advance for each 28-day period. Per-transaction usage fees are billed in arrears, for the 28-day period in which the rental transactions occurred, on the same invoice as the next period&apos;s subscription fee.
             </p>
             <p className="text-slate-700 leading-relaxed mb-4">
               Subscription fees are non-refundable, including for partial billing periods.
             </p>
             <p className="text-slate-700 leading-relaxed">
-              Canceling a subscription stops future subscription billing but does not immediately disable account access.
+              Canceling a subscription stops future subscription billing but does not immediately disable account access; service continues to the end of the period already paid for. Usage fees already incurred in the final period are billed once after that period ends.
             </p>
           </section>
 

@@ -1,10 +1,12 @@
 import { Target, TrendingUp, Calendar, Repeat, BarChart3, Zap, ArrowRight } from 'lucide-react';
+import { useTrialCopy } from '../lib/useTrialCopy';
 
 interface ConsultationProps {
   onStartTrial: () => void;
 }
 
 export default function Consultation({ onStartTrial }: ConsultationProps) {
+  const trial = useTrialCopy();
   const learnings = [
     { icon: Target, text: 'How to price for profit' },
     { icon: Calendar, text: 'How to eliminate scheduling chaos' },
@@ -26,7 +28,7 @@ export default function Consultation({ onStartTrial }: ConsultationProps) {
             <span className="block text-blue-600 mt-2">It's a Rental Business Growth Consultation.</span>
           </h2>
           <p className="text-xl text-slate-600 max-w-3xl mx-auto">
-            Activate your $4.95 trial and receive a free strategy session based on the exact methods we used to grow our rental shop from zero to millions in under 3 years.
+            Activate your {trial.trialCharge ? `${trial.trialCharge} ` : ''}trial and receive a free strategy session based on the exact methods we used to grow our rental shop from zero to millions in under 3 years.
           </p>
         </div>
 

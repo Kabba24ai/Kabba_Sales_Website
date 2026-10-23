@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Check, Loader2, Calendar, Shield, ChevronDown } from 'lucide-react';
-import { SignupFormData } from './OnboardingSignup';
+import { Check, Loader2, Calendar, ChevronDown } from 'lucide-react';
 
 interface AnalyzingAvailabilityProps {
-  formData: SignupFormData;
   onComplete: (consultationTime: string) => void;
   onCancel: () => void;
   initialConsultationTime?: string;
@@ -36,7 +34,7 @@ const refreshSteps: ChecklistStep[] = [
   { id: 3, label: 'Finalizing new options…', duration: 1700 },
 ];
 
-export default function AnalyzingAvailability({ formData, onComplete, onCancel, initialConsultationTime }: AnalyzingAvailabilityProps) {
+export default function AnalyzingAvailability({ onComplete, onCancel, initialConsultationTime }: AnalyzingAvailabilityProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const [showScheduling, setShowScheduling] = useState(!!initialConsultationTime);
@@ -311,7 +309,7 @@ export default function AnalyzingAvailability({ formData, onComplete, onCancel, 
                   <h2 className="text-2xl font-bold mb-4">Choose a setup & strategy session</h2>
                 )}
                 <p className="text-gray-300 mb-4">
-                  To complete your setup and activate your trial, please select a consultation time below.
+                  Your trial is already active. Pick a time for your optional setup & strategy session below.
                 </p>
 
                 <ul className="space-y-3 mb-6">
@@ -329,7 +327,7 @@ export default function AnalyzingAvailability({ formData, onComplete, onCancel, 
                 </ul>
 
                 <p className="text-gray-300 leading-relaxed">
-                  We want to make sure the timing works for you before we activate your trial.
+                  We want to make sure the timing works for you.
                 </p>
               </div>
 
@@ -426,7 +424,7 @@ export default function AnalyzingAvailability({ formData, onComplete, onCancel, 
                   {generationCount >= 2 && (
                     <div className="mb-4 p-4 bg-gray-800/50 border border-gray-700/50 rounded-lg">
                       <p className="text-sm text-gray-400 leading-relaxed">
-                        Still not seeing a good time? Choose 'cancel setup' and we'll ensure no charge is made.
+                        Still not seeing a good time? You can skip this for now — your trial stays active and you can book later.
                       </p>
                     </div>
                   )}
@@ -451,7 +449,7 @@ export default function AnalyzingAvailability({ formData, onComplete, onCancel, 
                       onClick={onCancel}
                       className="w-full text-gray-500 hover:text-gray-400 font-medium py-2 transition-colors text-sm"
                     >
-                      I need more time before confirming a date & time - cancel setup
+                      I'll book this later — back to my trial
                     </button>
                   </div>
                 </div>

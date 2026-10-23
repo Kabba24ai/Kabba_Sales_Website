@@ -80,7 +80,7 @@ export default function TermsOfServicePage({
           <section className="mb-12">
             <h2 className="text-2xl font-semibold text-slate-900 mb-4">Free Trial & Subscription</h2>
             <p className="text-slate-700 leading-relaxed mb-4">
-              KABBA may offer a $4.95 trial that provides limited or full access to the Services for a trial period.
+              KABBA may offer a paid trial, at the trial enrollment fee disclosed at signup, that provides limited or full access to the Services for a trial period.
             </p>
             <p className="text-slate-700 leading-relaxed mb-3">
               By starting a trial:
@@ -104,8 +104,8 @@ export default function TermsOfServicePage({
               Fees may include:
             </p>
             <ul className="list-disc pl-6 mb-6 text-slate-700 space-y-1">
-              <li>A monthly subscription fee</li>
-              <li>Per-transaction usage fees</li>
+              <li>A subscription fee every 28 days, billed in advance for each period</li>
+              <li>Per-transaction usage fees, billed in arrears for the completed period</li>
               <li>Applicable taxes</li>
             </ul>
             <p className="text-slate-700 leading-relaxed mb-4">
