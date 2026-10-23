@@ -12,6 +12,13 @@ export const API_BASE: string = (
 
 /** sessionStorage key holding the checkout session token. */
 export const CHECKOUT_TOKEN_KEY = "kabba.checkout.token";
+/**
+ * sessionStorage key holding the owner's checkout access code, taken from
+ * `?access=` on the URL. While the checkout is restricted (before the owner's
+ * live card test succeeds) the server refuses to open a session without it.
+ * It gates access only; it is not a payment secret.
+ */
+export const CHECKOUT_ACCESS_KEY = "kabba.checkout.access";
 /** sessionStorage key holding the (optional) onboarding-call time (ISO). */
 export const CONSULTATION_TIME_KEY = "kabba.checkout.consultation";
 
@@ -356,14 +363,33 @@ export async function getCheckoutConfig(): Promise<CheckoutConfig> {
   };
 }
 
+/** Remember an `?access=` code from the current URL for this browser session. */
+export function captureAccessCodeFromUrl(): void {
+  try {
+    const code = new URLSearchParams(window.location.search).get("access");
+    if (code && /^[A-Za-z0-9]{4,64}$/.test(code)) {
+      safeStorage()?.setItem(CHECKOUT_ACCESS_KEY, code);
+    }
+  } catch {
+    // no window / storage: nothing to capture
+  }
+}
+
+export function readAccessCode(): string | null {
+  return safeStorage()?.getItem(CHECKOUT_ACCESS_KEY) || null;
+}
+
 /** POST /api/commercial/v1/checkout/sessions */
 export async function createCheckoutSession(
   planCode = "standard",
 ): Promise<CreatedSession> {
+  captureAccessCodeFromUrl();
+  const access = readAccessCode();
   const body = await request<CreatedSession>(
     "/api/commercial/v1/checkout/sessions",
     {
       method: "POST",
+      headers: access ? { "X-Kabba-Checkout-Access": access } : {},
       body: JSON.stringify({ plan_code: planCode }),
     },
   );
