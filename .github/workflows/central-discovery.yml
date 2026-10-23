@@ -1,0 +1,87 @@
+name: Central discovery (read-only)
+
+# One-time, manually dispatched, READ-ONLY inventory of the hosting account behind
+# kabba.ai, approved by the owner on 2026-10-23 to locate the Laravel installation
+# serving admin.kabba.ai / api.kabba.ai before the commercial platform is installed.
+#
+# Guarantees:
+#   - nothing is written on the server (one touch/rm probe in $HOME proves writability)
+#   - no configuration file is read: .env files are reported as present/absent only
+#   - no secret, credential, database user or cron content is printed; git remotes are masked
+#   - the website's automatic deployment (deploy.yaml on push to develop) is untouched
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: "Type DISCOVER to run the read-only inventory"
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Refuse without confirmation
+        run: |
+          if [ "${{ github.event.inputs.confirm }}" != "DISCOVER" ]; then
+            echo "confirmation missing"; exit 1
+          fi
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: Inventory (read-only)
+        run: |
+          ssh -o BatchMode=yes -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} 'bash -s' <<'REMOTE'
+          set +e
+          mask_url() { sed -E 's#(https?://)[^@/]+@#\1***@#g'; }
+          echo "=== account"
+          echo "user=$(whoami) home=$HOME host=$(hostname)"
+          echo "disk: $(df -h "$HOME" | tail -1 | awk '{print $2" total, "$4" free"}')"
+          echo "write test: $(touch "$HOME/.discovery-probe" 2>/dev/null && rm -f "$HOME/.discovery-probe" && echo ok || echo refused)"
+          echo "=== home top level (names only)"
+          ls -1A "$HOME" | tr '\n' ' '; echo
+          echo "=== cPanel domains and document roots"
+          if command -v uapi >/dev/null 2>&1; then
+            uapi --output=yaml DomainInfo domains_data 2>/dev/null | grep -E '^\s*(domain|documentroot|type|main_domain|sub_domains|addon_domains|parked_domains):' | sed -E 's/^\s+//'
+            echo "=== cPanel databases (names + size only)"
+            uapi --output=yaml Mysql list_databases 2>/dev/null | grep -E '^\s*(database|disk_usage):' | sed -E 's/^\s+//' | paste - -
+          else
+            echo "uapi not available"
+          fi
+          echo "=== PHP / Composer"
+          php -v 2>/dev/null | head -1 || echo "php: not on PATH"
+          ls -d /opt/cpanel/ea-php* 2>/dev/null | tr '\n' ' '; echo
+          for c in composer "$HOME/bin/composer" /usr/local/bin/composer /opt/cpanel/composer/bin/composer; do
+            command -v "$c" >/dev/null 2>&1 && { echo "composer: $c $("$c" --version 2>/dev/null | head -1)"; break; }
+          done
+          echo "=== scheduler and workers (counts only)"
+          echo "crontab lines: $(crontab -l 2>/dev/null | grep -vc '^#')  with schedule:run: $(crontab -l 2>/dev/null | grep -c 'schedule:run')"
+          echo "queue worker processes: $(pgrep -fc 'queue:work|horizon' 2>/dev/null)"
+          echo "=== Laravel installations (artisan files, depth<=4, excluding vendor)"
+          find "$HOME" -maxdepth 4 -name artisan -type f -not -path '*/vendor/*' -not -path '*/node_modules/*' -not -path '*/old.backup/*' 2>/dev/null | while read -r a; do
+            p=$(dirname "$a")
+            echo "--- $p"
+            echo "remote: $(git -C "$p" remote get-url origin 2>/dev/null | mask_url || echo none)"
+            echo "branch: $(git -C "$p" branch --show-current 2>/dev/null) head: $(git -C "$p" rev-parse --short=9 HEAD 2>/dev/null) committed: $(git -C "$p" log -1 --format=%ci 2>/dev/null)"
+            echo "subject: $(git -C "$p" log -1 --format=%s 2>/dev/null)"
+            echo "dirty files: $(git -C "$p" status --porcelain 2>/dev/null | wc -l | tr -d ' ')"
+            echo "vendor: $([ -d "$p/vendor" ] && echo present || echo missing)  storage writable: $([ -w "$p/storage" ] && echo yes || echo no)  owner: $(stat -c %U "$p" 2>/dev/null)"
+            echo "commercial module in code: $([ -d "$p/app/Modules/Commercial" ] && echo yes || echo no)  usage metering module: $([ -d "$p/app/Modules/UsageMetering" ] && echo yes || echo no)"
+            echo ".env file: $([ -f "$p/.env" ] && echo present || echo absent)  public/: $([ -d "$p/public" ] && echo present || echo absent)"
+          done
+          echo "=== website root (names only)"
+          ls -1A "$HOME/www" 2>/dev/null | tr '\n' ' '; echo
+          echo "=== kabba.ai endpoints from the server"
+          for u in https://admin.kabba.ai/up https://api.kabba.ai/up https://api.kabba.ai/api/commercial/v1/pricing/current https://demo-admin.kabba.ai/up https://demo-api.kabba.ai/up; do
+            printf '%s -> %s\n' "$u" "$(curl -s -o /dev/null -w '%{http_code}' --max-time 15 "$u")"
+          done
+          echo "=== done"
+          REMOTE
