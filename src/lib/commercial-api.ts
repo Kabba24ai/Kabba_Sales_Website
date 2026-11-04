@@ -31,6 +31,10 @@ export interface OfferTrial {
   days: number;
   charge_cents: number;
   charge: string;
+  /** "exempt" | "defer_to_first_invoice" | "unresolved"; absent from older servers */
+  usage_treatment?: string;
+  /** True when rental transactions during the trial never carry a transaction fee. */
+  transactions_exempt?: boolean;
 }
 
 export interface OfferSubscription {

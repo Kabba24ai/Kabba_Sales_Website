@@ -516,7 +516,7 @@ function OfferSummary({ offer }: { offer: CommercialOffer }) {
         {
           label: "Today (day 1)",
           value: `${initialTotal} trial enrollment`,
-          sub: `${trial.days} days of full access — not your first subscription payment${taxDetail(initial)}`,
+          sub: `${trial.days} days of full access${trial.transactions_exempt ? ", rental transactions free" : ""} — not your first subscription payment${taxDetail(initial)}`,
         },
         {
           label: `When the trial ends (day ${trial.days + 1})`,
@@ -562,6 +562,9 @@ function OfferSummary({ offer }: { offer: CommercialOffer }) {
         Your subscription renews every {subscription.interval_days} days (about{" "}
         {subscription.periods_per_year} periods a year), not monthly. Subscription fees are
         billed in advance; rental transaction fees are billed after each period.
+        {trial.enabled && trial.transactions_exempt
+          ? " Rental transactions during your trial are free: no transaction fee is ever charged for them."
+          : ""}
       </p>
       <p className="mt-2 text-gray-400 text-xs leading-relaxed">{taxNote}</p>
       <p className="mt-2 text-gray-500 text-xs leading-relaxed">
@@ -1297,7 +1300,8 @@ export default function OnboardingSignup({
                   every {offer.subscription.interval_days} days
                   {offer.renewal_charge && offer.renewal_charge.tax_cents > 0 ? " including sales tax" : ""}, plus{" "}
                   {money(offer.usage.transaction_fee_cents, offer.usage.transaction_fee)} per
-                  qualifying rental{offer.tax?.applies_to_new_customers ? " plus tax" : ""}.
+                  qualifying rental{offer.tax?.applies_to_new_customers ? " plus tax" : ""}
+                  {offer.trial.enabled && offer.trial.transactions_exempt ? " after the trial; rental transactions during the trial are free" : ""}.
                 </p>
               </div>
             )}

@@ -26,6 +26,7 @@ export default function Pricing({ onStartTrial, onViewDetailedPricing }: Pricing
   const features = offer
     ? [
         offer.trial.enabled ? `${trial} starter trial (${offer.trial.days} days)` : `${fee} for your first ${days} days`,
+        ...(offer.trial.enabled && offer.trial.transactions_exempt ? ['Rental transactions during the trial are free'] : []),
         `Then ${fee} every ${days} days, billed in advance`,
         `${txn} per qualifying rental transaction (${minimum} or more), billed after each period`,
         'No startup fees',

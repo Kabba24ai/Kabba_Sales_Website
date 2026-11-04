@@ -253,6 +253,11 @@ export default function PricingPageV2({
                   <p className="text-cyan-300 text-center font-semibold">
                     Start with a {trial} trial ({offer.trial.days} days)
                   </p>
+                  {offer.trial.transactions_exempt && (
+                    <p className="text-cyan-200 text-center text-sm mt-1">
+                      Rental transactions during the trial are free.
+                    </p>
+                  )}
                 </div>
               )}
 

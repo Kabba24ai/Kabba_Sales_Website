@@ -67,7 +67,7 @@ export default function RefundCancellationPage({
               The trial fee covers access to the software, demo environment, onboarding preparation, and administrative costs.
             </p>
             <p className="text-slate-700 leading-relaxed">
-              If you choose not to continue using KABBA after the trial, no further charges will occur provided you cancel before any paid subscription or usage fees are incurred.
+              Rental transactions processed during the trial are not charged transaction fees, during the trial or after it converts to a paid subscription. If you choose not to continue using KABBA after the trial, no further charges will occur provided you cancel before the trial ends.
             </p>
           </section>
 
@@ -93,7 +93,7 @@ export default function RefundCancellationPage({
               Transaction-based usage fees are charged based on actual platform activity.
             </p>
             <p className="text-slate-700 leading-relaxed mb-4">
-              Transaction fees are incurred only when rental transactions are processed.
+              Transaction fees are incurred only when rental transactions are processed during a paid subscription period. Rental transactions processed during the trial are exempt: no transaction fee is charged for them, during the trial or after it converts to a paid subscription.
             </p>
             <p className="text-slate-700 leading-relaxed mb-4">
               Transaction fees are non-refundable, as they are tied to completed platform usage.

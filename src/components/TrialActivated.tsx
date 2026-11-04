@@ -431,7 +431,7 @@ export default function TrialActivated({
                       <p className="text-gray-500 text-xs text-center">
                         Your subscription renews every {offer.subscription.interval_days} days (about{" "}
                         {offer.subscription.periods_per_year} periods a year), not monthly. Subscription fees are billed in advance;
-                        transaction fees are billed in arrears. {offer.tax?.note ?? "Applicable sales taxes, if any, are added."} No contracts. Cancel anytime.
+                        transaction fees are billed in arrears.{offer.trial.enabled && offer.trial.transactions_exempt ? " Rental transactions during your trial are free." : ""} {offer.tax?.note ?? "Applicable sales taxes, if any, are added."} No contracts. Cancel anytime.
                       </p>
                     </div>
                   </div>

@@ -89,6 +89,7 @@ export default function TermsOfServicePage({
               <li>You authorize KABBA to charge the trial fee disclosed at signup</li>
               <li>You acknowledge that onboarding may require a consultation before full setup</li>
               <li>Trial access may be limited until onboarding requirements are completed</li>
+              <li>Rental transactions processed during the trial are not charged transaction fees, during the trial or after it converts to a paid subscription</li>
             </ul>
             <p className="text-slate-700 leading-relaxed">
               Unless otherwise stated, trial subscriptions will convert to a paid subscription unless canceled.
@@ -105,7 +106,7 @@ export default function TermsOfServicePage({
             </p>
             <ul className="list-disc pl-6 mb-6 text-slate-700 space-y-1">
               <li>A subscription fee every 28 days, billed in advance for each period</li>
-              <li>Per-transaction usage fees, billed in arrears for the completed period</li>
+              <li>Per-transaction usage fees for rental transactions processed during a paid subscription period, billed in arrears for the completed period</li>
               <li>Applicable taxes</li>
             </ul>
             <p className="text-slate-700 leading-relaxed mb-4">
