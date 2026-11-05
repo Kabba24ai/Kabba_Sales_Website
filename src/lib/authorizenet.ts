@@ -1,9 +1,12 @@
-// Authorize.Net Configuration and Helper Functions
+// Authorize.Net Accept.js helpers and client-side card validators.
+//
+// Card data goes from the browser straight to Authorize.Net via Accept.js.
+// Nothing in this module talks to Kabba's servers.
 
 // TypeScript declarations for Accept.js
 declare global {
   interface Window {
-    Accept: {
+    Accept?: {
       dispatchData: (
         secureData: SecureDataRequest,
         responseHandler: (response: AcceptResponse) => void,
@@ -41,70 +44,109 @@ export interface AcceptResponse {
   };
 }
 
-// Authorize.Net API Configuration
-export const AUTHORIZENET_CONFIG = {
-  // Use test environment by default - change to production URL when ready
-  apiLoginID: import.meta.env.VITE_AUTHORIZENET_API_LOGIN_ID || "",
-  clientKey: import.meta.env.VITE_AUTHORIZENET_CLIENT_KEY || "",
-  apiEndpoint:
-    import.meta.env.VITE_AUTHORIZENET_API_ENDPOINT ||
-    "https://api.rentnking.com/api/admin/v1/authorize",
+export interface AcceptAuth {
+  apiLoginID: string;
+  clientKey: string;
+}
+
+export interface CardInput {
+  cardNumber: string;
+  /** MM/YY */
+  expiry: string;
+  cvc: string;
+  fullName?: string;
+  zip?: string;
+}
+
+export interface OpaqueToken {
+  dataDescriptor: string;
+  dataValue: string;
+}
+
+const loaders = new Map<string, Promise<void>>();
+
+/**
+ * Load Accept.js at runtime from the URL the checkout config hands us.
+ * Idempotent: repeated calls for the same URL share one script tag.
+ */
+export const loadAcceptJs = (scriptUrl: string): Promise<void> => {
+  if (window.Accept) return Promise.resolve();
+
+  const existing = loaders.get(scriptUrl);
+  if (existing) return existing;
+
+  const loader = new Promise<void>((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = scriptUrl;
+    script.async = true;
+    script.setAttribute("charset", "utf-8");
+    script.onload = () => {
+      if (window.Accept) {
+        resolve();
+      } else {
+        loaders.delete(scriptUrl);
+        reject(new Error("The secure payment library loaded but is unavailable."));
+      }
+    };
+    script.onerror = () => {
+      loaders.delete(scriptUrl);
+      script.remove();
+      reject(new Error("Could not load the secure payment library. Please try again."));
+    };
+    document.head.appendChild(script);
+  });
+
+  loaders.set(scriptUrl, loader);
+  return loader;
 };
 
 /**
- * Tokenize card data using Authorize.Net Accept.js
- * This securely sends card data directly to Authorize.Net and returns a token
+ * Tokenize card data using Authorize.Net Accept.js.
+ * The card is sent directly to Authorize.Net; only the opaque token comes back.
  */
 export const tokenizeCardData = (
-  cardNumber: string,
-  expiry: string,
-  cvc: string,
-  cardName: string,
-  zip: string,
-): Promise<AcceptResponse> => {
+  auth: AcceptAuth,
+  card: CardInput,
+): Promise<OpaqueToken> => {
   return new Promise((resolve, reject) => {
-    // Validate Accept.js is loaded
     if (!window.Accept) {
-      reject(new Error("Authorize.Net Accept.js library not loaded"));
+      reject(new Error("The secure payment library is not loaded yet. Please try again."));
       return;
     }
 
-    // Validate configuration
-    if (!AUTHORIZENET_CONFIG.apiLoginID || !AUTHORIZENET_CONFIG.clientKey) {
-      reject(new Error("Authorize.Net credentials not configured"));
+    if (!auth.apiLoginID || !auth.clientKey) {
+      reject(new Error("Payment configuration is missing. Please refresh and try again."));
       return;
     }
 
     // Parse expiry date (MM/YY format)
-    const [month, year] = expiry.split("/");
+    const [month, year] = card.expiry.split("/");
     if (!month || !year || month.length !== 2 || year.length !== 2) {
       reject(new Error("Invalid expiry date format. Use MM/YY"));
       return;
     }
 
-    // Remove spaces from card number
-    const cleanCardNumber = cardNumber.replace(/\s/g, "");
-
-    // Prepare secure data request
     const secureData: SecureDataRequest = {
       authData: {
-        clientKey: AUTHORIZENET_CONFIG.clientKey,
-        apiLoginID: AUTHORIZENET_CONFIG.apiLoginID,
+        clientKey: auth.clientKey,
+        apiLoginID: auth.apiLoginID,
       },
       cardData: {
-        cardNumber: cleanCardNumber,
-        month: month,
+        cardNumber: card.cardNumber.replace(/\s/g, ""),
+        month,
         year: "20" + year, // Convert YY to YYYY
-        cardCode: cvc,
-        fullName: cardName,
-        zip: zip,
+        cardCode: card.cvc,
+        ...(card.fullName ? { fullName: card.fullName } : {}),
+        ...(card.zip ? { zip: card.zip } : {}),
       },
     };
 
-    // Dispatch data to Authorize.Net
     window.Accept.dispatchData(secureData, (response) => {
-      if (response.messages.resultCode === "Ok") {
-        resolve(response);
+      if (response.messages.resultCode === "Ok" && response.opaqueData) {
+        resolve({
+          dataDescriptor: response.opaqueData.dataDescriptor,
+          dataValue: response.opaqueData.dataValue,
+        });
       } else {
         const errorMessage = response.messages.message
           .map((msg) => msg.text)
@@ -121,6 +163,7 @@ export const tokenizeCardData = (
 export const validateCardNumber = (cardNumber: string): boolean => {
   const cleaned = cardNumber.replace(/\s/g, "");
   if (!/^\d+$/.test(cleaned)) return false;
+  if (cleaned.length < 12 || cleaned.length > 19) return false;
 
   let sum = 0;
   let isEven = false;

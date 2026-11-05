@@ -17,10 +17,10 @@ export default function PaymentError({ onRetry, onCancel }: PaymentErrorProps) {
           </div>
 
           <h1 className="text-4xl lg:text-5xl font-bold mb-4">
-            Payment Processing Issue
+            Payment Issue
           </h1>
           <p className="text-xl text-gray-400 mb-8">
-            We encountered a problem while processing your credit card
+            We couldn't complete your payment
           </p>
         </div>
 

@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { X, Eye } from 'lucide-react';
 import LiveDemoModal from './LiveDemoModal';
+import { useTrialCopy } from '../lib/useTrialCopy';
 
 export default function AntiDemo() {
   const [isLiveDemoModalOpen, setIsLiveDemoModalOpen] = useState(false);
+  const trial = useTrialCopy();
 
   const problems = [
     'Hidden pricing',
@@ -48,7 +50,7 @@ export default function AntiDemo() {
           <div className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl p-8 sm:p-12 text-center shadow-2xl">
             <h3 className="text-3xl sm:text-4xl font-bold mb-4">KABBA is different.</h3>
             <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-              You can explore the software instantly, see the pricing upfront, and start using it today — all for $4.95.
+              You can explore the software instantly, see the pricing upfront, and start using it today{trial.trialCharge ? ` — all for ${trial.trialCharge}.` : '.'}
             </p>
             <button className="group relative bg-white hover:bg-slate-100 text-blue-600 px-8 py-4 rounded-lg font-semibold text-lg transition shadow-lg inline-flex items-center">
               <Eye className="mr-2" size={20} />

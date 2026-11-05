@@ -5,7 +5,6 @@ import {
   useNavigate,
   useLocation,
   useSearchParams,
-  useParams,
 } from "react-router-dom";
 import { useEffect, useState } from "react";
 
@@ -32,25 +31,18 @@ import TermsOfServicePage from "./components/TermsOfServicePage";
 import RefundCancellationPage from "./components/RefundCancellationPage";
 import AcceptableUsePolicyPage from "./components/AcceptableUsePolicyPage";
 
-import OnboardingSignup, {
-  SignupFormData,
-} from "./components/OnboardingSignup";
+import OnboardingSignup from "./components/OnboardingSignup";
 import AnalyzingAvailability from "./components/AnalyzingAvailability";
-import ProcessingPayment from "./components/ProcessingPayment";
 import PaymentError from "./components/PaymentError";
 import TrialActivated from "./components/TrialActivated";
 import SetupCanceled from "./components/SetupCanceled";
 
-import AdminSignupsList from "./components/AdminSignupsList";
-import AdminSignupDetails from "./components/AdminSignupDetails";
-
 import LiveDemoModal from "./components/LiveDemoModal";
 
-/* ===========================
-   Session Globals (same as new code)
-=========================== */
-let globalSignupData: SignupFormData | null = null;
-let globalConsultationTime = "";
+import {
+  readConsultationTime,
+  storeConsultationTime,
+} from "./lib/commercial-api";
 
 /* ===========================
    Metadata Hook
@@ -217,58 +209,54 @@ const AcceptableUsePolicyPageWrapper = simpleWrapper(
   "Guidelines for acceptable use."
 );
 
-/* ---------- Onboarding ---------- */
+/* ---------- Onboarding ----------
+   Critical path: /start-trial (registration + payment) → /trial-activated.
+   /analyzing-availability (onboarding-call picker) is optional and is only
+   linked from /trial-activated.
+*/
 
 function OnboardingSignupWrapper() {
+  usePageMetadata(
+    "Start Your Trial | KABBA",
+    "Register your rental business and start your KABBA trial."
+  );
   const navigate = useNavigate();
 
   return (
     <OnboardingSignup
-      initialData={globalSignupData || undefined}
       onBack={() => navigate("/")}
-      onComplete={(data) => {
-        globalSignupData = data;
-        navigate("/analyzing-availability");
-      }}
+      onSuccess={() => navigate("/trial-activated")}
+    />
+  );
+}
+
+function TrialActivatedWrapper() {
+  usePageMetadata("Trial Activated | KABBA", "Your KABBA trial is active.");
+  const navigate = useNavigate();
+
+  return (
+    <TrialActivated
+      onBookCall={() => navigate("/analyzing-availability")}
+      onStartOver={() => navigate("/start-trial")}
     />
   );
 }
 
 function AnalyzingAvailabilityWrapper() {
+  usePageMetadata(
+    "Book Your Onboarding Call | KABBA",
+    "Choose a time for your optional KABBA setup and strategy session."
+  );
   const navigate = useNavigate();
-
-  if (!globalSignupData) {
-    navigate("/start-trial");
-    return null;
-  }
 
   return (
     <AnalyzingAvailability
-      formData={globalSignupData}
-      initialConsultationTime={globalConsultationTime || undefined}
-      onCancel={() => navigate("/setup-canceled")}
+      initialConsultationTime={readConsultationTime() || undefined}
+      onCancel={() => navigate("/trial-activated")}
       onComplete={(time) => {
-        globalConsultationTime = time;
-        globalSignupData!.consultationTime = time;
-        navigate("/charge-payment");
+        storeConsultationTime(time);
+        navigate("/trial-activated");
       }}
-    />
-  );
-}
-
-function ProcessingPaymentWrapper() {
-  const navigate = useNavigate();
-
-  if (!globalSignupData) {
-    navigate("/start-trial");
-    return null;
-  }
-
-  return (
-    <ProcessingPayment
-      formData={globalSignupData}
-      onSuccess={() => navigate("/trial-activated")}
-      onError={() => navigate("/payment-error")}
     />
   );
 }
@@ -287,53 +275,8 @@ function SetupCanceledWrapper() {
   const navigate = useNavigate();
   return (
     <SetupCanceled
-      onRestartSetup={() => navigate("/analyzing-availability")}
+      onRestartSetup={() => navigate("/start-trial")}
       onBackToPricing={() => navigate("/pricing")}
-    />
-  );
-}
-
-function TrialActivatedWrapper() {
-  const navigate = useNavigate();
-
-  if (!globalSignupData || !globalConsultationTime) {
-    navigate("/start-trial");
-    return null;
-  }
-
-  return (
-    <TrialActivated
-      formData={globalSignupData}
-      consultationTime={globalConsultationTime}
-      onGoToDashboard={() => window.scrollTo(0, 0)}
-      onViewDetails={() => window.scrollTo(0, 0)}
-    />
-  );
-}
-
-/* ---------- Admin ---------- */
-
-function AdminSignupsWrapper() {
-  usePageMetadata("Admin - Signups", "Admin signups list");
-  const navigate = useNavigate();
-
-  return (
-    <AdminSignupsList
-      onViewDetails={(id) => navigate(`/admin/signups/${id}`)}
-    />
-  );
-}
-
-function AdminSignupDetailsWrapper() {
-  usePageMetadata("Admin - Signup Details", "Admin signup details");
-
-  const { signupId } = useParams();
-  if (!signupId) return null;
-
-  return (
-    <AdminSignupDetails
-      signupId={signupId}
-      onBack={() => window.history.back()}
     />
   );
 }
@@ -377,20 +320,13 @@ function App() {
         />
 
         <Route path="/start-trial" element={<OnboardingSignupWrapper />} />
+        <Route path="/trial-activated" element={<TrialActivatedWrapper />} />
         <Route
           path="/analyzing-availability"
           element={<AnalyzingAvailabilityWrapper />}
         />
-        <Route path="/charge-payment" element={<ProcessingPaymentWrapper />} />
         <Route path="/payment-error" element={<PaymentErrorWrapper />} />
         <Route path="/setup-canceled" element={<SetupCanceledWrapper />} />
-        <Route path="/trial-activated" element={<TrialActivatedWrapper />} />
-
-        <Route path="/admin/signups" element={<AdminSignupsWrapper />} />
-        <Route
-          path="/admin/signups/:signupId"
-          element={<AdminSignupDetailsWrapper />}
-        />
       </Routes>
 
       <LiveDemoModal

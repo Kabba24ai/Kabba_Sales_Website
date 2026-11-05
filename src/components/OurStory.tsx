@@ -1,5 +1,6 @@
 import Navbar from './Navbar';
 import Footer from './Footer';
+import { useTrialCopy } from '../lib/useTrialCopy';
 
 interface OurStoryProps {
   onStartTrial: () => void;
@@ -15,6 +16,7 @@ interface OurStoryProps {
 }
 
 export default function OurStory({ onStartTrial, onViewPricing, onBack, onViewContact, onViewProduct, onViewConsultation, onViewPrivacyPolicy, onViewTermsOfService, onViewRefundPolicy, onViewAcceptableUsePolicy }: OurStoryProps) {
+  const trial = useTrialCopy();
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -268,7 +270,7 @@ export default function OurStory({ onStartTrial, onViewPricing, onBack, onViewCo
             </h2>
 
             <p className="text-xl text-slate-600 mb-8 leading-relaxed">
-              Start your $4.95 trial and explore the same system we run in our own rental shops.
+              Start your {trial.trialCharge ? `${trial.trialCharge} ` : ''}trial and explore the same system we run in our own rental shops.
             </p>
 
             <div className="space-y-2 mb-8">
@@ -281,7 +283,7 @@ export default function OurStory({ onStartTrial, onViewPricing, onBack, onViewCo
               onClick={onStartTrial}
               className="inline-flex items-center justify-center px-8 py-4 bg-amber-500 hover:bg-amber-600 text-white text-lg font-semibold rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl"
             >
-              Start My $4.95 Trial
+              {trial.startMyTrial}
             </button>
 
             <p className="text-sm text-slate-500 mt-6">

@@ -44,11 +44,11 @@ export default function RefundCancellationPage({
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <h1 className="text-4xl font-bold text-slate-900 mb-2">Refund & Cancellation Policy</h1>
-        <p className="text-slate-600 mb-12">Last updated: 12/20/2025</p>
+        <p className="text-slate-600 mb-12">Last updated: November 5, 2026</p>
 
         <div className="prose prose-slate max-w-none">
           <p className="text-slate-700 leading-relaxed mb-8">
-            This Refund & Cancellation Policy explains how cancellations, refunds, and billing disputes are handled for KABBA.ai ("KABBA," "we," "us," or "our"). This policy applies to all users of the KABBA.ai platform.
+            This Refund & Cancellation Policy explains how cancellations, refunds, and billing disputes are handled by Development 360, Inc. ("we," "us," or "our"), operator of the KABBA software platform. This policy applies to all users of the KABBA.ai platform.
           </p>
 
           <p className="text-slate-700 leading-relaxed mb-12">
@@ -58,7 +58,7 @@ export default function RefundCancellationPage({
           <section className="mb-12">
             <h2 className="text-2xl font-semibold text-slate-900 mb-4">Trial Fees</h2>
             <p className="text-slate-700 leading-relaxed mb-4">
-              KABBA may offer a $4.95 trial that provides access to the platform and onboarding resources.
+              KABBA may offer a paid trial, at the trial enrollment fee disclosed at signup, that provides access to the platform and onboarding resources.
             </p>
             <p className="text-slate-700 leading-relaxed mb-4">
               The trial fee is non-refundable.
@@ -67,23 +67,23 @@ export default function RefundCancellationPage({
               The trial fee covers access to the software, demo environment, onboarding preparation, and administrative costs.
             </p>
             <p className="text-slate-700 leading-relaxed">
-              If you choose not to continue using KABBA after the trial, no further charges will occur provided you cancel before any paid subscription or usage fees are incurred.
+              Rental transactions processed during the trial are not charged transaction fees, during the trial or after it converts to a paid subscription. If you choose not to continue using KABBA after the trial, no further charges will occur provided you cancel before the trial ends.
             </p>
           </section>
 
           <section className="mb-12">
             <h2 className="text-2xl font-semibold text-slate-900 mb-4">Subscription Fees</h2>
             <p className="text-slate-700 leading-relaxed mb-4">
-              KABBA charges a monthly subscription fee and per-transaction usage fees, as disclosed at signup.
+              KABBA charges a subscription fee every 28 days and per-transaction usage fees, as disclosed at signup.
             </p>
             <p className="text-slate-700 leading-relaxed mb-4">
-              Subscription fees are billed in advance.
+              Subscription fees are billed in advance for each 28-day period. Per-transaction usage fees are billed in arrears, for the 28-day period in which the rental transactions occurred, on the same invoice as the next period&apos;s subscription fee.
             </p>
             <p className="text-slate-700 leading-relaxed mb-4">
               Subscription fees are non-refundable, including for partial billing periods.
             </p>
             <p className="text-slate-700 leading-relaxed">
-              Canceling a subscription stops future subscription billing but does not immediately disable account access.
+              Canceling a subscription stops future subscription billing but does not immediately disable account access; service continues to the end of the period already paid for. Usage fees already incurred in the final period are billed once after that period ends.
             </p>
           </section>
 
@@ -93,7 +93,7 @@ export default function RefundCancellationPage({
               Transaction-based usage fees are charged based on actual platform activity.
             </p>
             <p className="text-slate-700 leading-relaxed mb-4">
-              Transaction fees are incurred only when rental transactions are processed.
+              Transaction fees are incurred only when rental transactions are processed during a paid subscription period. Rental transactions processed during the trial are exempt: no transaction fee is charged for them, during the trial or after it converts to a paid subscription.
             </p>
             <p className="text-slate-700 leading-relaxed mb-4">
               Transaction fees are non-refundable, as they are tied to completed platform usage.
@@ -106,7 +106,7 @@ export default function RefundCancellationPage({
           <section className="mb-12">
             <h2 className="text-2xl font-semibold text-slate-900 mb-4">Cancellations</h2>
             <p className="text-slate-700 leading-relaxed mb-4">
-              You may cancel your KABBA account at any time through your account settings or by contacting support.
+              You may request cancellation of your KABBA subscription at any time using the Contact Us page. No self-service cancellation button is currently available in account settings. To avoid the first subscription renewal charge, request cancellation before the trial ends.
             </p>
             <p className="text-slate-700 leading-relaxed mb-3">
               Upon cancellation:
@@ -128,10 +128,10 @@ export default function RefundCancellationPage({
               Some accounts may require a consultation or onboarding process before full activation.
             </p>
             <p className="text-slate-700 leading-relaxed mb-3">
-              Billing may be delayed until onboarding requirements are completed
+              Trial enrollment and subsequent subscription charges are not automatically delayed by onboarding or consultation; the billing schedule disclosed at signup applies.
             </p>
             <p className="text-slate-700 leading-relaxed">
-              If you choose not to proceed during onboarding, no additional charges beyond the trial fee will be applied
+              If you do not wish to continue after the trial, request cancellation before the trial ends to prevent automatic conversion to the paid subscription.
             </p>
           </section>
 

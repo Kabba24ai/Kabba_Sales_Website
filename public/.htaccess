@@ -1,0 +1,13 @@
+# Single-page application fallback for Apache.
+# The site is a client-side router (react-router). Any path that is not a real file or directory
+# must be served index.html so deep links (for example /start-trial?access=...) and browser
+# reloads work instead of returning the server's 404. Vite copies this file into dist/, and the
+# deploy workflow syncs dist/ to the web root.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+  RewriteRule ^index\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /index.html [L]
+</IfModule>
