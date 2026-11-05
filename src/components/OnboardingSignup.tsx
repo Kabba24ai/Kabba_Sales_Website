@@ -1389,7 +1389,7 @@ export default function OnboardingSignup({
                     Securing payment…
                   </span>
                 ) : trialCharge ? (
-                  `Pay ${trialCharge} and start my trial`
+                  `Pay ${offer?.initial_charge ? money(offer.initial_charge.total_cents, offer.initial_charge.total) : trialCharge} and start my trial`
                 ) : (
                   "Start my trial"
                 )}
