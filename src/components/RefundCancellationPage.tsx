@@ -44,11 +44,11 @@ export default function RefundCancellationPage({
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <h1 className="text-4xl font-bold text-slate-900 mb-2">Refund & Cancellation Policy</h1>
-        <p className="text-slate-600 mb-12">Last updated: 12/20/2025</p>
+        <p className="text-slate-600 mb-12">Last updated: November 5, 2026</p>
 
         <div className="prose prose-slate max-w-none">
           <p className="text-slate-700 leading-relaxed mb-8">
-            This Refund & Cancellation Policy explains how cancellations, refunds, and billing disputes are handled for KABBA.ai ("KABBA," "we," "us," or "our"). This policy applies to all users of the KABBA.ai platform.
+            This Refund & Cancellation Policy explains how cancellations, refunds, and billing disputes are handled by Development 360, Inc. ("we," "us," or "our"), operator of the KABBA software platform. This policy applies to all users of the KABBA.ai platform.
           </p>
 
           <p className="text-slate-700 leading-relaxed mb-12">
@@ -106,7 +106,7 @@ export default function RefundCancellationPage({
           <section className="mb-12">
             <h2 className="text-2xl font-semibold text-slate-900 mb-4">Cancellations</h2>
             <p className="text-slate-700 leading-relaxed mb-4">
-              You may cancel your KABBA account at any time through your account settings or by contacting support.
+              You may request cancellation of your KABBA subscription at any time using the Contact Us page. No self-service cancellation button is currently available in account settings. To avoid the first subscription renewal charge, request cancellation before the trial ends.
             </p>
             <p className="text-slate-700 leading-relaxed mb-3">
               Upon cancellation:
@@ -128,10 +128,10 @@ export default function RefundCancellationPage({
               Some accounts may require a consultation or onboarding process before full activation.
             </p>
             <p className="text-slate-700 leading-relaxed mb-3">
-              Billing may be delayed until onboarding requirements are completed
+              Trial enrollment and subsequent subscription charges are not automatically delayed by onboarding or consultation; the billing schedule disclosed at signup applies.
             </p>
             <p className="text-slate-700 leading-relaxed">
-              If you choose not to proceed during onboarding, no additional charges beyond the trial fee will be applied
+              If you do not wish to continue after the trial, request cancellation before the trial ends to prevent automatic conversion to the paid subscription.
             </p>
           </section>
 
