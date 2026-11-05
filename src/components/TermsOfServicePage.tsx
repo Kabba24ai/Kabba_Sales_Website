@@ -44,11 +44,11 @@ export default function TermsOfServicePage({
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <h1 className="text-4xl font-bold text-slate-900 mb-2">Terms of Service</h1>
-        <p className="text-slate-600 mb-12">Last updated: 12/20/2025</p>
+        <p className="text-slate-600 mb-12">Last updated: November 5, 2026</p>
 
         <div className="prose prose-slate max-w-none">
           <p className="text-slate-700 leading-relaxed mb-8">
-            These Terms of Service ("Terms") govern your access to and use of the KABBA.ai website, software, and related services (collectively, the "Services") provided by KABBA.ai ("KABBA," "we," "us," or "our").
+            These Terms of Service ("Terms") govern your access to and use of the KABBA.ai website, software, and related services (collectively, the "Services") provided by Development 360, Inc. ("we," "us," or "our") under the KABBA brand.
           </p>
 
           <p className="text-slate-700 leading-relaxed mb-12">
@@ -78,7 +78,7 @@ export default function TermsOfServicePage({
           </section>
 
           <section className="mb-12">
-            <h2 className="text-2xl font-semibold text-slate-900 mb-4">Free Trial & Subscription</h2>
+            <h2 className="text-2xl font-semibold text-slate-900 mb-4">Paid Introductory Trial & Subscription</h2>
             <p className="text-slate-700 leading-relaxed mb-4">
               KABBA may offer a paid trial, at the trial enrollment fee disclosed at signup, that provides limited or full access to the Services for a trial period.
             </p>
@@ -120,13 +120,13 @@ export default function TermsOfServicePage({
           <section className="mb-12">
             <h2 className="text-2xl font-semibold text-slate-900 mb-4">Delayed Billing & Consultation Process</h2>
             <p className="text-slate-700 leading-relaxed mb-4">
-              Certain services may require a consultation or setup process before billing begins.
+              Certain services may require consultation or setup before full access is available. Onboarding does not automatically delay the trial charge or scheduled subscription billing.
             </p>
             <p className="text-slate-700 leading-relaxed mb-3">
               You acknowledge and agree that:
             </p>
             <ul className="list-disc pl-6 mb-6 text-slate-700 space-y-1">
-              <li>Charges may be delayed until onboarding or consultation steps are completed</li>
+              <li>The trial charge and automatic subscription renewal follow the dates and amounts disclosed during signup, whether or not onboarding is completed</li>
               <li>Failure to complete onboarding may limit or delay access to certain features</li>
             </ul>
           </section>
@@ -180,7 +180,7 @@ export default function TermsOfServicePage({
           <section className="mb-12">
             <h2 className="text-2xl font-semibold text-slate-900 mb-4">Termination</h2>
             <p className="text-slate-700 leading-relaxed mb-4">
-              You may cancel your account at any time through your account settings.
+              You may request cancellation at any time through our Contact Us page. To prevent the first subscription charge, request cancellation before your trial ends. No self-service cancellation button is currently offered in account settings.
             </p>
             <p className="text-slate-700 leading-relaxed mb-4">
               KABBA may suspend or terminate your account if you violate these Terms or fail to pay applicable fees.
@@ -241,7 +241,7 @@ export default function TermsOfServicePage({
           <section className="mb-12">
             <h2 className="text-2xl font-semibold text-slate-900 mb-4">Governing Law</h2>
             <p className="text-slate-700 leading-relaxed">
-              These Terms shall be governed by and construed in accordance with the laws of the applicable jurisdiction where KABBA operates, without regard to conflict of law principles.
+              Applicable law governs these Terms, subject to any mandatory legal protections in the customer's jurisdiction.
             </p>
           </section>
 
