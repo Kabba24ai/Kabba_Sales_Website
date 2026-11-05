@@ -41,29 +41,60 @@ jobs:
       # -------------------------
       # BACKUP EXISTING FILES
       # -------------------------
-      - name: Backup current site
+      # Do not move the serving index or assets until the full build has reached
+      # a private stage. The old job backed up the live files first, and a bad
+      # /home/kabba/www symlink made the following rsync fail.
+      - name: Inspect real document root and stage release
+        id: stage
+        shell: bash
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PORT: ${{ secrets.SSH_PORT }}
         run: |
-          ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
-            set -e
-            cd /home/kabba/www
-            mkdir -p old.backup
+          set -euo pipefail
+          SITE_ROOT="$(ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" 'set -e; cd /home/kabba/www; pwd -P' | tail -n 1)"
+          case "$SITE_ROOT" in
+            /home/kabba/*) ;;
+            *) echo "STOP: serving document root did not resolve safely inside /home/kabba"; exit 1 ;;
+          esac
+          echo "Resolved physical site root: $SITE_ROOT"
+          echo "site_root=$SITE_ROOT" >> "$GITHUB_OUTPUT"
+          STAGE="/home/kabba/.kabba-sales-release-stage/$GITHUB_SHA"
+          echo "stage_root=$STAGE" >> "$GITHUB_OUTPUT"
+          ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "mkdir -p '$STAGE'"
+          rsync -az -e "ssh -p $SSH_PORT" dist/ "$SSH_USER@$SSH_HOST:$STAGE/"
 
-            if [ -d "assets" ]; then
-              rm -rf old.backup/assets
-              mv assets old.backup/
-            fi
-
-            if [ -f "index.html" ]; then
-              mv index.html old.backup/index.html
-            fi
-          EOF
-
-      # -------------------------
-      # DEPLOY DIST FILES
-      # -------------------------
-      - name: Upload new build files
+      - name: Install staged website with an atomic index swap
+        shell: bash
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PORT: ${{ secrets.SSH_PORT }}
+          SITE_ROOT: ${{ steps.stage.outputs.site_root }}
+          STAGE_ROOT: ${{ steps.stage.outputs.stage_root }}
         run: |
-          rsync -avz --delete \
-            -e "ssh -p ${{ secrets.SSH_PORT }}" \
-            dist/ \
-            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/kabba/www/
+          set -euo pipefail
+          ssh -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" "SITE_ROOT='$SITE_ROOT' STAGE_ROOT='$STAGE_ROOT' bash -s" <<'REMOTE'
+          set -euo pipefail
+          case "$SITE_ROOT" in /home/kabba/*) ;; *) echo "STOP: unexpected site root"; exit 1 ;; esac
+          test -d "$SITE_ROOT"
+          test -f "$STAGE_ROOT/index.html"
+          test -d "$STAGE_ROOT/assets"
+          mkdir -p "$SITE_ROOT/old.backup" "$SITE_ROOT/assets"
+          # Keep the last serving index if present; preserve an earlier backup
+          # when a previously failed deploy already moved the index out.
+          if [ -f "$SITE_ROOT/index.html" ]; then
+            cp -p "$SITE_ROOT/index.html" "$SITE_ROOT/old.backup/index.html"
+          fi
+          # Assets are content-hashed: copy them BEFORE making the new index live.
+          rsync -a "$STAGE_ROOT/assets/" "$SITE_ROOT/assets/"
+          # Install .htaccess, images, and other static files, without deleting
+          # the existing backup or the assets still needed by open browser tabs.
+          rsync -a --exclude='index.html' --exclude='assets/' \
+            "$STAGE_ROOT/" "$SITE_ROOT/"
+          cp -p "$STAGE_ROOT/index.html" "$SITE_ROOT/index.html.new"
+          mv -f "$SITE_ROOT/index.html.new" "$SITE_ROOT/index.html"
+          test -s "$SITE_ROOT/index.html"
+          echo "Website release installed successfully"
+          REMOTE
