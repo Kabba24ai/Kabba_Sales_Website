@@ -134,7 +134,10 @@ export default function AnalyzingAvailability({ onComplete, onCancel, initialCon
       };
 
       // Put the previous slot first, then the generated slots
-      setTimeSlots([previousSlot, ...slots]);
+      const otherSlots = slots.filter((candidate) =>
+        candidate.date.getTime() !== initialDate.getTime()
+      ).slice(0, 2);
+      setTimeSlots([previousSlot, ...otherSlots]);
       setSelectedSlot(previousSlot.id);
       setCompletedSteps(steps.map((_, index) => index));
       setCurrentStep(steps.length);
