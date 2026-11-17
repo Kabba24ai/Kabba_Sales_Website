@@ -19,7 +19,7 @@ export const CHECKOUT_TOKEN_KEY = "kabba.checkout.token";
  * It gates access only; it is not a payment secret.
  */
 export const CHECKOUT_ACCESS_KEY = "kabba.checkout.access";
-/** sessionStorage key holding the (optional) onboarding-call time (ISO). */
+/** Legacy sessionStorage key of a browser-only consultation time (discarded; see discardLegacyConsultationTime). */
 export const CONSULTATION_TIME_KEY = "kabba.checkout.consultation";
 
 /* ===========================
@@ -204,6 +204,107 @@ export interface CheckoutSession {
   /** Not part of the documented GET shape; used only if the server sends it. */
   agreement_text?: string | null;
   expires_at?: string | null;
+  /** Server-reported handoff facts; present once the trial is paid. */
+  onboarding?: OnboardingStatus | null;
+}
+
+/* ===========================
+   Onboarding / consultations (Kabba #267)
+=========================== */
+
+export type ConsultationStatusCode =
+  | "not_requested"
+  | "requested"
+  | "confirmed"
+  | "rescheduled"
+  | "cancelled"
+  | "completed"
+  | "no_show";
+
+export interface ConsultationState {
+  status: ConsultationStatusCode;
+  /** Server wording, e.g. "Requested (awaiting confirmation)". */
+  label: string;
+  starts_at: string | null;
+  /** e.g. "Wed, Nov 18, 2026 at 10:00 AM CST" (always Central Time). */
+  when: string | null;
+  timezone?: string;
+}
+
+export interface OnboardingStatus {
+  registration: "complete" | "pending";
+  payment: "paid" | "processing" | "failed" | "pending" | "not_applicable";
+  website: "not_started" | "provisioning" | "ready" | "needs_attention" | "failed";
+  website_label: string;
+  website_ready_at: string | null;
+  admin_url: string | null;
+  login_email: string | null;
+  go_live: "not_ready" | "locked" | "authorized" | "unknown";
+  go_live_label: string;
+  consultation: ConsultationState;
+}
+
+export type ConsultationKind = "onboarding" | "implementation";
+
+export interface ConsultationSlot {
+  /** Server-signed slot id: the only thing a booking sends back. */
+  id: string;
+  starts_at: string;
+  ends_at: string;
+  /** Business date (America/Chicago), YYYY-MM-DD. */
+  date: string;
+  weekday: string;
+  /** "Wednesday, November 18 at 10:00 AM CST" */
+  label: string;
+  time_label: string;
+}
+
+export interface AvailabilityBatch {
+  timezone: string;
+  timezone_label: string;
+  duration_minutes: number;
+  slots: ConsultationSlot[];
+  /** Pass back as `after` for the next three weekdays; null when there are no more. */
+  next_after: string | null;
+  notice: string;
+}
+
+export interface BookingResult {
+  consultation: ConsultationState;
+  message: string;
+  created?: boolean;
+  changed?: boolean;
+}
+
+export interface BookingLinkInfo {
+  business_name: string;
+  consultation: ConsultationState;
+  expires_at: string;
+}
+
+export type ImplementationPackage = "launch" | "professional" | "growth" | "not_sure";
+
+export interface ImplementationInquiry {
+  name: string;
+  business: string;
+  email: string;
+  phone: string;
+  package: ImplementationPackage;
+  message?: string;
+  slot?: string | null;
+  /** One id per form submission: a retried submit finds the same request. */
+  request_id: string;
+  /** Milliseconds the visitor spent on the form (spam guard). */
+  elapsed_ms: number;
+  /** Hidden honeypot field; people never fill it. */
+  company_website?: string;
+}
+
+export interface InquiryResult {
+  status: string;
+  duplicate?: boolean;
+  consultation?: ConsultationState;
+  message: string;
 }
 
 export interface RegistrationResult {
@@ -421,6 +522,7 @@ export async function getCheckoutSession(
     registration: body.registration ?? null,
     agreement_text: body.agreement_text ?? null,
     expires_at: body.expires_at ?? null,
+    onboarding: body.onboarding ?? null,
   };
 }
 
@@ -505,6 +607,123 @@ export async function submitPayment(
 }
 
 /* ===========================
+   Consultations (Kabba #267)
+=========================== */
+
+/** GET /api/commercial/v1/consultations/availability — three weekday times (Central Time). */
+export async function getConsultationAvailability(
+  kind: ConsultationKind,
+  after?: string | null,
+): Promise<AvailabilityBatch> {
+  const qs = new URLSearchParams({ kind });
+  if (after) qs.set("after", after);
+  const body = await request<AvailabilityBatch>(
+    `/api/commercial/v1/consultations/availability?${qs.toString()}`,
+  );
+  return {
+    timezone: body.timezone,
+    timezone_label: body.timezone_label,
+    duration_minutes: body.duration_minutes,
+    slots: Array.isArray(body.slots) ? body.slots : [],
+    next_after: body.next_after ?? null,
+    notice: body.notice ?? "",
+  };
+}
+
+function bookingResult(body: BookingResult): BookingResult {
+  return {
+    consultation: body.consultation,
+    message: body.message,
+    created: body.created,
+    changed: body.changed,
+  };
+}
+
+/** POST checkout/sessions/{token}/consultation — the paid customer books from the success page. */
+export async function bookConsultationWithCheckout(
+  checkoutToken: string,
+  slotId: string,
+): Promise<BookingResult> {
+  return bookingResult(
+    await request<BookingResult>(
+      `/api/commercial/v1/checkout/sessions/${encodeURIComponent(checkoutToken)}/consultation`,
+      { method: "POST", body: JSON.stringify({ slot: slotId }) },
+    ),
+  );
+}
+
+export async function cancelConsultationWithCheckout(
+  checkoutToken: string,
+): Promise<BookingResult> {
+  return bookingResult(
+    await request<BookingResult>(
+      `/api/commercial/v1/checkout/sessions/${encodeURIComponent(checkoutToken)}/consultation/cancel`,
+      { method: "POST" },
+    ),
+  );
+}
+
+/** GET consultations/access/{token} — the private booking link from the customer's email. */
+export async function getBookingLink(linkToken: string): Promise<BookingLinkInfo> {
+  const body = await request<BookingLinkInfo>(
+    `/api/commercial/v1/consultations/access/${encodeURIComponent(linkToken)}`,
+  );
+  return {
+    business_name: body.business_name,
+    consultation: body.consultation,
+    expires_at: body.expires_at,
+  };
+}
+
+export async function bookConsultationWithLink(
+  linkToken: string,
+  slotId: string,
+): Promise<BookingResult> {
+  return bookingResult(
+    await request<BookingResult>(
+      `/api/commercial/v1/consultations/access/${encodeURIComponent(linkToken)}`,
+      { method: "POST", body: JSON.stringify({ slot: slotId }) },
+    ),
+  );
+}
+
+export async function cancelConsultationWithLink(
+  linkToken: string,
+): Promise<BookingResult> {
+  return bookingResult(
+    await request<BookingResult>(
+      `/api/commercial/v1/consultations/access/${encodeURIComponent(linkToken)}/cancel`,
+      { method: "POST" },
+    ),
+  );
+}
+
+/**
+ * POST implementation-inquiries — a prospect's Implementation Services
+ * consultation request. Records a request only: never a subscription or a charge.
+ */
+export async function submitImplementationInquiry(
+  inquiry: ImplementationInquiry,
+): Promise<InquiryResult> {
+  const body = await request<InquiryResult & { success?: boolean }>(
+    "/api/commercial/v1/implementation-inquiries",
+    { method: "POST", body: JSON.stringify(inquiry) },
+  );
+  if (body.success !== true) {
+    throw new CommercialApiError(
+      body.message || "We couldn't send your request. Please try again.",
+      0,
+    );
+  }
+  return {
+    status: body.status,
+    duplicate: body.duplicate,
+    consultation: body.consultation,
+    message: body.message,
+  };
+}
+
+/* ===========================
    Helpers
 =========================== */
 
@@ -535,12 +754,17 @@ export function clearStoredToken(): void {
   safeStorage()?.removeItem(CHECKOUT_TOKEN_KEY);
 }
 
-export function readConsultationTime(): string | null {
-  return safeStorage()?.getItem(CONSULTATION_TIME_KEY) || null;
-}
-
-export function storeConsultationTime(iso: string): void {
-  safeStorage()?.setItem(CONSULTATION_TIME_KEY, iso);
+/**
+ * Older versions of this site kept a chosen consultation time only in the
+ * browser. The server is now the record of every consultation, so any stale
+ * local value is discarded and never shown as an appointment.
+ */
+export function discardLegacyConsultationTime(): void {
+  try {
+    safeStorage()?.removeItem(CONSULTATION_TIME_KEY);
+  } catch {
+    // storage unavailable: nothing to discard
+  }
 }
 
 /**

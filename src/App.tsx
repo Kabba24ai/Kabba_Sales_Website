@@ -32,33 +32,54 @@ import RefundCancellationPage from "./components/RefundCancellationPage";
 import AcceptableUsePolicyPage from "./components/AcceptableUsePolicyPage";
 
 import OnboardingSignup from "./components/OnboardingSignup";
-import AnalyzingAvailability from "./components/AnalyzingAvailability";
+import BookConsultation from "./components/BookConsultation";
+import ImplementationServicesPage from "./components/ImplementationServicesPage";
 import PaymentError from "./components/PaymentError";
 import TrialActivated from "./components/TrialActivated";
 import SetupCanceled from "./components/SetupCanceled";
 
 import LiveDemoModal from "./components/LiveDemoModal";
 
-import {
-  readConsultationTime,
-  storeConsultationTime,
-} from "./lib/commercial-api";
+import { readStoredToken } from "./lib/commercial-api";
 
 /* ===========================
    Metadata Hook
 =========================== */
-function usePageMetadata(title: string, description: string) {
+function setMeta(selector: string, attr: "name" | "property", key: string, content: string) {
+  let meta = document.querySelector(selector);
+  if (!meta) {
+    meta = document.createElement("meta");
+    meta.setAttribute(attr, key);
+    document.head.appendChild(meta);
+  }
+  meta.setAttribute("content", content);
+}
+
+function usePageMetadata(title: string, description: string, path?: string) {
   useEffect(() => {
     document.title = title;
-
-    let meta = document.querySelector('meta[name="description"]');
-    if (!meta) {
-      meta = document.createElement("meta");
-      meta.setAttribute("name", "description");
-      document.head.appendChild(meta);
+    setMeta('meta[name="description"]', "name", "description", description);
+    if (path) {
+      const url = `https://kabba.ai${path}`;
+      setMeta('meta[property="og:title"]', "property", "og:title", title);
+      setMeta('meta[property="og:description"]', "property", "og:description", description);
+      setMeta('meta[property="og:url"]', "property", "og:url", url);
+      setMeta('meta[property="og:type"]', "property", "og:type", "website");
+      let canonical = document.querySelector('link[rel="canonical"]');
+      if (!canonical) {
+        canonical = document.createElement("link");
+        canonical.setAttribute("rel", "canonical");
+        document.head.appendChild(canonical);
+      }
+      canonical.setAttribute("href", url);
+      return () => {
+        // Other pages set only title and description; never leave this page's URL behind.
+        document.querySelector('link[rel="canonical"]')?.remove();
+        document.querySelector('meta[property="og:url"]')?.remove();
+      };
     }
-    meta.setAttribute("content", description);
-  }, [title, description]);
+    return undefined;
+  }, [title, description, path]);
 }
 
 /* ===========================
@@ -203,6 +224,35 @@ const RefundCancellationPageWrapper = simpleWrapper(
   "KABBA refund and cancellation policy."
 );
 
+function ImplementationServicesWrapper() {
+  usePageMetadata(
+    "Implementation Services | Kabba Launch, Professional & Growth | KABBA",
+    "We build your online rental business: website, catalog, payments, SMS and email automation, team setup and Go-Live Certification. Kabba Launch $997, Kabba Professional $1,997, Kabba Growth $495/month. Request a consultation.",
+    "/implementation-services"
+  );
+  const navigate = useNavigate();
+  const location = useLocation();
+  useEffect(() => {
+    if (!location.hash) window.scrollTo(0, 0);
+  }, [location.pathname, location.hash]);
+
+  return (
+    <ImplementationServicesPage
+      onBack={() => navigate("/")}
+      onStartTrial={() => navigate("/start-trial")}
+      onViewPricing={() => navigate("/pricing")}
+      onViewOurStory={() => navigate("/our-story")}
+      onViewContact={() => navigate("/contact")}
+      onViewProduct={() => navigate("/?scroll=product")}
+      onViewConsultation={() => navigate("/?scroll=consultation")}
+      onViewPrivacyPolicy={() => navigate("/privacy-policy")}
+      onViewTermsOfService={() => navigate("/terms-of-service")}
+      onViewRefundPolicy={() => navigate("/refund-cancellation")}
+      onViewAcceptableUsePolicy={() => navigate("/acceptable-use-policy")}
+    />
+  );
+}
+
 const AcceptableUsePolicyPageWrapper = simpleWrapper(
   AcceptableUsePolicyPage,
   "Acceptable Use Policy | KABBA",
@@ -211,8 +261,10 @@ const AcceptableUsePolicyPageWrapper = simpleWrapper(
 
 /* ---------- Onboarding ----------
    Critical path: /start-trial (registration + payment) → /trial-activated.
-   /analyzing-availability (onboarding-call picker) is optional and is only
-   linked from /trial-activated.
+   /analyzing-availability (optional onboarding consultation, booked with the
+   checkout session in this browser) is linked from /trial-activated;
+   /book-consultation?t=… is the private link in the customer's emails.
+   Times and bookings live in Kabba Central (Kabba #267), never only here.
 */
 
 function OnboardingSignupWrapper() {
@@ -244,19 +296,37 @@ function TrialActivatedWrapper() {
 
 function AnalyzingAvailabilityWrapper() {
   usePageMetadata(
-    "Book Your Onboarding Call | KABBA",
-    "Choose a time for your optional KABBA setup and strategy session."
+    "Book Your Onboarding Consultation | KABBA",
+    "Request an optional weekday setup and strategy session with the KABBA team."
   );
   const navigate = useNavigate();
+  const token = readStoredToken();
 
   return (
-    <AnalyzingAvailability
-      initialConsultationTime={readConsultationTime() || undefined}
-      onCancel={() => navigate("/trial-activated")}
-      onComplete={(time) => {
-        storeConsultationTime(time);
-        navigate("/trial-activated");
-      }}
+    <BookConsultation
+      access={token ? { via: "checkout", token } : null}
+      onBack={() => navigate("/trial-activated")}
+      backLabel="Back to your trial"
+    />
+  );
+}
+
+/** The private, expiring link from the customer's email: /book-consultation?t=… */
+function BookConsultationLinkWrapper() {
+  usePageMetadata(
+    "Book Your Onboarding Consultation | KABBA",
+    "Request an optional weekday setup and strategy session with the KABBA team."
+  );
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const linkToken = searchParams.get("t");
+  const valid = !!linkToken && /^[A-Za-z0-9_-]{16,128}$/.test(linkToken);
+
+  return (
+    <BookConsultation
+      access={valid ? { via: "link", token: linkToken as string } : null}
+      onBack={() => navigate("/")}
+      backLabel="KABBA home"
     />
   );
 }
@@ -303,6 +373,10 @@ function App() {
         />
 
         <Route path="/our-story" element={<OurStoryWrapper />} />
+        <Route
+          path="/implementation-services"
+          element={<ImplementationServicesWrapper />}
+        />
         <Route path="/contact" element={<ContactPageWrapper />} />
 
         <Route path="/privacy-policy" element={<PrivacyPolicyPageWrapper />} />
@@ -324,6 +398,10 @@ function App() {
         <Route
           path="/analyzing-availability"
           element={<AnalyzingAvailabilityWrapper />}
+        />
+        <Route
+          path="/book-consultation"
+          element={<BookConsultationLinkWrapper />}
         />
         <Route path="/payment-error" element={<PaymentErrorWrapper />} />
         <Route path="/setup-canceled" element={<SetupCanceledWrapper />} />
