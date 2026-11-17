@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Check, Loader2, Calendar, ChevronDown } from 'lucide-react';
+import { isWeekdayAppointment } from '../lib/appointment-weekdays';
 
 interface AnalyzingAvailabilityProps {
   onComplete: (consultationTime: string) => void;
@@ -35,9 +36,11 @@ const refreshSteps: ChecklistStep[] = [
 ];
 
 export default function AnalyzingAvailability({ onComplete, onCancel, initialConsultationTime }: AnalyzingAvailabilityProps) {
+  const priorDate = initialConsultationTime ? new Date(initialConsultationTime) : null;
+  const validInitial = priorDate !== null && isWeekdayAppointment(priorDate) && priorDate.getTime() > Date.now();
   const [currentStep, setCurrentStep] = useState(0);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
-  const [showScheduling, setShowScheduling] = useState(!!initialConsultationTime);
+  const [showScheduling, setShowScheduling] = useState(validInitial);
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
   const [generationCount, setGenerationCount] = useState(0);
@@ -74,17 +77,25 @@ export default function AnalyzingAvailability({ onComplete, onCancel, initialCon
     ];
 
     const times = timeVariations[offset % timeVariations.length];
-    const dayOffsets = offset === 0 ? [0, 1, 2] : [0, 1, 3];
-
-    for (let i = 0; i < 3; i++) {
+    // Three NEW weekday options on every batch. Never carry Saturday or Sunday
+    // forward as an offered appointment; offset 1 starts after the first 3
+    // eligible weekdays, rather than repeating a prior date.
+    let scannedDays = 0;
+    let eligibleWeekdays = 0;
+    while (slots.length < 3) {
       const slotDate = new Date(now);
-      slotDate.setDate(now.getDate() + baseDay + dayOffsets[i]);
-      slotDate.setHours(times[i].hour, times[i].minute, 0, 0);
+      slotDate.setDate(now.getDate() + baseDay + scannedDays);
+      scannedDays += 1;
 
+      const slotTime = times[eligibleWeekdays % times.length];
+      slotDate.setHours(slotTime.hour, slotTime.minute, 0, 0);
+      if (!isWeekdayAppointment(slotDate)) continue;
+      if (eligibleWeekdays++ < offset * 3) continue;
+
+      const i = slots.length;
       const dayName = slotDate.toLocaleDateString('en-US', { weekday: 'short' });
       const dateStr = slotDate.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' });
       const timeStr = slotDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
-
       slots.push({
         id: `${slotDate.getTime()}-${i}`,
         date: slotDate,
@@ -99,6 +110,16 @@ export default function AnalyzingAvailability({ onComplete, onCancel, initialCon
   useEffect(() => {
     if (initialConsultationTime) {
       const initialDate = new Date(initialConsultationTime);
+      // A stale or weekend choice from an older session cannot be displayed
+      // as a valid, previously selected appointment.
+      if (!isWeekdayAppointment(initialDate) || initialDate.getTime() <= Date.now()) {
+        setShowScheduling(true);
+        setTimeSlots(generateTimeSlots());
+        setSelectedSlot(null);
+        setCompletedSteps(steps.map((_, index) => index));
+        setCurrentStep(steps.length);
+        return;
+      }
       const slots = generateTimeSlots();
 
       // Create a slot for the previously selected time
@@ -170,8 +191,7 @@ export default function AnalyzingAvailability({ onComplete, onCancel, initialCon
   const handleConfirm = () => {
     if (selectedSlot) {
       const slot = timeSlots.find((s) => s.id === selectedSlot);
-      if (slot) {
-        console.log('Selected consultation time:', slot.date.toISOString());
+      if (slot && isWeekdayAppointment(slot.date) && slot.date.getTime() > Date.now()) {
         onComplete(slot.date.toISOString());
       }
     }
@@ -293,7 +313,7 @@ export default function AnalyzingAvailability({ onComplete, onCancel, initialCon
           {showScheduling && (
             <div className="bg-gray-900 border border-gray-800 rounded-xl p-8 space-y-6 animate-fade-in">
               <div>
-                {initialConsultationTime ? (
+                {validInitial ? (
                   <>
                     <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-lg p-4 mb-6">
                       <p className="text-emerald-400 font-semibold mb-2">
@@ -376,7 +396,7 @@ export default function AnalyzingAvailability({ onComplete, onCancel, initialCon
                 <div>
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-semibold text-gray-200">Available Times</h3>
-                    <span className="text-xs text-gray-500">Times shown in your local time zone</span>
+                    <span className="text-xs text-gray-500">Weekdays only (Mon–Fri) · times in your local time zone</span>
                   </div>
 
                   {generationCount > 0 && (
@@ -389,7 +409,7 @@ export default function AnalyzingAvailability({ onComplete, onCancel, initialCon
 
                   <div className="space-y-3 mb-6">
                     {timeSlots.map((slot, index) => {
-                      const isPreviousSelection = initialConsultationTime && index === 0;
+                      const isPreviousSelection = validInitial && index === 0;
                       return (
                         <button
                           key={slot.id}
@@ -414,7 +434,7 @@ export default function AnalyzingAvailability({ onComplete, onCancel, initialCon
                             </div>
                           </div>
                           <span className={`text-sm italic ${selectedSlot === slot.id ? 'text-emerald-400' : 'text-gray-500'}`}>
-                            Click to reserve
+                            Select time
                           </span>
                         </button>
                       );
@@ -435,7 +455,7 @@ export default function AnalyzingAvailability({ onComplete, onCancel, initialCon
                       disabled={!selectedSlot}
                       className="w-full bg-emerald-600 hover:bg-emerald-500 disabled:bg-gray-800 disabled:text-gray-600 disabled:cursor-not-allowed text-white font-semibold py-4 px-6 rounded-lg transition-all transform hover:scale-[1.02] active:scale-[0.98] disabled:transform-none"
                     >
-                      Yes - This date and time works for me
+                      Request this consultation time
                     </button>
 
                     <button
