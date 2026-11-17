@@ -336,7 +336,7 @@ export default function TrialActivated({
               <div className="flex-1">
                 {consultationValid && consultation ? (
                   <>
-                    <div className="font-semibold mb-1">Your onboarding call is booked:</div>
+                    <div className="font-semibold mb-1">Your preferred consultation time (not yet confirmed):</div>
                     <div className="text-emerald-400 mb-4">
                       {consultation.toLocaleDateString("en-US", {
                         weekday: "long",
@@ -350,11 +350,15 @@ export default function TrialActivated({
                         minute: "2-digit",
                       })}
                     </div>
+                    <p className="text-gray-400 text-sm mb-4">
+                      This time is saved only in your browser. Our team has not
+                      received a confirmed appointment; we'll confirm scheduling with you.
+                    </p>
                     <button
                       onClick={onBookCall}
                       className="text-sm text-gray-400 hover:text-gray-200 underline"
                     >
-                      Change the time
+                      Choose a different time
                     </button>
                   </>
                 ) : (
@@ -368,7 +372,7 @@ export default function TrialActivated({
                       className="inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 px-5 rounded-lg transition-all"
                     >
                       <Calendar className="w-5 h-5" />
-                      Book your onboarding call (optional)
+                      Choose a consultation time (optional)
                     </button>
                   </>
                 )}
