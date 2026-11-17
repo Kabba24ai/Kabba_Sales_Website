@@ -1,3 +1,5 @@
+import { isWeekdayAppointment } from './appointment-weekdays';
+
 // Typed client for the Kabba commercial checkout API.
 //
 // Card data NEVER passes through this module. The payment call carries only
@@ -536,10 +538,22 @@ export function clearStoredToken(): void {
 }
 
 export function readConsultationTime(): string | null {
-  return safeStorage()?.getItem(CONSULTATION_TIME_KEY) || null;
+  const value = safeStorage()?.getItem(CONSULTATION_TIME_KEY);
+  if (!value) return null;
+  const date = new Date(value);
+  if (!isWeekdayAppointment(date) || date.getTime() <= Date.now()) {
+    safeStorage()?.removeItem(CONSULTATION_TIME_KEY);
+    return null;
+  }
+  return value;
 }
 
 export function storeConsultationTime(iso: string): void {
+  const date = new Date(iso);
+  if (!isWeekdayAppointment(date) || date.getTime() <= Date.now()) {
+    throw new Error('Please choose a future weekday consultation time.');
+  }
+  // This is only a local preference until Kabba Central persists the booking.
   safeStorage()?.setItem(CONSULTATION_TIME_KEY, iso);
 }
 
