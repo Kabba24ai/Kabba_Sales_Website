@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 interface FooterProps {
   onViewOurStory?: () => void;
   onViewContact?: () => void;
@@ -43,6 +45,7 @@ export default function Footer({ onViewOurStory, onViewContact, onViewProduct, o
               ) : (
                 <li><a href="#consultation" className="hover:text-white transition">Consultation</a></li>
               )}
+              <li><Link to="/implementation-services" className="hover:text-white transition">Implementation Services</Link></li>
             </ul>
           </div>
           <div>

@@ -1,5 +1,6 @@
 import { Menu, X } from 'lucide-react';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useTrialCopy } from '../lib/useTrialCopy';
 
 interface NavbarProps {
@@ -20,7 +21,7 @@ export default function Navbar({ onStartTrial, onViewPricing, onViewOurStory, on
     <nav className="fixed top-0 w-full bg-black/95 backdrop-blur-sm shadow-lg z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <button onClick={onBackToHome} className="flex items-center">
+          <button onClick={onBackToHome} className="flex items-center" aria-label="KABBA home">
             <img
               src="/kabba_logo_-_text_only.png"
               alt="KABBA.ai"
@@ -28,13 +29,14 @@ export default function Navbar({ onStartTrial, onViewPricing, onViewOurStory, on
             />
           </button>
 
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden lg:flex items-center space-x-6 xl:space-x-8">
             {onViewProduct ? (
               <button onClick={onViewProduct} className="text-slate-200 hover:text-[#02ffff] transition">Product</button>
             ) : (
               <a href="#product" className="text-slate-200 hover:text-[#02ffff] transition">Product</a>
             )}
             <button onClick={onViewPricing} className="text-slate-200 hover:text-[#02ffff] transition">Pricing</button>
+            <Link to="/implementation-services" className="text-slate-200 hover:text-[#02ffff] transition whitespace-nowrap">Implementation Services</Link>
             {onViewOurStory && (
               <button onClick={onViewOurStory} className="text-slate-200 hover:text-[#02ffff] transition">Our Story</button>
             )}
@@ -51,21 +53,22 @@ export default function Navbar({ onStartTrial, onViewPricing, onViewOurStory, on
             </button>
           </div>
 
-          <div className="md:hidden">
-            <button onClick={() => setIsOpen(!isOpen)} className="text-slate-200">
+          <div className="lg:hidden">
+            <button onClick={() => setIsOpen(!isOpen)} className="text-slate-200" aria-label={isOpen ? 'Close menu' : 'Open menu'} aria-expanded={isOpen}>
               {isOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
         </div>
 
         {isOpen && (
-          <div className="md:hidden pb-4">
+          <div className="lg:hidden pb-4">
             {onViewProduct ? (
               <button onClick={() => { onViewProduct(); setIsOpen(false); }} className="block py-2 text-slate-200 hover:text-[#02ffff] text-left w-full">Product</button>
             ) : (
               <a href="#product" className="block py-2 text-slate-200 hover:text-[#02ffff]">Product</a>
             )}
             <button onClick={() => { onViewPricing(); setIsOpen(false); }} className="block py-2 text-slate-200 hover:text-[#02ffff] text-left w-full">Pricing</button>
+            <Link to="/implementation-services" onClick={() => setIsOpen(false)} className="block py-2 text-slate-200 hover:text-[#02ffff]">Implementation Services</Link>
             {onViewOurStory && (
               <button onClick={() => { onViewOurStory(); setIsOpen(false); }} className="block py-2 text-slate-200 hover:text-[#02ffff] text-left w-full">Our Story</button>
             )}

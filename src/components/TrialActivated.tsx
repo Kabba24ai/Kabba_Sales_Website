@@ -2,7 +2,12 @@ import { useEffect, useState } from "react";
 import {
   CheckCircle2,
   Calendar,
+  CalendarCheck,
+  Clock,
   DollarSign,
+  ExternalLink,
+  Globe,
+  Lock,
   Phone,
   Loader2,
   AlertCircle,
@@ -13,9 +18,9 @@ import {
   CheckoutSession,
   CommercialApiError,
   clearStoredToken,
+  discardLegacyConsultationTime,
   formatMoney,
   getCheckoutSession,
-  readConsultationTime,
   readStoredToken,
 } from "../lib/commercial-api";
 
@@ -42,9 +47,9 @@ export default function TrialActivated({
   const [view, setView] = useState<ViewState>("loading");
   const [session, setSession] = useState<CheckoutSession | null>(null);
   const [errorMessage, setErrorMessage] = useState("");
-  const [consultationTime] = useState<string | null>(() => readConsultationTime());
 
   useEffect(() => {
+    discardLegacyConsultationTime();
     const token = readStoredToken();
     if (!token) {
       setView("missing");
@@ -63,9 +68,9 @@ export default function TrialActivated({
         setErrorMessage("");
         setView("ready");
 
-        if (next.status === "completed") {
-          clearStoredToken();
-        } else if (next.status === "expired") {
+        // "completed" (the website is Ready) keeps the token for this browser session so the
+        // page and the consultation booking keep working; only an expired session is forgotten.
+        if (next.status === "expired") {
           clearStoredToken();
           setView("missing");
         } else if ((POLLING_STATUSES as readonly string[]).includes(next.status)) {
@@ -103,21 +108,25 @@ export default function TrialActivated({
     !!session && (ACTIVE_STATUSES as readonly string[]).includes(session.status);
   const provisioning = session?.provisioning ?? null;
   const offer = session?.offer ?? null;
-
-  const consultation = consultationTime ? new Date(consultationTime) : null;
-  const consultationValid = !!consultation && !Number.isNaN(consultation.getTime());
+  const onboarding = session?.onboarding ?? null;
+  const consultation = onboarding?.consultation ?? null;
+  const consultationOpen =
+    !!consultation && ["requested", "confirmed", "rescheduled"].includes(consultation.status);
+  const websiteReady = onboarding ? onboarding.website === "ready" : provisioning === "provisioned";
 
   const provisioningCard = (() => {
     if (!isActive) return null;
-    if (provisioning === "provisioned") {
+    if (websiteReady) {
       return {
         tone: "emerald" as const,
         icon: <CheckCircle2 className="w-6 h-6 text-emerald-500" />,
-        title: "Your account is ready",
-        body: "Check your inbox for your login details and the link to your Kabba instance.",
+        title: "Your Kabba website is ready to set up",
+        body: onboarding?.admin_url
+          ? `Sign in at ${onboarding.admin_url} with ${onboarding.login_email ?? "your signup email"} and the password you created at signup. We've emailed these details too.`
+          : "Check your inbox for your administration address and sign-in instructions.",
       };
     }
-    if (provisioning === "failed") {
+    if (provisioning === "failed" || onboarding?.website === "failed" || onboarding?.website === "needs_attention") {
       return {
         tone: "amber" as const,
         icon: <AlertCircle className="w-6 h-6 text-amber-500" />,
@@ -128,8 +137,8 @@ export default function TrialActivated({
     return {
       tone: "cyan" as const,
       icon: <Loader2 className="w-6 h-6 text-cyan-500 animate-spin" />,
-      title: "We're setting up your Kabba instance",
-      body: "You'll get an email when it's ready. You can close this page; nothing else is needed from you right now.",
+      title: "We're setting up your Kabba website",
+      body: "We'll email your administration address and sign-in instructions when it's ready. You can close this page; nothing else is needed from you right now.",
     };
   })();
 
@@ -299,7 +308,7 @@ export default function TrialActivated({
                 <div>
                   <h3 className="font-semibold text-gray-200 mb-2">Watch your inbox</h3>
                   <p className="text-gray-400 text-sm">
-                    We'll email you the link to your Kabba instance and your login as soon as it's provisioned.
+                    When your website is ready we'll email your administration address and your login email. Sign in with the password you created at signup; Kabba never emails passwords.
                   </p>
                 </div>
               </li>
@@ -321,7 +330,7 @@ export default function TrialActivated({
                   3
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-200 mb-2">Book an onboarding call (optional)</h3>
+                  <h3 className="font-semibold text-gray-200 mb-2">Book an onboarding consultation (optional)</h3>
                   <p className="text-gray-400 text-sm">
                     We'll finalize your rental website setup, confirm equipment/pricing/workflows, and share proven growth strategies.
                   </p>
@@ -330,48 +339,84 @@ export default function TrialActivated({
             </ol>
           </div>
 
+          {onboarding && (
+            <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
+              <h2 className="text-lg font-semibold text-white mb-4">Your setup at a glance</h2>
+              <ul className="divide-y divide-gray-800 text-sm">
+                <li className="flex items-start justify-between gap-4 py-3">
+                  <span className="flex items-center gap-2 text-gray-300"><CheckCircle2 className="w-4 h-4 text-emerald-500" aria-hidden="true" /> Registration &amp; payment</span>
+                  <span className="text-emerald-400 font-semibold text-right">Complete · trial active</span>
+                </li>
+                <li className="flex items-start justify-between gap-4 py-3">
+                  <span className="flex items-center gap-2 text-gray-300">
+                    {websiteReady ? <CheckCircle2 className="w-4 h-4 text-emerald-500" aria-hidden="true" /> : <Loader2 className="w-4 h-4 text-cyan-400 animate-spin" aria-hidden="true" />}
+                    Your website
+                  </span>
+                  <span className={`text-right ${websiteReady ? "text-emerald-400 font-semibold" : "text-cyan-300"}`}>
+                    {onboarding.website_label}
+                    {onboarding.admin_url && (
+                      <a href={onboarding.admin_url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-end gap-1 text-xs text-emerald-300 hover:text-emerald-200 underline mt-1">
+                        Open administration <ExternalLink className="w-3 h-3" aria-hidden="true" />
+                      </a>
+                    )}
+                  </span>
+                </li>
+                <li className="flex items-start justify-between gap-4 py-3">
+                  <span className="flex items-center gap-2 text-gray-300">
+                    {consultationOpen && consultation?.status !== "requested" ? <CalendarCheck className="w-4 h-4 text-emerald-500" aria-hidden="true" /> : consultation?.status === "requested" ? <Clock className="w-4 h-4 text-amber-400" aria-hidden="true" /> : <Calendar className="w-4 h-4 text-gray-500" aria-hidden="true" />}
+                    Onboarding consultation
+                  </span>
+                  <span className="text-right text-gray-300">
+                    {consultationOpen ? consultation?.label : "Not requested (optional)"}
+                    {consultationOpen && consultation?.when && <span className="block text-xs text-gray-500">{consultation.when}</span>}
+                  </span>
+                </li>
+                <li className="flex items-start justify-between gap-4 py-3">
+                  <span className="flex items-center gap-2 text-gray-300"><Globe className="w-4 h-4 text-gray-500" aria-hidden="true" /> Public website Go-Live</span>
+                  <span className="text-right text-gray-400 flex items-center gap-1 justify-end">
+                    {onboarding.go_live === "locked" && <Lock className="w-3 h-3" aria-hidden="true" />}
+                    {onboarding.go_live === "authorized" ? "Authorized" : onboarding.go_live === "locked" ? "Locked until you authorize it" : "After your website is ready"}
+                  </span>
+                </li>
+              </ul>
+              <p className="text-xs text-gray-500 mt-3">
+                Your public website stays private (no online orders, payments or search engines) until you authorize Go-Live from your administration site.
+              </p>
+            </div>
+          )}
+
           <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
             <div className="flex items-start gap-3">
-              <Calendar className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
+              <Calendar className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" aria-hidden="true" />
               <div className="flex-1">
-                {consultationValid && consultation ? (
+                {consultationOpen && consultation ? (
                   <>
-                    <div className="font-semibold mb-1">Your preferred consultation time (not yet confirmed):</div>
-                    <div className="text-emerald-400 mb-4">
-                      {consultation.toLocaleDateString("en-US", {
-                        weekday: "long",
-                        month: "long",
-                        day: "numeric",
-                        year: "numeric",
-                      })}{" "}
-                      at{" "}
-                      {consultation.toLocaleTimeString("en-US", {
-                        hour: "numeric",
-                        minute: "2-digit",
-                      })}
+                    <div className="font-semibold mb-1">
+                      {consultation.status === "requested"
+                        ? "Your consultation request (awaiting confirmation):"
+                        : "Your consultation is confirmed:"}
                     </div>
+                    <div className="text-emerald-400 mb-2">{consultation.when}</div>
                     <p className="text-gray-400 text-sm mb-4">
-                      This time is saved only in your browser. Our team has not
-                      received a confirmed appointment; we'll confirm scheduling with you.
+                      {consultation.status === "requested"
+                        ? "Saved with Kabba. A specialist will confirm this time by email, usually within one business day."
+                        : "A Kabba specialist will call you at the number on your account."}
                     </p>
-                    <button
-                      onClick={onBookCall}
-                      className="text-sm text-gray-400 hover:text-gray-200 underline"
-                    >
-                      Choose a different time
+                    <button onClick={onBookCall} className="text-sm text-gray-400 hover:text-gray-200 underline">
+                      Change or cancel
                     </button>
                   </>
                 ) : (
                   <>
                     <div className="font-semibold mb-1">Want a hand getting set up?</div>
                     <p className="text-gray-400 text-sm mb-4">
-                      Pick a time for a setup &amp; strategy session with the operators who built KABBA.
+                      Request a weekday setup &amp; strategy session with the operators who built KABBA. It's optional; your trial is active either way.
                     </p>
                     <button
                       onClick={onBookCall}
                       className="inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 px-5 rounded-lg transition-all"
                     >
-                      <Calendar className="w-5 h-5" />
+                      <Calendar className="w-5 h-5" aria-hidden="true" />
                       Choose a consultation time (optional)
                     </button>
                   </>
