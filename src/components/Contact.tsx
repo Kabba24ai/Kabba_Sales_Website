@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Phone, Mail, Send } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Phone, Mail, Send, LifeBuoy } from 'lucide-react';
 
 interface ContactProps {
   id?: string;
@@ -95,6 +96,21 @@ export default function Contact({ id = 'contact' }: ContactProps) {
                   </p>
                 </div>
               </div>
+
+              <Link
+                to="/support"
+                className="flex items-start gap-4 p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition group"
+              >
+                <div className="bg-emerald-100 p-3 rounded-lg group-hover:bg-emerald-200 transition">
+                  <LifeBuoy className="text-emerald-700" size={24} />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-slate-900 mb-1">Already a Kabba customer? Get Support</h4>
+                  <p className="text-sm text-slate-600">
+                    Open a support case, even if you can't sign in. You'll get a case number and a private link to follow it.
+                  </p>
+                </div>
+              </Link>
             </div>
 
             <div className="mt-8 p-6 bg-blue-50 rounded-lg border border-blue-100">

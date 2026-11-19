@@ -34,6 +34,8 @@ import AcceptableUsePolicyPage from "./components/AcceptableUsePolicyPage";
 import OnboardingSignup from "./components/OnboardingSignup";
 import BookConsultation from "./components/BookConsultation";
 import ImplementationServicesPage from "./components/ImplementationServicesPage";
+import SupportPage from "./components/SupportPage";
+import SupportCasePage from "./components/SupportCasePage";
 import PaymentError from "./components/PaymentError";
 import TrialActivated from "./components/TrialActivated";
 import SetupCanceled from "./components/SetupCanceled";
@@ -253,6 +255,54 @@ function ImplementationServicesWrapper() {
   );
 }
 
+/* ---------- Customer support (Kabba #276) ----------
+   /support opens a case in Kabba Commercial Administration (no login needed);
+   /support/case?t=… is the private, expiring link Kabba emails to the address
+   on a case. There is no lookup of cases by number or email.
+*/
+
+function SupportPageWrapper() {
+  usePageMetadata(
+    "Get Support | KABBA",
+    "Open a Kabba support case, even if you can't sign in. You get a case number and a private link to follow it.",
+    "/support"
+  );
+  const navigate = useNavigate();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  return (
+    <SupportPage
+      onBack={() => navigate("/")}
+      onStartTrial={() => navigate("/start-trial")}
+      onViewPricing={() => navigate("/pricing")}
+      onViewOurStory={() => navigate("/our-story")}
+      onViewContact={() => navigate("/contact")}
+      onViewProduct={() => navigate("/?scroll=product")}
+      onViewConsultation={() => navigate("/?scroll=consultation")}
+      onViewPrivacyPolicy={() => navigate("/privacy-policy")}
+      onViewTermsOfService={() => navigate("/terms-of-service")}
+      onViewRefundPolicy={() => navigate("/refund-cancellation")}
+      onViewAcceptableUsePolicy={() => navigate("/acceptable-use-policy")}
+    />
+  );
+}
+
+function SupportCaseWrapper() {
+  usePageMetadata("Your Support Case | KABBA", "Follow and reply to your Kabba support case.");
+  const navigate = useNavigate();
+  useEffect(() => {
+    // A private page: keep it out of search results.
+    setMeta('meta[name="robots"]', "name", "robots", "noindex, nofollow");
+    return () => {
+      document.querySelector('meta[name="robots"]')?.remove();
+    };
+  }, []);
+
+  return <SupportCasePage onNewRequest={() => navigate("/support")} onHome={() => navigate("/")} />;
+}
+
 const AcceptableUsePolicyPageWrapper = simpleWrapper(
   AcceptableUsePolicyPage,
   "Acceptable Use Policy | KABBA",
@@ -378,6 +428,8 @@ function App() {
           element={<ImplementationServicesWrapper />}
         />
         <Route path="/contact" element={<ContactPageWrapper />} />
+        <Route path="/support" element={<SupportPageWrapper />} />
+        <Route path="/support/case" element={<SupportCaseWrapper />} />
 
         <Route path="/privacy-policy" element={<PrivacyPolicyPageWrapper />} />
         <Route

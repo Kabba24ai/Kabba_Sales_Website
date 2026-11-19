@@ -61,6 +61,7 @@ export default function Footer({ onViewOurStory, onViewContact, onViewProduct, o
               ) : (
                 <li><a href="#" className="hover:text-white transition">Contact</a></li>
               )}
+              <li><Link to="/support" className="hover:text-white transition">Get Support</Link></li>
             </ul>
           </div>
           <div>
