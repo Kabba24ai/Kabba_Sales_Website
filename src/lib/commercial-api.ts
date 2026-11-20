@@ -724,6 +724,155 @@ export async function submitImplementationInquiry(
 }
 
 /* ===========================
+   Customer support (Kabba #276)
+=========================== */
+
+export type SupportCategory =
+  | "login"
+  | "website"
+  | "payments_billing"
+  | "product_catalog"
+  | "reservations_operations"
+  | "other";
+
+export interface SupportCategoryOption {
+  value: SupportCategory;
+  label: string;
+}
+
+/** The same list Kabba Central validates against; used if the options call fails. */
+export const SUPPORT_CATEGORIES: SupportCategoryOption[] = [
+  { value: "login", label: "Login" },
+  { value: "website", label: "Website" },
+  { value: "payments_billing", label: "Payments & Billing" },
+  { value: "product_catalog", label: "Product Catalog" },
+  { value: "reservations_operations", label: "Reservations & Operations" },
+  { value: "other", label: "Other" },
+];
+
+export interface SupportOptions {
+  categories: SupportCategoryOption[];
+  /** Kabba's verified support line from Central settings, or null. */
+  support_phone: string | null;
+  link_days: number;
+}
+
+export interface SupportRequest {
+  name: string;
+  business: string;
+  email: string;
+  phone?: string;
+  category: SupportCategory;
+  subject: string;
+  description: string;
+  related_url?: string;
+  /** A request only: Kabba promises no response time. */
+  priority: "normal" | "urgent";
+  /** One id per form: a retried submit finds the same case. */
+  request_id: string;
+  /** Milliseconds the visitor spent on the form (spam guard). */
+  elapsed_ms: number;
+  /** Hidden honeypot field; people never fill it. */
+  company_website?: string;
+}
+
+export interface SupportSubmitResult {
+  /** e.g. "KS-00012"; null only when the server silently dropped spam. */
+  reference: string | null;
+  duplicate: boolean;
+  message: string;
+}
+
+export interface SupportCaseMessage {
+  id: string;
+  from: "customer" | "kabba";
+  author: string;
+  body: string;
+  at: string;
+  /** Set when this message corrects an earlier one (its id). */
+  corrects: string | null;
+}
+
+export interface SupportCase {
+  reference: string;
+  subject: string;
+  category: string;
+  status: "new" | "in_progress" | "waiting_on_customer" | "resolved" | "closed";
+  status_label: string;
+  submitted_at: string;
+  can_reply: boolean;
+  reply_reopens: boolean;
+}
+
+export interface SupportCaseView {
+  case: SupportCase;
+  messages: SupportCaseMessage[];
+  link_expires_at: string;
+  support_phone: string | null;
+}
+
+/** GET support/options — categories and Kabba's support line. */
+export async function getSupportOptions(): Promise<SupportOptions> {
+  const body = await request<SupportOptions>("/api/commercial/v1/support/options");
+  return {
+    categories: Array.isArray(body.categories) && body.categories.length > 0 ? body.categories : SUPPORT_CATEGORIES,
+    support_phone: body.support_phone ?? null,
+    link_days: body.link_days ?? 14,
+  };
+}
+
+/** POST support/tickets — opens a support case. Never creates an account or a charge. */
+export async function submitSupportRequest(req: SupportRequest): Promise<SupportSubmitResult> {
+  const body = await request<SupportSubmitResult & { success?: boolean }>(
+    "/api/commercial/v1/support/tickets",
+    { method: "POST", body: JSON.stringify(req) },
+  );
+  return {
+    reference: body.reference ?? null,
+    duplicate: body.duplicate === true,
+    message: body.message,
+  };
+}
+
+function supportCaseView(body: SupportCaseView): SupportCaseView {
+  return {
+    case: body.case,
+    messages: Array.isArray(body.messages) ? body.messages : [],
+    link_expires_at: body.link_expires_at,
+    support_phone: body.support_phone ?? null,
+  };
+}
+
+/** GET support/access/{token} — the reporter's own case, through the emailed link. */
+export async function getSupportCase(token: string): Promise<SupportCaseView> {
+  return supportCaseView(
+    await request<SupportCaseView>(`/api/commercial/v1/support/access/${encodeURIComponent(token)}`),
+  );
+}
+
+/** POST support/access/{token}/replies */
+export async function replyToSupportCase(
+  token: string,
+  text: string,
+  requestId: string,
+): Promise<SupportCaseView & { message: string; reopened: boolean }> {
+  const body = await request<SupportCaseView & { message: string; reopened?: boolean }>(
+    `/api/commercial/v1/support/access/${encodeURIComponent(token)}/replies`,
+    { method: "POST", body: JSON.stringify({ body: text, request_id: requestId }) },
+  );
+  return { ...supportCaseView(body), message: body.message, reopened: body.reopened === true };
+}
+
+/** POST support/links — "email me a new link". The answer is the same whether or not anything matched. */
+export async function requestSupportLink(reference: string, email: string): Promise<string> {
+  const body = await request<{ message: string }>("/api/commercial/v1/support/links", {
+    method: "POST",
+    body: JSON.stringify({ reference, email }),
+  });
+  return body.message;
+}
+
+/* ===========================
    Helpers
 =========================== */
 
