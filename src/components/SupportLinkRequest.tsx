@@ -17,8 +17,8 @@ export default function SupportLinkRequest({ tone = "light" }: { tone?: "light" 
   const submit = async (e: FormEvent) => {
     e.preventDefault();
     setError("");
-    if (!/^\s*KS-\d{5,}\s*$/i.test(reference)) {
-      setError("Enter your case number as it appears in your email, e.g. KS-00012.");
+    if (!/^\s*KS-\d{5,6}\s*$/i.test(reference)) {
+      setError("Enter your case number as it appears in your email, e.g. KS-123456.");
       return;
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
@@ -56,7 +56,7 @@ export default function SupportLinkRequest({ tone = "light" }: { tone?: "light" 
       <div className="space-y-2">
         <div>
           <label htmlFor="link-reference" className="block text-xs font-semibold text-slate-700 mb-1">Case number</label>
-          <input id="link-reference" className={input} value={reference} onChange={(e) => setReference(e.target.value)} placeholder="KS-00012" maxLength={20} autoComplete="off" />
+          <input id="link-reference" className={input} value={reference} onChange={(e) => setReference(e.target.value)} placeholder="KS-123456" maxLength={20} autoComplete="off" />
         </div>
         <div>
           <label htmlFor="link-email" className="block text-xs font-semibold text-slate-700 mb-1">Email on the case</label>
