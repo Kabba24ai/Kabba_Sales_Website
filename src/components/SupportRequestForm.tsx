@@ -9,6 +9,8 @@ import {
   newIdempotencyKey,
   submitSupportRequest,
 } from "../lib/commercial-api";
+import { US_PHONE_ERROR, US_PHONE_EXAMPLE, isValidUsPhone } from "../lib/phone";
+import UsPhoneInput from "./UsPhoneInput";
 
 /**
  * The Get Support form (Kabba #276). Works without a Kabba login, so someone
@@ -65,7 +67,7 @@ export default function SupportRequestForm({ categories, linkDays }: Props) {
     if (fields.name.trim().length < 2) er.name = "Enter your name.";
     if (fields.business.trim().length < 2) er.business = "Enter your business name.";
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.email.trim())) er.email = "Enter a valid email address.";
-    if (fields.phone.trim() !== "" && fields.phone.replace(/\D/g, "").length < 10) er.phone = "Enter a phone number we can call, or leave it blank.";
+    if (fields.phone.trim() !== "" && !isValidUsPhone(fields.phone)) er.phone = US_PHONE_ERROR;
     if (!category) er.category = "Choose what your request is about.";
     if (fields.subject.trim().length < 3) er.subject = "Give your request a short subject.";
     if (fields.description.trim().length < 10) er.description = "Tell us a little more about what is happening.";
@@ -174,7 +176,18 @@ export default function SupportRequestForm({ categories, linkDays }: Props) {
           <label htmlFor="support-phone" className={label}>
             Phone <span className="font-normal text-slate-500">(optional)</span>
           </label>
-          <input id="support-phone" type="tel" className={input} value={fields.phone} onChange={set("phone")} autoComplete="tel" maxLength={40} placeholder="(615) 555-0123" {...aria("phone")} />
+          <UsPhoneInput
+            id="support-phone"
+            className={input}
+            value={fields.phone}
+            onValueChange={(phone) => {
+              setFields((f) => ({ ...f, phone }));
+              setErrors((er) => ({ ...er, phone: undefined }));
+            }}
+            maxLength={40}
+            placeholder={US_PHONE_EXAMPLE}
+            {...aria("phone")}
+          />
           {err("phone")}
         </div>
         <div className="sm:col-span-2">

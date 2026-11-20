@@ -8,7 +8,9 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "typecheck": "tsc --noEmit -p tsconfig.app.json"
+    "typecheck": "tsc --noEmit -p tsconfig.app.json",
+    "test": "node --experimental-strip-types --test tests/*.test.ts",
+    "check:browser": "node tests/browser/support-polish.check.mjs"
   },
   "dependencies": {
     "lucide-react": "^0.344.0",
