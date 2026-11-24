@@ -112,7 +112,7 @@ export const packages: ImplementationPackageInfo[] = [
     price: "$495",
     cadence: "/month",
     description: "Your dedicated Kabba success partner — continuously optimizing as your business grows.",
-    includes: ["Continuous optimization", "New equipment onboarding", "New feature adoption", "Strategic guidance", "SEO strategy & Ad Console implementation", "Workflow improvements", "Priority expert access"],
+    includes: ["Continuous optimization", "New equipment onboarding", "New feature adoption", "Strategic guidance", "SEO strategy", "Ad Console implementation", "Workflow improvements", "Priority expert access"],
     cta: "Discuss Growth",
   },
 ];
