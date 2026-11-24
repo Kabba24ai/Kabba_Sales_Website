@@ -44,7 +44,7 @@ export default function PrivacyPolicyPage({
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <h1 className="text-4xl font-bold text-slate-900 mb-2">Privacy Policy</h1>
-        <p className="text-slate-600 mb-12">Last updated: 12/20/2025</p>
+        <p className="text-slate-600 mb-12">Last updated: 11/24/2026</p>
 
         <div className="prose prose-slate max-w-none">
           <p className="text-slate-700 leading-relaxed mb-8">
@@ -146,6 +146,25 @@ export default function PrivacyPolicyPage({
             </ul>
             <p className="text-slate-700 leading-relaxed">
               You may disable cookies in your browser settings; however, some features of the site may not function properly.
+            </p>
+          </section>
+
+          <section className="mb-12">
+            <h2 className="text-2xl font-semibold text-slate-900 mb-4">Google Search Console and Marketing Intelligence</h2>
+            <p className="text-slate-700 leading-relaxed mb-4">
+              KABBA offers an optional Marketing Intelligence feature that lets an authorized business administrator connect a Google Search Console account. The administrator expressly authorizes read-only access through Google's secure authorization process and chooses which verified website property to monitor. Connecting this account is optional.
+            </p>
+            <p className="text-slate-700 leading-relaxed mb-4">
+              With this permission, KABBA can access the list of Search Console properties available to the connected account and search performance data for the selected property, including search queries, clicks, impressions, click-through rates, average search positions, and reporting dates. Google may withhold or aggregate some search queries.
+            </p>
+            <p className="text-slate-700 leading-relaxed mb-4">
+              KABBA uses this information to show the connected business its own organic search performance in its administrative console. The current integration is read-only: it does not change website content, manage Google Ads campaigns, or use this data for personalized advertising. It does not send Search Console data to an external AI provider.
+            </p>
+            <p className="text-slate-700 leading-relaxed mb-4">
+              Google OAuth credentials are encrypted and stored on the server. The current search report is retained for display to authorized administrators of the connected business. KABBA does not sell this Google data or share it with unrelated third parties. Service providers may process data only as necessary to operate and secure the service, subject to appropriate safeguards. KABBA's use and transfer of information received from Google APIs adheres to the <a href="https://developers.google.com/terms/api-services-user-data-policy" className="text-blue-600 hover:text-blue-700 underline" target="_blank" rel="noopener noreferrer">Google API Services User Data Policy</a>, including its Limited Use requirements where applicable.
+            </p>
+            <p className="text-slate-700 leading-relaxed">
+              Authorized administrators can disconnect Google Search Console from within Marketing Intelligence at any time. KABBA then attempts to revoke the authorization at Google and removes the stored Google credentials, selected property, and saved search report. Limited connection, security, and audit records may be retained for legitimate operational purposes. Any future use of Google data for additional features will require appropriate updated disclosures and authorization before it is enabled.
             </p>
           </section>
 
